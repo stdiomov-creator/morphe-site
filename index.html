@@ -365,7 +365,7 @@
   }
 
   .video-card {
-    background: rgba(255,255,255,0.04);
+    background: #000;
     border: 0.5px solid rgba(255,255,255,0.08);
     border-radius: 8px;
     aspect-ratio: 9/16;
@@ -381,48 +381,103 @@
     height: 100%;
     border: none;
     display: block;
+    pointer-events: none;
   }
 
-  .video-placeholder {
-    width: 100%;
-    height: 100%;
+  /* Custom player controls */
+  .v-controls {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: linear-gradient(135deg, rgba(91,63,212,0.15) 0%, rgba(123,92,240,0.05) 100%);
+    justify-content: flex-end;
+    cursor: pointer;
   }
 
-  .video-placeholder-icon {
-    width: 48px;
-    height: 48px;
-    border: 1.5px solid rgba(255,255,255,0.2);
+  .v-overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .v-play-big {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
+    background: rgba(0,0,0,0.45);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
   }
 
-  .video-placeholder-icon svg {
-    width: 18px;
-    height: 18px;
-    fill: rgba(255,255,255,0.5);
-    margin-left: 3px;
+  .v-play-big svg { width: 20px; height: 20px; fill: #fff; margin-left: 3px; }
+
+  .v-play-big.hidden {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.75);
   }
 
-  .video-placeholder-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+  .v-bar {
+    position: relative;
+    z-index: 2;
+    padding: 24px 12px 12px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.75));
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.2s, transform 0.2s;
   }
 
-  .video-card iframe {
-    width: 100%;
-    height: 100%;
+  .v-controls:hover .v-bar,
+  .v-controls.paused .v-bar { opacity: 1; transform: translateY(0); }
+
+  .v-btn {
+    background: none;
     border: none;
-    display: block;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+  .v-btn:hover { opacity: 1; }
+  .v-btn svg { width: 14px; height: 14px; fill: #fff; display: block; }
+
+  .v-progress {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+  }
+  .v-progress:hover { height: 5px; }
+  .v-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--purple-light);
+    border-radius: 3px;
+    transition: width 0.1s linear;
+    pointer-events: none;
+  }
+
+  .v-time {
+    font-size: 10px;
+    color: rgba(255,255,255,0.65);
+    white-space: nowrap;
+    letter-spacing: 0.3px;
   }
 
   /* ABOUT */
@@ -733,7 +788,18 @@
         <div class="client-panel-inner">
           <div class="video-grid">
             <div class="video-card">
-              <iframe src="https://player.vimeo.com/video/1190753635?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <iframe src="https://player.vimeo.com/video/1190753635?title=0&byline=0&portrait=0&controls=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <div class="v-controls paused">
+                <div class="v-overlay"></div>
+                <div class="v-play-big"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+                <div class="v-bar">
+                  <button class="v-btn v-btn-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button>
+                  <div class="v-progress"><div class="v-progress-fill"></div></div>
+                  <span class="v-time">0:00</span>
+                  <button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button>
+                  <button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -750,10 +816,12 @@
         <div class="client-panel-inner">
           <div class="video-grid">
             <div class="video-card">
-              <iframe src="https://player.vimeo.com/video/VIMEO_ID_3?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_3?title=0&byline=0&portrait=0&controls=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <div class="v-controls paused"><div class="v-overlay"></div><div class="v-play-big"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><div class="v-bar"><button class="v-btn v-btn-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>
             </div>
             <div class="video-card">
-              <iframe src="https://player.vimeo.com/video/VIMEO_ID_4?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_4?title=0&byline=0&portrait=0&controls=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <div class="v-controls paused"><div class="v-overlay"></div><div class="v-play-big"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><div class="v-bar"><button class="v-btn v-btn-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>
             </div>
           </div>
         </div>
@@ -770,10 +838,12 @@
         <div class="client-panel-inner">
           <div class="video-grid">
             <div class="video-card">
-              <iframe src="https://player.vimeo.com/video/VIMEO_ID_5?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_5?title=0&byline=0&portrait=0&controls=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <div class="v-controls paused"><div class="v-overlay"></div><div class="v-play-big"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><div class="v-bar"><button class="v-btn v-btn-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>
             </div>
             <div class="video-card">
-              <iframe src="https://player.vimeo.com/video/VIMEO_ID_6?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_6?title=0&byline=0&portrait=0&controls=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <div class="v-controls paused"><div class="v-overlay"></div><div class="v-play-big"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><div class="v-bar"><button class="v-btn v-btn-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>
             </div>
           </div>
         </div>
@@ -790,10 +860,12 @@
         <div class="client-panel-inner">
           <div class="video-grid">
             <div class="video-card">
-              <iframe src="https://player.vimeo.com/video/VIMEO_ID_7?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_7?title=0&byline=0&portrait=0&controls=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <div class="v-controls paused"><div class="v-overlay"></div><div class="v-play-big"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><div class="v-bar"><button class="v-btn v-btn-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>
             </div>
             <div class="video-card">
-              <iframe src="https://player.vimeo.com/video/VIMEO_ID_8?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_8?title=0&byline=0&portrait=0&controls=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+              <div class="v-controls paused"><div class="v-overlay"></div><div class="v-play-big"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><div class="v-bar"><button class="v-btn v-btn-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>
             </div>
           </div>
         </div>
@@ -889,7 +961,105 @@
   <span class="footer-copy">&copy; 2025 Stefan / Morphe. All rights reserved.</span>
 </footer>
 
+<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
+const vPlayers = new Map();
+
+function fmt(s) {
+  s = Math.floor(s);
+  return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60);
+}
+
+function setPlayIcon(btn, playing) {
+  btn.innerHTML = playing
+    ? '<svg viewBox="0 0 24 24" fill="#fff"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg>';
+}
+
+function pauseAll(exceptIframe) {
+  vPlayers.forEach((p, iframe) => {
+    if (iframe !== exceptIframe) p.pause().catch(() => {});
+  });
+}
+
+function initCard(card) {
+  const iframe = card.querySelector('iframe');
+  const ctrl   = card.querySelector('.v-controls');
+  const big    = card.querySelector('.v-play-big');
+  const btnPlay = card.querySelector('.v-btn-play');
+  const fill   = card.querySelector('.v-progress-fill');
+  const track  = card.querySelector('.v-progress');
+  const time   = card.querySelector('.v-time');
+  const btnMute = card.querySelector('.v-btn-mute');
+  const btnFs  = card.querySelector('.v-btn-fs');
+
+  let player;
+  try { player = new Vimeo.Player(iframe); } catch(e) { return; }
+  vPlayers.set(iframe, player);
+
+  let dur = 0, muted = false;
+  player.getDuration().then(d => { dur = d; }).catch(() => {});
+
+  function doToggle() {
+    player.getPaused().then(paused => {
+      if (paused) {
+        pauseAll(iframe);
+        player.play().catch(() => {});
+      } else {
+        player.pause().catch(() => {});
+      }
+    });
+  }
+
+  card.querySelector('.v-overlay').addEventListener('click', doToggle);
+  btnPlay.addEventListener('click', e => { e.stopPropagation(); doToggle(); });
+
+  player.on('play', () => {
+    ctrl.classList.remove('paused');
+    big.classList.add('hidden');
+    setPlayIcon(btnPlay, true);
+  });
+
+  player.on('pause', () => {
+    ctrl.classList.add('paused');
+    big.classList.remove('hidden');
+    setPlayIcon(btnPlay, false);
+  });
+
+  player.on('ended', () => {
+    ctrl.classList.add('paused');
+    big.classList.remove('hidden');
+    setPlayIcon(btnPlay, false);
+    fill.style.width = '0%';
+    time.textContent = '0:00';
+    player.setCurrentTime(0).catch(() => {});
+  });
+
+  player.on('timeupdate', ({seconds, duration}) => {
+    if (duration) { dur = duration; fill.style.width = (seconds / duration * 100) + '%'; time.textContent = fmt(seconds); }
+  });
+
+  track.addEventListener('click', e => {
+    if (!dur) return;
+    const r = track.getBoundingClientRect();
+    player.setCurrentTime(((e.clientX - r.left) / r.width) * dur).catch(() => {});
+  });
+
+  btnMute.addEventListener('click', e => {
+    e.stopPropagation();
+    muted = !muted;
+    player.setVolume(muted ? 0 : 1).catch(() => {});
+    btnMute.style.opacity = muted ? '0.4' : '';
+  });
+
+  btnFs.addEventListener('click', e => {
+    e.stopPropagation();
+    player.requestFullscreen().catch(() => {});
+  });
+}
+
+document.querySelectorAll('.video-card').forEach(initCard);
+
 function toggleClient(header) {
   const row = header.closest('.client-row');
   const panel = row.querySelector('.client-panel');
@@ -898,7 +1068,10 @@ function toggleClient(header) {
   document.querySelectorAll('.client-row.open').forEach(r => {
     r.classList.remove('open');
     r.querySelector('.client-panel').classList.remove('open');
-    r.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
+    r.querySelectorAll('iframe').forEach(f => {
+      const p = vPlayers.get(f);
+      if (p) p.pause().catch(() => {});
+    });
   });
 
   if (!isOpen) {
