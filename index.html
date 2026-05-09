@@ -338,32 +338,30 @@
 
   /* Video panel */
   .client-panel {
-    display: none;
-    padding: 0 28px 28px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding: 0 28px;
     position: relative;
     z-index: 1;
+    transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease, padding 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .client-panel.open { display: block; }
+  .client-panel.open {
+    max-height: 2000px;
+    opacity: 1;
+    padding: 0 28px 28px;
+  }
 
   .client-panel-inner {
     border-top: 0.5px solid rgba(255,255,255,0.08);
     padding-top: 24px;
   }
 
-  .client-meta {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
   .video-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 20px;
   }
 
   .video-card {
@@ -733,7 +731,6 @@
       </div>
       <div class="client-panel">
         <div class="client-panel-inner">
-          <p class="client-meta">Commercial · Motion Graphics · VFX</p>
           <div class="video-grid">
             <div class="video-card">
               <iframe src="https://player.vimeo.com/video/1190742148?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
@@ -751,7 +748,6 @@
       </div>
       <div class="client-panel">
         <div class="client-panel-inner">
-          <p class="client-meta">Brand Film · Color Grading · Edit</p>
           <div class="video-grid">
             <div class="video-card">
               <iframe src="https://player.vimeo.com/video/VIMEO_ID_3?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
@@ -772,7 +768,6 @@
       </div>
       <div class="client-panel">
         <div class="client-panel-inner">
-          <p class="client-meta">Content Creation · Short Film · VFX</p>
           <div class="video-grid">
             <div class="video-card">
               <iframe src="https://player.vimeo.com/video/VIMEO_ID_5?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
@@ -793,7 +788,6 @@
       </div>
       <div class="client-panel">
         <div class="client-panel-inner">
-          <p class="client-meta">Motion Design · Animation · Brand</p>
           <div class="video-grid">
             <div class="video-card">
               <iframe src="https://player.vimeo.com/video/VIMEO_ID_7?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
