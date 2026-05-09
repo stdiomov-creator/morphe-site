@@ -270,7 +270,6 @@
     border: 0.5px solid rgba(255,255,255,0.12);
     border-radius: 8px;
     overflow: hidden;
-    transition: border-color 0.3s;
     background: rgba(255,255,255,0.02);
     position: relative;
   }
@@ -288,8 +287,9 @@
   .client-row:hover::before { opacity: 1; }
   .client-row:hover { border-color: rgba(123, 92, 240, 0.4); }
   .client-row.open { border-color: rgba(123, 92, 240, 0.5); }
-  .client-row { transition: border-color 0.3s, opacity 0.35s ease, filter 0.35s ease; }
-  .client-row.row-dimmed { opacity: 0.45; filter: brightness(0.55); }
+  .client-row { transition: border-color 0.3s, opacity 0.45s ease, filter 0.45s ease, transform 0.45s cubic-bezier(0.22,1,0.36,1); }
+  .client-row.row-focused { transform: scale(1.15); z-index: 2; }
+  .client-row.row-dimmed { opacity: 0.4; filter: brightness(0.5); transform: scale(0.90); }
 
   .client-header {
     display: flex;
@@ -759,7 +759,7 @@
 
   /* Card 3D tilt on hover (transform applied via JS) */
   .video-card {
-    transition: transform 0.12s ease, box-shadow 0.25s, opacity 0.35s ease, filter 0.35s ease;
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s, opacity 0.4s ease, filter 0.4s ease;
     will-change: transform;
   }
   .video-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
@@ -1240,7 +1240,7 @@ document.querySelectorAll('.video-card').forEach(card => {
     const r = card.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    card.style.transform = `perspective(700px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) scale(1.06)`;
+    card.style.transform = `perspective(700px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) scale(1.03)`;
   });
   card.addEventListener('mouseleave', () => {
     if (!isH) card.style.transform = '';
@@ -1249,14 +1249,16 @@ document.querySelectorAll('.video-card').forEach(card => {
   });
 });
 
-// Client row focus — dim other rows on hover
+// Client row focus — scale up hovered, shrink + dim others
 document.querySelectorAll('.client-row').forEach(row => {
   row.addEventListener('mouseenter', () => {
+    row.classList.add('row-focused');
     document.querySelectorAll('.client-row').forEach(r => {
       if (r !== row) r.classList.add('row-dimmed');
     });
   });
   row.addEventListener('mouseleave', () => {
+    row.classList.remove('row-focused');
     document.querySelectorAll('.client-row').forEach(r => r.classList.remove('row-dimmed'));
   });
 });
