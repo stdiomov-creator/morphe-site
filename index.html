@@ -24,14 +24,32 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; background: var(--bg); }
 
   body {
-    background: var(--bg);
+    background: transparent;
     color: var(--text);
     font-family: 'Montserrat', 'Segoe UI', sans-serif;
     overflow-x: hidden;
   }
+
+  /* Background orbs layer */
+  .bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(110px);
+    will-change: transform;
+  }
+
+  /* All page content sits above orbs */
+  nav, section, footer { position: relative; z-index: 1; }
 
   /* NAV */
   nav {
@@ -270,7 +288,9 @@
     border: 0.5px solid rgba(255,255,255,0.12);
     border-radius: 8px;
     overflow: hidden;
-    background: rgba(255,255,255,0.02);
+    background: rgba(14, 8, 32, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     position: relative;
   }
 
@@ -1262,6 +1282,40 @@ document.querySelectorAll('.client-row').forEach(row => {
     document.querySelectorAll('.client-row').forEach(r => r.classList.remove('row-dimmed'));
   });
 });
+
+// Background orbs with scroll parallax
+const bgLayer = document.createElement('div');
+bgLayer.className = 'bg-layer';
+document.body.insertBefore(bgLayer, document.body.firstChild);
+
+const orbDefs = [
+  { w: 650, x: 8,  y: 12, color: '#5100FF', opacity: 0.28, speed: 0.04 },
+  { w: 500, x: 78, y: 22, color: '#7B5CF0', opacity: 0.22, speed: 0.09 },
+  { w: 700, x: 18, y: 52, color: '#3D2BA0', opacity: 0.25, speed: 0.03 },
+  { w: 450, x: 88, y: 68, color: '#5B3FD4', opacity: 0.2,  speed: 0.07 },
+  { w: 580, x: 48, y: 88, color: '#7B5CF0', opacity: 0.18, speed: 0.05 },
+];
+
+const bgOrbs = orbDefs.map(def => {
+  const el = document.createElement('div');
+  el.className = 'bg-orb';
+  Object.assign(el.style, {
+    width: def.w + 'px', height: def.w + 'px',
+    left: def.x + '%', top: def.y + '%',
+    background: def.color, opacity: def.opacity,
+    transform: 'translate(-50%, -50%)',
+  });
+  el._speed = def.speed;
+  bgLayer.appendChild(el);
+  return el;
+});
+
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  bgOrbs.forEach(o => {
+    o.style.transform = `translate(-50%, calc(-50% - ${sy * o._speed}px))`;
+  });
+}, { passive: true });
 
 // Scroll reveal
 const revealObserver = new IntersectionObserver(entries => {
