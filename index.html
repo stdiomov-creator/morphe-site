@@ -375,10 +375,13 @@
   }
 
   .brand-pills img {
-    height: 28px;
+    height: auto;
     width: auto;
     object-fit: contain;
   }
+  .brand-pills .logo-cocacola { height: 36px; }
+  .brand-pills .logo-maretti  { height: 28px; }
+  .brand-pills .logo-bolt     { height: 36px; }
 
   .video-grid {
     display: grid;
@@ -397,17 +400,15 @@
   .video-col--full { grid-column: 1 / -1; }
 
   .video-brand-label {
-    height: 48px;
+    min-height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
-  .video-brand-label img {
-    max-height: 38px;
-    width: auto;
-    object-fit: contain;
-  }
+  .video-brand-label img { width: auto; object-fit: contain; }
+  .video-brand-label .logo-cocacola { height: 114px; }
+  .video-brand-label .logo-maretti  { height: 57px; }
+  .video-brand-label .logo-bolt     { height: 114px; }
 
   .video-card {
     background: #000;
@@ -831,9 +832,9 @@
         <div class="client-header-left">
           <span class="client-name">Дани Петканов</span>
           <div class="brand-pills">
-            <img src="logos/coca-cola-logo.png" alt="Coca Cola">
-            <img src="logos/maretti-Logo.png" alt="Maretti">
-            <img src="logos/bolt-logo.png" alt="Bolt">
+            <img src="logos/coca-cola-logo.png" alt="Coca Cola" class="logo-cocacola">
+            <img src="logos/maretti-Logo.png" alt="Maretti" class="logo-maretti">
+            <img src="logos/bolt-logo.png" alt="Bolt" class="logo-bolt">
           </div>
         </div>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -842,15 +843,15 @@
         <div class="client-panel-inner">
           <div class="video-grid">
             <div class="video-col">
-              <div class="video-brand-label"><img src="logos/coca-cola-logo.png" alt="Coca Cola"></div>
+              <div class="video-brand-label"><img src="logos/coca-cola-logo.png" alt="Coca Cola" class="logo-cocacola"></div>
               <div class="video-card" data-vid="1190764972"></div>
             </div>
             <div class="video-col">
-              <div class="video-brand-label"><img src="logos/maretti-Logo.png" alt="Maretti"></div>
+              <div class="video-brand-label"><img src="logos/maretti-Logo.png" alt="Maretti" class="logo-maretti"></div>
               <div class="video-card" data-vid="1190765046"></div>
             </div>
             <div class="video-col">
-              <div class="video-brand-label"><img src="logos/bolt-logo.png" alt="Bolt"></div>
+              <div class="video-brand-label"><img src="logos/bolt-logo.png" alt="Bolt" class="logo-bolt"></div>
               <div class="video-card" data-vid="1190764973"></div>
             </div>
           </div>
