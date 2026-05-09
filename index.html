@@ -898,6 +898,7 @@ function toggleClient(header) {
   document.querySelectorAll('.client-row.open').forEach(r => {
     r.classList.remove('open');
     r.querySelector('.client-panel').classList.remove('open');
+    r.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
   });
 
   if (!isOpen) {
