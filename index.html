@@ -294,6 +294,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 22px 28px;
+    cursor: pointer;
     position: relative;
     z-index: 1;
   }
@@ -305,7 +306,13 @@
     color: #fff;
   }
 
-  .client-arrow { display: none; }
+  .client-arrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
+  }
+  .client-row.open .client-arrow { transform: rotate(90deg); }
 
   .arrow-line {
     width: 60px;
@@ -330,12 +337,20 @@
   .client-row.open .arrow-line { width: 80px; background: var(--purple-light); }
   .client-row.open .arrow-line::after { border-color: var(--purple-light); }
 
-  /* Video panel — always open */
+  /* Video panel */
   .client-panel {
-    opacity: 1;
-    padding: 0 28px 28px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding: 0 28px;
     position: relative;
     z-index: 1;
+    transition: max-height 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.35s ease, padding 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  .client-panel.open {
+    max-height: 2000px;
+    opacity: 1;
+    padding: 0 28px 28px;
   }
 
   .client-panel-inner {
@@ -784,8 +799,15 @@
   .client-name { display: inline-block; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
   .client-header:hover .client-name { transform: translateX(8px); }
 
-  /* Cards always visible, stagger in on scroll reveal */
-  .video-col { opacity: 1; transform: none; }
+  /* Staggered card entrance when panel opens */
+  .video-col {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22,1,0.36,1);
+  }
+  .client-panel.open .video-col:nth-child(1) { opacity:1; transform:translateY(0); transition-delay:0.07s; }
+  .client-panel.open .video-col:nth-child(2) { opacity:1; transform:translateY(0); transition-delay:0.15s; }
+  .client-panel.open .video-col:nth-child(3) { opacity:1; transform:translateY(0); transition-delay:0.23s; }
 
   /* Scroll reveal */
   .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.65s ease, transform 0.65s cubic-bezier(0.22,1,0.36,1); }
@@ -1233,6 +1255,15 @@ function toggleClient(header) {
     panel.classList.add('open');
   }
 }
+
+// Hover to open client row
+document.querySelectorAll('.client-row').forEach(row => {
+  row.addEventListener('mouseenter', function() {
+    if (!this.classList.contains('open')) {
+      toggleClient(this.querySelector('.client-header'));
+    }
+  });
+});
 
 // Scroll reveal
 const revealObserver = new IntersectionObserver(entries => {
