@@ -306,11 +306,7 @@
     color: #fff;
   }
 
-  .client-arrow {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+  .client-arrow { display: none; }
 
   .arrow-line {
     width: 32px;
@@ -335,20 +331,12 @@
   .client-row.open .arrow-line { width: 44px; background: var(--purple-light); }
   .client-row.open .arrow-line::after { border-color: var(--purple-light); }
 
-  /* Video panel */
+  /* Video panel — always open */
   .client-panel {
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    padding: 0 28px;
-    position: relative;
-    z-index: 1;
-    transition: max-height 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease, padding 0.8s cubic-bezier(0.22,1,0.36,1);
-  }
-  .client-panel.open {
-    max-height: 2000px;
     opacity: 1;
     padding: 0 28px 28px;
+    position: relative;
+    z-index: 1;
   }
 
   .client-panel-inner {
@@ -767,45 +755,24 @@
 
   /* ===== ANIMATIONS ===== */
 
-  /* Purple glow on all cards */
-  @keyframes purpleGlow { 0%,100%{box-shadow:0 0 8px rgba(123,92,240,.2)} 50%{box-shadow:0 0 26px rgba(123,92,240,.6)} }
-
-  /* Card scale on hover */
+  /* Card 3D tilt on hover (transform applied via JS) */
   .video-card {
-    animation: purpleGlow 3s ease-in-out infinite;
-    transition: border-color 0.25s, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s;
+    transition: transform 0.12s ease, box-shadow 0.25s;
+    will-change: transform;
   }
-  .video-card:hover { animation-play-state: paused; transform: scale(1.025); box-shadow: 0 0 40px rgba(123,92,240,.85); }
+  .video-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
 
   /* Play button grows on card hover */
   .video-card:hover .v-play-big:not(.hidden) {
     transform: translate(-50%,-50%) scale(1.18);
   }
 
-  /* Brand glow pulse */
-  @keyframes cocaGlow    { 0%,100%{box-shadow:0 0 7px rgba(230,28,20,.25)}  50%{box-shadow:0 0 24px rgba(230,28,20,.75)} }
-  @keyframes marettiGlow { 0%,100%{box-shadow:0 0 7px rgba(212,160,23,.25)} 50%{box-shadow:0 0 24px rgba(212,160,23,.75)} }
-  @keyframes boltGlow    { 0%,100%{box-shadow:0 0 7px rgba(52,208,88,.25)}  50%{box-shadow:0 0 24px rgba(52,208,88,.75)} }
-  .brand-cocacola .video-card { animation: cocaGlow 2.8s ease-in-out infinite; }
-  .brand-maretti  .video-card { animation: marettiGlow 2.8s ease-in-out infinite; }
-  .brand-bolt     .video-card { animation: boltGlow 2.8s ease-in-out infinite; }
-  .brand-cocacola .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(230,28,20,.9); }
-  .brand-maretti  .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(212,160,23,.9); }
-  .brand-bolt     .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(52,208,88,.9); }
 
   /* Client name slides right on hover */
   .client-name { display: inline-block; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
   .client-header:hover .client-name { transform: translateX(8px); }
 
-  /* Staggered card entrance when panel opens */
-  .video-col {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22,1,0.36,1);
-  }
-  .client-panel.open .video-col:nth-child(1) { opacity:1; transform:translateY(0); transition-delay:0.07s; }
-  .client-panel.open .video-col:nth-child(2) { opacity:1; transform:translateY(0); transition-delay:0.15s; }
-  .client-panel.open .video-col:nth-child(3) { opacity:1; transform:translateY(0); transition-delay:0.23s; }
+  .video-col { opacity: 1; transform: none; }
 
   /* Scroll reveal */
   .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.65s ease, transform 0.65s cubic-bezier(0.22,1,0.36,1); }
@@ -1254,22 +1221,16 @@ function toggleClient(header) {
   }
 }
 
-// Hover to open/close client row
-document.querySelectorAll('.client-row').forEach(row => {
-  let closeTimer;
-  row.addEventListener('mouseenter', function() {
-    clearTimeout(closeTimer);
-    if (!this.classList.contains('open')) {
-      toggleClient(this.querySelector('.client-header'));
-    }
+// 3D tilt on video card hover
+document.querySelectorAll('.video-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `perspective(700px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) scale(1.04)`;
   });
-  row.addEventListener('mouseleave', function() {
-    const r = this;
-    closeTimer = setTimeout(() => {
-      if (r.classList.contains('open')) {
-        toggleClient(r.querySelector('.client-header'));
-      }
-    }, 400);
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
   });
 });
 
