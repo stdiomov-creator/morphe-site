@@ -362,7 +362,7 @@
 
   .video-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 16px;
   }
 
@@ -370,7 +370,7 @@
     background: rgba(255,255,255,0.04);
     border: 0.5px solid rgba(255,255,255,0.08);
     border-radius: 8px;
-    aspect-ratio: 16/9;
+    aspect-ratio: 9/16;
     overflow: hidden;
     position: relative;
     transition: border-color 0.2s;
@@ -378,11 +378,11 @@
 
   .video-card:hover { border-color: rgba(123, 92, 240, 0.4); }
 
-  .video-card iframe,
-  .video-card video {
+  .video-card iframe {
     width: 100%;
     height: 100%;
     border: none;
+    display: block;
   }
 
   .video-placeholder {
@@ -737,9 +737,6 @@
           <div class="video-grid">
             <div class="video-card">
               <iframe src="https://player.vimeo.com/video/1190742148?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div class="video-card">
-              <iframe src="https://player.vimeo.com/video/VIMEO_ID_2?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
           </div>
         </div>
