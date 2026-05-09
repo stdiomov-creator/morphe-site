@@ -33,7 +33,7 @@
     overflow-x: hidden;
   }
 
-  /* Background orbs layer */
+  /* Background layer */
   .bg-layer {
     position: fixed;
     inset: 0;
@@ -43,9 +43,7 @@
   }
   .bg-orb {
     position: absolute;
-    border-radius: 50%;
-    filter: blur(110px);
-    will-change: transform;
+    will-change: transform, opacity;
   }
 
   /* All page content sits above orbs */
@@ -1283,39 +1281,57 @@ document.querySelectorAll('.client-row').forEach(row => {
   });
 });
 
-// Background orbs with scroll parallax
+// Animated background — blobs, waves, organic shapes
 const bgLayer = document.createElement('div');
 bgLayer.className = 'bg-layer';
 document.body.insertBefore(bgLayer, document.body.firstChild);
 
 const orbDefs = [
-  { w: 650, x: 8,  y: 12, color: '#5100FF', opacity: 0.28, speed: 0.04 },
-  { w: 500, x: 78, y: 22, color: '#7B5CF0', opacity: 0.22, speed: 0.09 },
-  { w: 700, x: 18, y: 52, color: '#3D2BA0', opacity: 0.25, speed: 0.03 },
-  { w: 450, x: 88, y: 68, color: '#5B3FD4', opacity: 0.2,  speed: 0.07 },
-  { w: 580, x: 48, y: 88, color: '#7B5CF0', opacity: 0.18, speed: 0.05 },
+  { w:680, h:680, x:6,  y:10, blur:130, color:'#5100FF', opBase:0.24, opRange:0.06, mouseSpd:0.025, scrollSpd:0.04, radius:'50%',                                 breathe:6.2 },
+  { w:520, h:340, x:80, y:20, blur:90,  color:'#7B5CF0', opBase:0.19, opRange:0.05, mouseSpd:0.040, scrollSpd:0.09, radius:'42% 58% 55% 45%/50% 44% 56% 50%',    breathe:8.5 },
+  { w:720, h:720, x:16, y:55, blur:140, color:'#3D2BA0', opBase:0.22, opRange:0.07, mouseSpd:0.014, scrollSpd:0.03, radius:'50%',                                 breathe:5.1 },
+  { w:820, h:200, x:38, y:36, blur:100, color:'#4400DD', opBase:0.13, opRange:0.05, mouseSpd:0.018, scrollSpd:0.02, radius:'50% 50% 50% 50%/80% 80% 20% 20%',    breathe:11  },
+  { w:460, h:600, x:86, y:66, blur:95,  color:'#5B3FD4', opBase:0.18, opRange:0.06, mouseSpd:0.032, scrollSpd:0.07, radius:'60% 40% 45% 55%/45% 60% 40% 55%',    breathe:7.3 },
+  { w:600, h:600, x:50, y:82, blur:115, color:'#7B5CF0', opBase:0.16, opRange:0.05, mouseSpd:0.022, scrollSpd:0.05, radius:'50%',                                 breathe:9.8 },
+  { w:360, h:620, x:64, y:70, blur:85,  color:'#6040E0', opBase:0.17, opRange:0.06, mouseSpd:0.038, scrollSpd:0.06, radius:'68% 32% 58% 42%/48% 62% 38% 52%',    breathe:4.5 },
+  { w:750, h:160, x:22, y:78, blur:80,  color:'#5100FF', opBase:0.12, opRange:0.05, mouseSpd:0.016, scrollSpd:0.03, radius:'50% 50% 50% 50%/70% 70% 30% 30%',    breathe:13  },
 ];
 
 const bgOrbs = orbDefs.map(def => {
   const el = document.createElement('div');
   el.className = 'bg-orb';
   Object.assign(el.style, {
-    width: def.w + 'px', height: def.w + 'px',
+    width: def.w + 'px', height: def.h + 'px',
     left: def.x + '%', top: def.y + '%',
-    background: def.color, opacity: def.opacity,
-    transform: 'translate(-50%, -50%)',
+    background: def.color,
+    borderRadius: def.radius,
+    filter: `blur(${def.blur}px)`,
   });
-  el._speed = def.speed;
   bgLayer.appendChild(el);
-  return el;
+  return { el, def };
 });
 
-window.addEventListener('scroll', () => {
-  const sy = window.scrollY;
-  bgOrbs.forEach(o => {
-    o.style.transform = `translate(-50%, calc(-50% - ${sy * o._speed}px))`;
+let tMX = 0, tMY = 0, cMX = 0, cMY = 0, scrollY = 0;
+
+document.addEventListener('mousemove', e => {
+  tMX = (e.clientX / window.innerWidth  - 0.5) * 2;
+  tMY = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+
+(function animOrbs() {
+  cMX += (tMX - cMX) * 0.045;
+  cMY += (tMY - cMY) * 0.045;
+  const t = performance.now() * 0.001;
+  bgOrbs.forEach(({ el, def }) => {
+    const mx = cMX * def.mouseSpd * window.innerWidth;
+    const my = cMY * def.mouseSpd * window.innerHeight;
+    const sy = scrollY * def.scrollSpd;
+    el.style.transform = `translate(calc(-50% + ${mx}px), calc(-50% - ${sy}px + ${my}px))`;
+    el.style.opacity = def.opBase + Math.sin(t / def.breathe * Math.PI * 2) * def.opRange;
   });
-}, { passive: true });
+  requestAnimationFrame(animOrbs);
+})();
 
 // Scroll reveal
 const revealObserver = new IntersectionObserver(entries => {
