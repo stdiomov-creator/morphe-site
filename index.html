@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morphe.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
+
+  :root {
+    --purple-light: #7B5CF0;
+    --purple-mid: #5B3FD4;
+    --purple-dark: #3D2BA0;
+    --purple-deep: #2A1B7A;
+    --bg: #111111;
+    --bg-card: #1a1a1a;
+    --text: #ffffff;
+    --text-muted: rgba(255,255,255,0.5);
+    --border: rgba(255,255,255,0.08);
+    --glow: rgba(91, 63, 212, 0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Clash Display', 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(17,17,17,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .cube-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav-links a:hover { color: #fff; }
+
+  .nav-links a.active {
+    color: #fff;
+  }
+
+  .nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--purple-light);
+    border-radius: 2px;
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 80px;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* 3D CUBE */
+  .cube-scene {
+    width: 520px;
+    height: 520px;
+    position: relative;
+    margin-bottom: 0px;
+  }
+
+  .cube-main {
+    width: 520px;
+    height: 520px;
+    opacity: 0;
+    animation: cubeMorph 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+    filter: drop-shadow(0 0 100px rgba(81, 0, 255, 0.6));
+  }
+
+  @keyframes cubeMorph {
+    0%   { opacity: 0; transform: scale(0.1) rotate(180deg); filter: drop-shadow(0 0 0px rgba(81,0,255,0)); }
+    50%  { opacity: 1; }
+    75%  { transform: scale(1.08) rotate(-6deg); }
+    90%  { transform: scale(0.97) rotate(2deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 100px rgba(81,0,255,0.6)); }
+  }
+
+  .hero-tag {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--purple-light);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+
+  .hero-title {
+    font-size: clamp(42px, 6vw, 80px);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -2px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.1s forwards;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    font-weight: 400;
+    text-align: center;
+    max-width: 420px;
+    margin-top: 16px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.3s forwards;
+  }
+
+  .hero-cta {
+    margin-top: 36px;
+    display: flex;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.5s forwards;
+  }
+
+  .btn-primary {
+    padding: 12px 28px;
+    background: var(--purple-mid);
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-primary:hover {
+    background: var(--purple-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    padding: 12px 28px;
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    border: 0.5px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  }
+
+  .btn-outline:hover {
+    border-color: rgba(255,255,255,0.5);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* BG glow */
+  .hero-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(91,63,212,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 100px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-heading {
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 48px;
+  }
+
+  /* WORK */
+  #work { max-width: 1100px; }
+
+  .work-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Client Row */
+  .client-row {
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+    background: rgba(255,255,255,0.02);
+    position: relative;
+  }
+
+  .client-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(91,63,212,0.12) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .client-row:hover::before { opacity: 1; }
+  .client-row:hover { border-color: rgba(123, 92, 240, 0.4); }
+  .client-row.open { border-color: rgba(123, 92, 240, 0.5); }
+
+  .client-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+  }
+
+  .client-name {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+
+  .client-arrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .arrow-line {
+    width: 60px;
+    height: 1px;
+    background: rgba(255,255,255,0.5);
+    position: relative;
+    transition: width 0.3s;
+  }
+
+  .arrow-line::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 1.5px solid rgba(255,255,255,0.7);
+    border-top: 1.5px solid rgba(255,255,255,0.7);
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .client-row.open .arrow-line { width: 80px; background: var(--purple-light); }
+  .client-row.open .arrow-line::after { border-color: var(--purple-light); }
+
+  /* Video panel */
+  .client-panel {
+    display: none;
+    padding: 0 28px 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .client-panel.open { display: block; }
+
+  .client-panel-inner {
+    border-top: 0.5px solid rgba(255,255,255,0.08);
+    padding-top: 24px;
+  }
+
+  .client-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .video-card {
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .video-card:hover { border-color: rgba(123, 92, 240, 0.4); }
+
+  .video-card iframe,
+  .video-card video {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .video-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(91,63,212,0.15) 0%, rgba(123,92,240,0.05) 100%);
+  }
+
+  .video-placeholder-icon {
+    width: 48px;
+    height: 48px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-placeholder-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: rgba(255,255,255,0.5);
+    margin-left: 3px;
+  }
+
+  .video-placeholder-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .video-card iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* ABOUT */
+  #about {
+    border-top: 0.5px solid var(--border);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.7);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  .about-text p:last-child { margin-bottom: 0; }
+
+  .about-text strong {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .skill-pill {
+    padding: 12px 18px;
+    background: rgba(123,92,240,0.1);
+    border: 0.5px solid rgba(123,92,240,0.25);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.5px;
+    text-align: center;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .skill-pill:hover {
+    background: rgba(123,92,240,0.2);
+    border-color: rgba(123,92,240,0.5);
+  }
+
+  /* CONTACT */
+  #contact {
+    border-top: 0.5px solid var(--border);
+  }
+
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contact-desc {
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.6);
+    margin-top: 8px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 14px 20px;
+    border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover {
+    color: #fff;
+    border-color: rgba(123,92,240,0.4);
+    background: rgba(123,92,240,0.08);
+  }
+
+  .contact-link-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(123,92,240,0.15);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .contact-link-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--purple-light);
+    fill: none;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .form-input,
+  .form-textarea {
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+
+  .form-input::placeholder,
+  .form-textarea::placeholder {
+    color: rgba(255,255,255,0.3);
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    border-color: rgba(123,92,240,0.6);
+  }
+
+  .form-textarea { min-height: 120px; }
+
+  .form-submit {
+    padding: 13px 0;
+    background: var(--purple-mid);
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 4px;
+  }
+
+  .form-submit:hover {
+    background: var(--purple-light);
+    transform: translateY(-1px);
+  }
+
+  .form-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .form-success {
+    display: none;
+    padding: 16px 20px;
+    background: rgba(91,63,212,0.15);
+    border: 0.5px solid rgba(123,92,240,0.4);
+    border-radius: 8px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .form-success.visible { display: block; }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: -0.5px;
+  }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    section { padding: 80px 24px; }
+    .cube-scene { width: 320px; height: 320px; }
+    .cube-main { width: 320px; height: 320px; }
+    .about-grid,
+    .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+    .hero-cta { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <svg width="28" height="28" viewBox="0 0 2439 2347" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="938.341" height="938.341" transform="matrix(0 -1 0.866025 -0.5 1219.31 2112.24)" fill="#31009B"/>
+      <path d="M1219.4 1173.83L406.379 703.981L1219.01 234.811L2030.96 704.372L1219.4 1173.83Z" fill="url(#paint0_nav)"/>
+      <rect width="938.341" height="938.341" transform="matrix(0 -1 0.866025 0.5 406.684 1643)" fill="url(#paint1_nav)"/>
+      <defs>
+        <linearGradient id="paint0_nav" x1="1613.42" y1="968.007" x2="959.487" y2="50.1292" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#5100FF"/><stop offset="1" stop-color="#26056E"/>
+        </linearGradient>
+        <linearGradient id="paint1_nav" x1="327.885" y1="433.735" x2="691.098" y2="-125.351" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#5100FF"/><stop offset="1" stop-color="#3600AA"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="logo-text">Morphe.</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#work" class="active">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="max-width:100%; padding: 0;">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="cube-scene">
+      <svg class="cube-main" viewBox="0 0 2439 2347" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="938.341" height="938.341" transform="matrix(0 -1 0.866025 -0.5 1219.31 2112.24)" fill="#31009B"/>
+        <path d="M1219.4 1173.83L406.379 703.981L1219.01 234.811L2030.96 704.372L1219.4 1173.83Z" fill="url(#paint0_hero)"/>
+        <rect width="938.341" height="938.341" transform="matrix(0 -1 0.866025 0.5 406.684 1643)" fill="url(#paint1_hero)"/>
+        <defs>
+          <linearGradient id="paint0_hero" x1="1613.42" y1="968.007" x2="959.487" y2="50.1292" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#5100FF"/><stop offset="1" stop-color="#26056E"/>
+          </linearGradient>
+          <linearGradient id="paint1_hero" x1="327.885" y1="433.735" x2="691.098" y2="-125.351" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#5100FF"/><stop offset="1" stop-color="#3600AA"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <p class="hero-tag">Editing &nbsp;·&nbsp; VFX &nbsp;·&nbsp; Videography &nbsp;·&nbsp; Motion Graphics</p>
+    <h1 class="hero-title">Crafting Worlds<br>Frame by Frame.</h1>
+    <p class="hero-subtitle">Stefan — visual storyteller behind Morphe. Transforming ideas into cinematic experiences.</p>
+    <div class="hero-cta">
+      <a href="#work" class="btn-primary">View Work</a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work" style="padding-top: 100px; max-width: 900px; margin: 0 auto;">
+  <h2 class="section-heading">Work</h2>
+  <div class="work-list" id="workList">
+
+    <!-- Client: Coca Cola -->
+    <div class="client-row" data-client="coca-cola">
+      <div class="client-header" onclick="toggleClient(this)">
+        <span class="client-name">Coca Cola</span>
+        <div class="client-arrow"><div class="arrow-line"></div></div>
+      </div>
+      <div class="client-panel">
+        <div class="client-panel-inner">
+          <p class="client-meta">Commercial · Motion Graphics · VFX</p>
+          <div class="video-grid">
+            <div class="video-card">
+              <iframe src="https://player.vimeo.com/video/1190742148?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card">
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_2?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client: Maretti -->
+    <div class="client-row" data-client="maretti">
+      <div class="client-header" onclick="toggleClient(this)">
+        <span class="client-name">Maretti</span>
+        <div class="client-arrow"><div class="arrow-line"></div></div>
+      </div>
+      <div class="client-panel">
+        <div class="client-panel-inner">
+          <p class="client-meta">Brand Film · Color Grading · Edit</p>
+          <div class="video-grid">
+            <div class="video-card">
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_3?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card">
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_4?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client: Vivek -->
+    <div class="client-row" data-client="vivek">
+      <div class="client-header" onclick="toggleClient(this)">
+        <span class="client-name">Vivek</span>
+        <div class="client-arrow"><div class="arrow-line"></div></div>
+      </div>
+      <div class="client-panel">
+        <div class="client-panel-inner">
+          <p class="client-meta">Content Creation · Short Film · VFX</p>
+          <div class="video-grid">
+            <div class="video-card">
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_5?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card">
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_6?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client: CreatorFlow -->
+    <div class="client-row" data-client="creatorflow">
+      <div class="client-header" onclick="toggleClient(this)">
+        <span class="client-name">CreatorFlow</span>
+        <div class="client-arrow"><div class="arrow-line"></div></div>
+      </div>
+      <div class="client-panel">
+        <div class="client-panel-inner">
+          <p class="client-meta">Motion Design · Animation · Brand</p>
+          <div class="video-grid">
+            <div class="video-card">
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_7?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card">
+              <iframe src="https://player.vimeo.com/video/VIMEO_ID_8?title=0&byline=0&portrait=0&color=7b5cf0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <h2 class="section-heading">About</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm <strong>Stefan</strong> — the creative behind <strong>Morphe.</strong> I'm a video editor, videographer, motion graphics artist and VFX specialist.</p>
+      <p>I build cinematic worlds for brands, creators and studios. Whether it's a full commercial, a short film, or a motion identity — I approach every project with the same obsession: making it look <strong>undeniably good</strong>.</p>
+      <p>I've worked with brands like Coca Cola, Maretti and more, delivering visuals that stop the scroll and tell stories that stick.</p>
+      <a href="#contact" class="btn-primary" style="display:inline-block; margin-top: 8px;">Work with me</a>
+    </div>
+    <div>
+      <div class="skills-grid">
+        <div class="skill-pill">Video Editing</div>
+        <div class="skill-pill">VFX</div>
+        <div class="skill-pill">Motion Graphics</div>
+        <div class="skill-pill">Videography</div>
+        <div class="skill-pill">Color Grading</div>
+        <div class="skill-pill">After Effects</div>
+        <div class="skill-pill">Premiere Pro</div>
+        <div class="skill-pill">Cinema 4D</div>
+        <div class="skill-pill">DaVinci Resolve</div>
+        <div class="skill-pill">Sound Design</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2 class="section-heading">Contact</h2>
+  <div class="contact-inner">
+    <div>
+      <p class="contact-desc">Have a project in mind? I'd love to hear about it. Let's create something extraordinary together.</p>
+      <div class="contact-links">
+        <a href="mailto:stdiomov@gmail.com" class="contact-link">
+          <div class="contact-link-icon">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/>
+            </svg>
+          </div>
+          stdiomov@gmail.com
+        </a>
+        <a href="https://instagram.com/diomovv_" target="_blank" class="contact-link">
+          <div class="contact-link-icon">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+            </svg>
+          </div>
+          @diomovv_
+        </a>
+      </div>
+    </div>
+    <div>
+      <!-- Replace YOUR_FORM_ID with your Formspree form ID after signing up at formspree.io -->
+      <form class="contact-form" id="contactForm" action="https://formspree.io/f/xojrkdpk" method="POST">
+        <div class="form-group">
+          <label class="form-label" for="name">Name</label>
+          <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone" class="form-input" placeholder="+359 88 000 0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="message">Message</label>
+          <textarea id="message" name="message" class="form-textarea" placeholder="Tell me about your project..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit" id="formSubmit">Send Message &rarr;</button>
+        <div class="form-success" id="formSuccess">
+          Message sent! I'll get back to you soon.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Morphe.</span>
+  <span class="footer-copy">&copy; 2025 Stefan / Morphe. All rights reserved.</span>
+</footer>
+
+<script>
+function toggleClient(header) {
+  const row = header.closest('.client-row');
+  const panel = row.querySelector('.client-panel');
+  const isOpen = row.classList.contains('open');
+
+  document.querySelectorAll('.client-row.open').forEach(r => {
+    r.classList.remove('open');
+    r.querySelector('.client-panel').classList.remove('open');
+  });
+
+  if (!isOpen) {
+    row.classList.add('open');
+    panel.classList.add('open');
+  }
+}
+
+// Smooth nav active state on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(sec => {
+    if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+});
+
+// Contact form submission via Formspree
+const form = document.getElementById('contactForm');
+const submitBtn = document.getElementById('formSubmit');
+const successMsg = document.getElementById('formSuccess');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+
+  try {
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (response.ok) {
+      form.reset();
+      submitBtn.style.display = 'none';
+      successMsg.classList.add('visible');
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message →';
+      alert('Something went wrong. Please try emailing directly.');
+    }
+  } catch {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Message →';
+    alert('Something went wrong. Please try emailing directly.');
+  }
+});
+</script>
+
+</body>
+</html>
