@@ -757,10 +757,15 @@
 
   /* Card 3D tilt on hover (transform applied via JS) */
   .video-card {
-    transition: transform 0.12s ease, box-shadow 0.25s;
+    transition: transform 0.12s ease, box-shadow 0.25s, opacity 0.35s ease, filter 0.35s ease;
     will-change: transform;
   }
   .video-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+  .video-card.dimmed {
+    opacity: 0.4;
+    filter: brightness(0.5);
+    transform: scale(0.95);
+  }
 
   /* Play button grows on card hover */
   .video-card:hover .v-play-big:not(.hidden) {
@@ -1221,16 +1226,22 @@ function toggleClient(header) {
   }
 }
 
-// 3D tilt on video card hover
+// 3D tilt + dim siblings on video card hover
 document.querySelectorAll('.video-card').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
+    if (siblings) siblings.forEach(s => { if (s !== card) s.classList.add('dimmed'); });
+  });
   card.addEventListener('mousemove', e => {
     const r = card.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    card.style.transform = `perspective(700px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) scale(1.04)`;
+    card.style.transform = `perspective(700px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) scale(1.06)`;
   });
   card.addEventListener('mouseleave', () => {
     card.style.transform = '';
+    const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
+    if (siblings) siblings.forEach(s => s.classList.remove('dimmed'));
   });
 });
 
