@@ -79,7 +79,7 @@
     font-size: 15px;
     font-weight: 500;
     letter-spacing: 0.2px;
-    transition: color 0.2s;
+    transition: color 0.2s, transform 0.25s cubic-bezier(0.22,1,0.36,1);
     position: relative;
   }
 
@@ -766,6 +766,52 @@
     color: var(--text-muted);
   }
 
+  /* ===== ANIMATIONS ===== */
+
+  /* Card scale on hover */
+  .video-card {
+    transition: border-color 0.25s, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s;
+  }
+  .video-card:hover { transform: scale(1.025); box-shadow: 0 12px 48px rgba(0,0,0,0.55); }
+
+  /* Play button grows on card hover */
+  .video-card:hover .v-play-big:not(.hidden) {
+    transform: translate(-50%,-50%) scale(1.18);
+  }
+
+  /* Brand glow pulse */
+  @keyframes cocaGlow    { 0%,100%{box-shadow:0 0 7px rgba(230,28,20,.25)}  50%{box-shadow:0 0 24px rgba(230,28,20,.75)} }
+  @keyframes marettiGlow { 0%,100%{box-shadow:0 0 7px rgba(212,160,23,.25)} 50%{box-shadow:0 0 24px rgba(212,160,23,.75)} }
+  @keyframes boltGlow    { 0%,100%{box-shadow:0 0 7px rgba(52,208,88,.25)}  50%{box-shadow:0 0 24px rgba(52,208,88,.75)} }
+  .brand-cocacola .video-card { animation: cocaGlow 2.8s ease-in-out infinite; }
+  .brand-maretti  .video-card { animation: marettiGlow 2.8s ease-in-out infinite; }
+  .brand-bolt     .video-card { animation: boltGlow 2.8s ease-in-out infinite; }
+  .brand-cocacola .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(230,28,20,.9); }
+  .brand-maretti  .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(212,160,23,.9); }
+  .brand-bolt     .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(52,208,88,.9); }
+
+  /* Arrow rotates down when client opens */
+  .client-arrow { transition: transform 0.45s cubic-bezier(0.22,1,0.36,1); }
+  .client-row.open .client-arrow { transform: rotate(90deg); }
+
+  /* Client name slides right on hover */
+  .client-name { display: inline-block; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
+  .client-header:hover .client-name { transform: translateX(8px); }
+
+  /* Staggered card entrance when panel opens */
+  .video-col {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22,1,0.36,1);
+  }
+  .client-panel.open .video-col:nth-child(1) { opacity:1; transform:translateY(0); transition-delay:0.07s; }
+  .client-panel.open .video-col:nth-child(2) { opacity:1; transform:translateY(0); transition-delay:0.15s; }
+  .client-panel.open .video-col:nth-child(3) { opacity:1; transform:translateY(0); transition-delay:0.23s; }
+
+  /* Scroll reveal */
+  .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.65s ease, transform 0.65s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.revealed { opacity:1; transform:translateY(0); }
+
   /* Responsive */
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
@@ -838,11 +884,11 @@
 
 <!-- WORK -->
 <section id="work" style="padding-top: 100px; max-width: 900px; margin: 0 auto;">
-  <h2 class="section-heading">Work</h2>
+  <h2 class="section-heading reveal">Work</h2>
   <div class="work-list" id="workList">
 
     <!-- 1. Дани Петканов -->
-    <div class="client-row" data-client="dani">
+    <div class="client-row reveal" data-client="dani">
       <div class="client-header" onclick="toggleClient(this)">
         <div class="client-header-left">
           <span class="client-name">Дани Петканов</span>
@@ -873,7 +919,7 @@
     </div>
 
     <!-- 2. Vivek -->
-    <div class="client-row" data-client="vivek">
+    <div class="client-row reveal" data-client="vivek">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">Vivek</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -886,7 +932,7 @@
     </div>
 
     <!-- 3. Minimart (horizontal) -->
-    <div class="client-row" data-client="minimart">
+    <div class="client-row reveal" data-client="minimart">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">Minimart</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -897,7 +943,7 @@
     </div>
 
     <!-- 4. Антоанета Джубрилова -->
-    <div class="client-row" data-client="antoana">
+    <div class="client-row reveal" data-client="antoana">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">Антоанета Джубрилова</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -909,7 +955,7 @@
     </div>
 
     <!-- 5. CreatorFlow -->
-    <div class="client-row" data-client="creatorflow">
+    <div class="client-row reveal" data-client="creatorflow">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">CreatorFlow</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -922,7 +968,7 @@
     </div>
 
     <!-- 6. Ева Николова -->
-    <div class="client-row" data-client="eva">
+    <div class="client-row reveal" data-client="eva">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">Ева Николова</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -935,7 +981,7 @@
     </div>
 
     <!-- 7. Aylyakria -->
-    <div class="client-row" data-client="aylyakria">
+    <div class="client-row reveal" data-client="aylyakria">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">Aylyakria</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -948,7 +994,7 @@
     </div>
 
     <!-- 8. BlinkOps (horizontal) -->
-    <div class="client-row" data-client="blinkops">
+    <div class="client-row reveal" data-client="blinkops">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">BlinkOps</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -959,7 +1005,7 @@
     </div>
 
     <!-- 9. Clai -->
-    <div class="client-row" data-client="clai">
+    <div class="client-row reveal" data-client="clai">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">Clai</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -970,7 +1016,7 @@
     </div>
 
     <!-- 10. Gum Of Gods -->
-    <div class="client-row" data-client="gumofgods">
+    <div class="client-row reveal" data-client="gumofgods">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">Gum Of Gods</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -983,7 +1029,7 @@
     </div>
 
     <!-- 11. Personal High-End -->
-    <div class="client-row" data-client="personal">
+    <div class="client-row reveal" data-client="personal">
       <div class="client-header" onclick="toggleClient(this)">
         <span class="client-name">Personal High-End</span>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -1208,6 +1254,28 @@ function toggleClient(header) {
     panel.classList.add('open');
   }
 }
+
+// Scroll reveal
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('revealed');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Magnetic nav links
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('mousemove', e => {
+    const r = link.getBoundingClientRect();
+    const dx = (e.clientX - r.left - r.width / 2) * 0.38;
+    const dy = (e.clientY - r.top - r.height / 2) * 0.38;
+    link.style.transform = `translate(${dx}px,${dy}px)`;
+  });
+  link.addEventListener('mouseleave', () => { link.style.transform = ''; });
+});
 
 // Smooth nav active state on scroll
 const sections = document.querySelectorAll('section[id]');
