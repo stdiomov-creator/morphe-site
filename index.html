@@ -1256,15 +1256,15 @@ function toggleClient(header) {
 }
 
 // Auto-open client on hover
-document.querySelectorAll('.client-header').forEach(header => {
+document.querySelectorAll('.client-row').forEach(row => {
   let hoverTimer;
-  header.addEventListener('mouseenter', () => {
-    const row = header.closest('.client-row');
+  const header = row.querySelector('.client-header');
+  row.addEventListener('mouseenter', () => {
     if (!row.classList.contains('open')) {
-      hoverTimer = setTimeout(() => toggleClient(header), 280);
+      hoverTimer = setTimeout(() => toggleClient(header), 150);
     }
   });
-  header.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
+  row.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
 });
 
 // Scroll reveal
