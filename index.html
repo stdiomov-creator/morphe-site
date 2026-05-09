@@ -1257,14 +1257,11 @@ function toggleClient(header) {
 
 // Auto-open client on hover
 document.querySelectorAll('.client-row').forEach(row => {
-  let hoverTimer;
-  const header = row.querySelector('.client-header');
-  row.addEventListener('mouseenter', () => {
-    if (!row.classList.contains('open')) {
-      hoverTimer = setTimeout(() => toggleClient(header), 150);
+  row.addEventListener('mouseenter', function() {
+    if (!this.classList.contains('open')) {
+      toggleClient(this.querySelector('.client-header'));
     }
   });
-  row.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
 });
 
 // Scroll reveal
