@@ -310,12 +310,10 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
   }
-  .client-row.open .client-arrow { transform: rotate(90deg); }
 
   .arrow-line {
-    width: 60px;
+    width: 32px;
     height: 1px;
     background: rgba(255,255,255,0.5);
     position: relative;
@@ -327,14 +325,14 @@
     position: absolute;
     right: -1px;
     top: 50%;
-    width: 8px;
-    height: 8px;
-    border-right: 1.5px solid rgba(255,255,255,0.7);
-    border-top: 1.5px solid rgba(255,255,255,0.7);
+    width: 6px;
+    height: 6px;
+    border-right: 1px solid rgba(255,255,255,0.7);
+    border-top: 1px solid rgba(255,255,255,0.7);
     transform: translateY(-50%) rotate(45deg);
   }
 
-  .client-row.open .arrow-line { width: 80px; background: var(--purple-light); }
+  .client-row.open .arrow-line { width: 44px; background: var(--purple-light); }
   .client-row.open .arrow-line::after { border-color: var(--purple-light); }
 
   /* Video panel */
@@ -345,7 +343,7 @@
     padding: 0 28px;
     position: relative;
     z-index: 1;
-    transition: max-height 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.35s ease, padding 0.5s cubic-bezier(0.22,1,0.36,1);
+    transition: max-height 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.6s ease, padding 0.8s cubic-bezier(0.22,1,0.36,1);
   }
   .client-panel.open {
     max-height: 2000px;
@@ -769,11 +767,15 @@
 
   /* ===== ANIMATIONS ===== */
 
+  /* Purple glow on all cards */
+  @keyframes purpleGlow { 0%,100%{box-shadow:0 0 8px rgba(123,92,240,.2)} 50%{box-shadow:0 0 26px rgba(123,92,240,.6)} }
+
   /* Card scale on hover */
   .video-card {
+    animation: purpleGlow 3s ease-in-out infinite;
     transition: border-color 0.25s, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s;
   }
-  .video-card:hover { transform: scale(1.025); box-shadow: 0 12px 48px rgba(0,0,0,0.55); }
+  .video-card:hover { animation-play-state: paused; transform: scale(1.025); box-shadow: 0 0 40px rgba(123,92,240,.85); }
 
   /* Play button grows on card hover */
   .video-card:hover .v-play-big:not(.hidden) {
@@ -790,10 +792,6 @@
   .brand-cocacola .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(230,28,20,.9); }
   .brand-maretti  .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(212,160,23,.9); }
   .brand-bolt     .video-card:hover { animation-play-state: paused; box-shadow: 0 0 36px rgba(52,208,88,.9); }
-
-  /* Arrow rotates down when client opens */
-  .client-arrow { transition: transform 0.45s cubic-bezier(0.22,1,0.36,1); }
-  .client-row.open .client-arrow { transform: rotate(90deg); }
 
   /* Client name slides right on hover */
   .client-name { display: inline-block; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
@@ -1256,12 +1254,22 @@ function toggleClient(header) {
   }
 }
 
-// Hover to open client row
+// Hover to open/close client row
 document.querySelectorAll('.client-row').forEach(row => {
+  let closeTimer;
   row.addEventListener('mouseenter', function() {
+    clearTimeout(closeTimer);
     if (!this.classList.contains('open')) {
       toggleClient(this.querySelector('.client-header'));
     }
+  });
+  row.addEventListener('mouseleave', function() {
+    const r = this;
+    closeTimer = setTimeout(() => {
+      if (r.classList.contains('open')) {
+        toggleClient(r.querySelector('.client-header'));
+      }
+    }, 400);
   });
 });
 
