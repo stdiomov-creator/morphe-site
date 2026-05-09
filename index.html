@@ -375,13 +375,10 @@
   }
 
   .brand-pills img {
-    height: auto;
+    height: 28px;
     width: auto;
     object-fit: contain;
   }
-  .brand-pills .logo-cocacola { height: 36px; }
-  .brand-pills .logo-maretti  { height: 28px; }
-  .brand-pills .logo-bolt     { height: 36px; }
 
   .video-grid {
     display: grid;
@@ -399,16 +396,35 @@
 
   .video-col--full { grid-column: 1 / -1; }
 
-  .video-brand-label {
-    height: 130px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .brand-card-wrap {
+    position: relative;
+    padding-top: 44px;
   }
-  .video-brand-label img { width: auto; object-fit: contain; }
-  .video-brand-label .logo-cocacola { height: 80px; }
-  .video-brand-label .logo-maretti  { height: 80px; }
-  .video-brand-label .logo-bolt     { height: 80px; }
+
+  .card-top-logo {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+    height: 88px;
+  }
+
+  .card-top-logo img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .brand-cocacola .video-card { border-color: #e61c14; border-width: 1.5px; }
+  .brand-maretti  .video-card { border-color: #d4a017; border-width: 1.5px; }
+  .brand-bolt     .video-card { border-color: #34d058; border-width: 1.5px; }
+  .brand-cocacola .video-card:hover { border-color: #ff4433; }
+  .brand-maretti  .video-card:hover { border-color: #f0c030; }
+  .brand-bolt     .video-card:hover { border-color: #55f075; }
 
   .video-card {
     background: #000;
@@ -832,9 +848,9 @@
         <div class="client-header-left">
           <span class="client-name">Дани Петканов</span>
           <div class="brand-pills">
-            <img src="logos/coca-cola-logo.png" alt="Coca Cola" class="logo-cocacola">
-            <img src="logos/maretti-logo.png" alt="Maretti" class="logo-maretti">
-            <img src="logos/bolt-logo.png" alt="Bolt" class="logo-bolt">
+            <img src="logos/coca-cola-logo.png" alt="Coca Cola">
+            <img src="logos/maretti-logo.png" alt="Maretti">
+            <img src="logos/bolt-logo.png" alt="Bolt">
           </div>
         </div>
         <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -843,16 +859,22 @@
         <div class="client-panel-inner">
           <div class="video-grid">
             <div class="video-col">
-              <div class="video-brand-label"><img src="logos/coca-cola-logo.png" alt="Coca Cola" class="logo-cocacola"></div>
-              <div class="video-card" data-vid="1190764972"></div>
+              <div class="brand-card-wrap brand-cocacola">
+                <div class="card-top-logo"><img src="logos/coca-cola-logo.png" alt="Coca Cola"></div>
+                <div class="video-card" data-vid="1190764972"></div>
+              </div>
             </div>
             <div class="video-col">
-              <div class="video-brand-label"><img src="logos/maretti-logo.png" alt="Maretti" class="logo-maretti"></div>
-              <div class="video-card" data-vid="1190765046"></div>
+              <div class="brand-card-wrap brand-maretti">
+                <div class="card-top-logo"><img src="logos/maretti-logo.png" alt="Maretti"></div>
+                <div class="video-card" data-vid="1190765046"></div>
+              </div>
             </div>
             <div class="video-col">
-              <div class="video-brand-label"><img src="logos/bolt-logo.png" alt="Bolt" class="logo-bolt"></div>
-              <div class="video-card" data-vid="1190764973"></div>
+              <div class="brand-card-wrap brand-bolt">
+                <div class="card-top-logo"><img src="logos/bolt-logo.png" alt="Bolt"></div>
+                <div class="video-card" data-vid="1190764973"></div>
+              </div>
             </div>
           </div>
         </div>
