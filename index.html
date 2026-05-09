@@ -1255,6 +1255,18 @@ function toggleClient(header) {
   }
 }
 
+// Auto-open client on hover
+document.querySelectorAll('.client-header').forEach(header => {
+  let hoverTimer;
+  header.addEventListener('mouseenter', () => {
+    const row = header.closest('.client-row');
+    if (!row.classList.contains('open')) {
+      hoverTimer = setTimeout(() => toggleClient(header), 280);
+    }
+  });
+  header.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
+});
+
 // Scroll reveal
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(e => {
