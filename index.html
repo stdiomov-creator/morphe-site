@@ -288,6 +288,8 @@
   .client-row:hover::before { opacity: 1; }
   .client-row:hover { border-color: rgba(123, 92, 240, 0.4); }
   .client-row.open { border-color: rgba(123, 92, 240, 0.5); }
+  .client-row { transition: border-color 0.3s, opacity 0.35s ease, filter 0.35s ease; }
+  .client-row.row-dimmed { opacity: 0.45; filter: brightness(0.55); }
 
   .client-header {
     display: flex;
@@ -1226,22 +1228,36 @@ function toggleClient(header) {
   }
 }
 
-// 3D tilt + dim siblings on video card hover
+// 3D tilt + dim siblings on video card hover (skip horizontal cards)
 document.querySelectorAll('.video-card').forEach(card => {
+  const isH = card.classList.contains('video-card--h');
   card.addEventListener('mouseenter', () => {
     const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
     if (siblings) siblings.forEach(s => { if (s !== card) s.classList.add('dimmed'); });
   });
   card.addEventListener('mousemove', e => {
+    if (isH) return;
     const r = card.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
     card.style.transform = `perspective(700px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) scale(1.06)`;
   });
   card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
+    if (!isH) card.style.transform = '';
     const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
     if (siblings) siblings.forEach(s => s.classList.remove('dimmed'));
+  });
+});
+
+// Client row focus — dim other rows on hover
+document.querySelectorAll('.client-row').forEach(row => {
+  row.addEventListener('mouseenter', () => {
+    document.querySelectorAll('.client-row').forEach(r => {
+      if (r !== row) r.classList.add('row-dimmed');
+    });
+  });
+  row.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.client-row').forEach(r => r.classList.remove('row-dimmed'));
   });
 });
 
