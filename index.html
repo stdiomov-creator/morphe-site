@@ -448,6 +448,7 @@
     gap: 7px;
     padding: 0 14px;
     height: 26px;
+    max-width: min(300px, 52%);
     border-radius: 8px 8px 0 0;
     background: rgba(14,8,32,0.55);
     backdrop-filter: blur(12px);
@@ -457,10 +458,27 @@
     cursor: pointer;
     user-select: none;
     color: rgba(255,255,255,0.28);
+    outline: none;
     transition: color 0.3s, border-color 0.3s, background 0.3s;
   }
+  .folder-tab:focus-visible {
+    border-color: rgba(123,92,240,0.7);
+    color: rgba(255,255,255,0.6);
+    box-shadow: 0 0 0 2px rgba(123,92,240,0.25);
+  }
 
-  .folder-hint {
+  .folder-tab-name {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+
+  .folder-hint, .folder-hint-close {
     font-size: 9px;
     letter-spacing: 1.8px;
     text-transform: uppercase;
@@ -469,13 +487,17 @@
     transform: translateX(-5px);
     transition: opacity 0.3s, transform 0.3s;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .folder-wrap:hover .folder-tab {
+  .folder-wrap:hover:not(:has(.client-row.open)) .folder-tab {
     border-color: rgba(123,92,240,0.4);
     color: rgba(255,255,255,0.6);
   }
-  .folder-wrap:hover .folder-hint { opacity: 1; transform: translateX(0); }
+  .folder-wrap:hover:not(:has(.client-row.open)) .folder-hint {
+    opacity: 1;
+    transform: translateX(0);
+  }
   .folder-wrap:hover > .client-row { border-color: rgba(123,92,240,0.4); }
   .folder-wrap:hover .client-row::before { opacity: 1; }
 
@@ -484,7 +506,10 @@
     color: rgba(123,92,240,1);
     background: rgba(91,63,212,0.14);
   }
-  .folder-wrap:has(.client-row.open) .folder-hint { display: none; }
+  .folder-wrap:has(.client-row.open) .folder-hint-close {
+    opacity: 1;
+    transform: translateX(0);
+  }
 
   .folder-wrap > .client-row {
     width: 100%;
@@ -493,6 +518,8 @@
 
   @media (hover: none) {
     .folder-hint { opacity: 1 !important; transform: none !important; }
+    .folder-wrap:has(.client-row.open) .folder-hint { opacity: 0 !important; }
+    .folder-wrap:has(.client-row.open) .folder-hint-close { opacity: 1 !important; transform: none !important; }
   }
 
   .video-col {
@@ -1834,7 +1861,7 @@ function initVideoCard(card) {
 // Initialize showreel immediately; all other cards load lazily on accordion open
 document.querySelectorAll('.reel-card .video-card[data-vid]').forEach(initVideoCard);
 
-function toggleClient(header) {
+function toggleClient(header, skipScroll) {
   const row = header.closest('.client-row');
   const panel = row.querySelector('.client-panel');
   const isOpen = row.classList.contains('open');
@@ -1852,8 +1879,14 @@ function toggleClient(header) {
     row.classList.add('open');
     panel.classList.add('open');
     row.querySelectorAll('.video-card[data-vid]').forEach(initVideoCard);
-    const wrap = row.closest('.folder-wrap') || row;
-    setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30);
+    if (!skipScroll) {
+      setTimeout(() => {
+        const wrap = row.closest('.folder-wrap') || row;
+        const r = wrap.getBoundingClientRect();
+        const targetY = window.scrollY + r.top + r.height / 2 - window.innerHeight / 2;
+        window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+      }, 460);
+    }
   }
 }
 
@@ -2090,7 +2123,7 @@ window.addEventListener('scroll', () => {
 
 // Auto-open first client row
 const firstRow = document.querySelector('.client-row');
-if (firstRow) toggleClient(firstRow.querySelector('.client-header'));
+if (firstRow) toggleClient(firstRow.querySelector('.client-header'), true);
 
 // Client row enhancements — thumbnails + category/count meta
 const clientMeta = {
@@ -2163,12 +2196,30 @@ document.querySelectorAll('.work-list .client-row').forEach(row => {
   row.parentNode.insertBefore(wrap, row);
   wrap.appendChild(row);
 
+  const clientName = row.querySelector('.client-name')?.textContent?.trim() || '';
   const tab = document.createElement('div');
   tab.className = 'folder-tab';
-  tab.innerHTML = '<svg width="14" height="12" viewBox="0 0 16 14" fill="none"><path d="M0 4C0 2.9.9 2 2 2H6L7.5 4H14C15.1 4 16 4.9 16 6V12C16 13.1 15.1 14 14 14H2C.9 14 0 13.1 0 12V4Z" fill="currentColor"/></svg><span class="folder-hint">open</span>';
+  tab.setAttribute('tabindex', '0');
+  tab.setAttribute('role', 'button');
+  tab.innerHTML = '<svg width="14" height="12" viewBox="0 0 16 14" fill="none"><path d="M0 4C0 2.9.9 2 2 2H6L7.5 4H14C15.1 4 16 4.9 16 6V12C16 13.1 15.1 14 14 14H2C.9 14 0 13.1 0 12V4Z" fill="currentColor"/></svg>'
+    + (clientName ? `<span class="folder-tab-name">${clientName}</span>` : '')
+    + '<span class="folder-hint">open</span><span class="folder-hint-close">close</span>';
   tab.addEventListener('click', () => toggleClient(row.querySelector('.client-header')));
   tab.addEventListener('mouseenter', () => { curDot.classList.add('is-hover'); curRing.classList.add('is-hover'); });
   tab.addEventListener('mouseleave', () => { curDot.classList.remove('is-hover'); curRing.classList.remove('is-hover'); });
+  tab.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleClient(row.querySelector('.client-header'));
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const tabs = Array.from(document.querySelectorAll('.folder-tab'));
+      const next = tabs[tabs.indexOf(tab) + (e.key === 'ArrowDown' ? 1 : -1)];
+      if (next) { next.focus(); next.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    } else if (e.key === 'Escape' && row.classList.contains('open')) {
+      toggleClient(row.querySelector('.client-header'));
+    }
+  });
   wrap.insertBefore(tab, row);
 
   wrap.addEventListener('mouseenter', () => {
@@ -2179,6 +2230,13 @@ document.querySelectorAll('.work-list .client-row').forEach(row => {
     wrap.classList.remove('row-focused');
     document.querySelectorAll('.folder-wrap').forEach(w => w.classList.remove('row-dimmed'));
   });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const openRow = document.querySelector('.client-row.open');
+    if (openRow) toggleClient(openRow.querySelector('.client-header'));
+  }
 });
 </script>
 
