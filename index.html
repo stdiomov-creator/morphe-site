@@ -311,7 +311,7 @@
   .work-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
   }
 
   /* Client Row */
@@ -426,6 +426,72 @@
     gap: 16px;
     justify-content: center;
     align-items: flex-start;
+  }
+
+  /* Folder-style client cards */
+  .folder-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    position: relative;
+    transition: opacity 0.45s ease, filter 0.45s ease, transform 0.45s cubic-bezier(0.22,1,0.36,1);
+  }
+  .folder-wrap:last-child { margin-bottom: 0; }
+  .folder-wrap.row-focused { transform: scale(1.03); z-index: 2; }
+  .folder-wrap.row-dimmed { opacity: 0.4; filter: brightness(0.5); transform: scale(0.94); }
+
+  .folder-tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 14px;
+    height: 26px;
+    border-radius: 8px 8px 0 0;
+    background: rgba(14,8,32,0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-bottom: none;
+    cursor: pointer;
+    user-select: none;
+    color: rgba(255,255,255,0.28);
+    transition: color 0.3s, border-color 0.3s, background 0.3s;
+  }
+
+  .folder-hint {
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateX(-5px);
+    transition: opacity 0.3s, transform 0.3s;
+    white-space: nowrap;
+  }
+
+  .folder-wrap:hover .folder-tab {
+    border-color: rgba(123,92,240,0.4);
+    color: rgba(255,255,255,0.6);
+  }
+  .folder-wrap:hover .folder-hint { opacity: 1; transform: translateX(0); }
+  .folder-wrap:hover > .client-row { border-color: rgba(123,92,240,0.4); }
+  .folder-wrap:hover .client-row::before { opacity: 1; }
+
+  .folder-wrap:has(.client-row.open) .folder-tab {
+    border-color: rgba(123,92,240,0.5);
+    color: rgba(123,92,240,1);
+    background: rgba(91,63,212,0.14);
+  }
+  .folder-wrap:has(.client-row.open) .folder-hint { display: none; }
+
+  .folder-wrap > .client-row {
+    width: 100%;
+    border-radius: 0 10px 10px 10px;
+  }
+
+  @media (hover: none) {
+    .folder-hint { opacity: 1 !important; transform: none !important; }
   }
 
   .video-col {
@@ -1095,9 +1161,6 @@
   }
   .btn-primary:hover::before { opacity: 1; }
 
-  /* Client rows — stagger + slight left offset on reveal */
-  .work-list .client-row.reveal { transform: translateY(20px); }
-  .work-list .client-row.reveal.revealed { transform: none; }
 
   /* Skill pill reveal */
   .skill-pill {
@@ -1813,19 +1876,6 @@ document.querySelectorAll('.video-card').forEach(card => {
   });
 });
 
-// Client row focus — scale up hovered, shrink + dim others
-document.querySelectorAll('.client-row').forEach(row => {
-  row.addEventListener('mouseenter', () => {
-    row.classList.add('row-focused');
-    document.querySelectorAll('.client-row').forEach(r => {
-      if (r !== row) r.classList.add('row-dimmed');
-    });
-  });
-  row.addEventListener('mouseleave', () => {
-    row.classList.remove('row-focused');
-    document.querySelectorAll('.client-row').forEach(r => r.classList.remove('row-dimmed'));
-  });
-});
 
 // Animated background — blobs, waves, organic shapes
 const bgLayer = document.createElement('div');
@@ -1952,10 +2002,6 @@ document.addEventListener('mouseup',   () => curDot.classList.remove('is-click')
     '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.84s">Frame.</span></span>';
 })();
 
-// Stagger client row reveals
-document.querySelectorAll('.work-list .client-row.reveal').forEach((el, i) => {
-  el.style.transitionDelay = (i * 0.055) + 's';
-});
 
 // Skill pills — stagger scroll reveal
 document.querySelectorAll('.skill-pill').forEach((pill, i) => {
@@ -2094,6 +2140,42 @@ document.querySelectorAll('.client-row').forEach(row => {
   const isPlural = meta.count !== '1' && meta.count !== '2';
   metaEl.innerHTML = `<span class="client-cat">${meta.cat}</span><span class="client-count">${meta.count} video${isPlural ? 's' : ''}</span>`;
   header.insertBefore(metaEl, arrow);
+});
+
+// Inject folder-wrap + folder-tab around each client row
+let fIdx = 0;
+document.querySelectorAll('.work-list .client-row').forEach(row => {
+  const wrap = document.createElement('div');
+  wrap.className = 'folder-wrap';
+
+  if (row.classList.contains('reveal')) {
+    wrap.classList.add('reveal');
+    row.classList.remove('reveal');
+    row.style.transitionDelay = '';
+    wrap.style.transitionDelay = (fIdx * 0.055) + 's';
+    fIdx++;
+    revealObserver.observe(wrap);
+  }
+
+  row.parentNode.insertBefore(wrap, row);
+  wrap.appendChild(row);
+
+  const tab = document.createElement('div');
+  tab.className = 'folder-tab';
+  tab.innerHTML = '<svg width="14" height="12" viewBox="0 0 16 14" fill="none"><path d="M0 4C0 2.9.9 2 2 2H6L7.5 4H14C15.1 4 16 4.9 16 6V12C16 13.1 15.1 14 14 14H2C.9 14 0 13.1 0 12V4Z" fill="currentColor"/></svg><span class="folder-hint">open</span>';
+  tab.addEventListener('click', () => toggleClient(row.querySelector('.client-header')));
+  tab.addEventListener('mouseenter', () => { curDot.classList.add('is-hover'); curRing.classList.add('is-hover'); });
+  tab.addEventListener('mouseleave', () => { curDot.classList.remove('is-hover'); curRing.classList.remove('is-hover'); });
+  wrap.insertBefore(tab, row);
+
+  wrap.addEventListener('mouseenter', () => {
+    wrap.classList.add('row-focused');
+    document.querySelectorAll('.folder-wrap').forEach(w => { if (w !== wrap) w.classList.add('row-dimmed'); });
+  });
+  wrap.addEventListener('mouseleave', () => {
+    wrap.classList.remove('row-focused');
+    document.querySelectorAll('.folder-wrap').forEach(w => w.classList.remove('row-dimmed'));
+  });
 });
 </script>
 
