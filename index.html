@@ -523,9 +523,14 @@
 
   /* Dim all other folders when one is open */
   .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)) {
-    opacity: 0.18;
+    opacity: 0.25;
     filter: brightness(0.4);
     transform: scale(0.97);
+  }
+  .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)):hover {
+    opacity: 0.85;
+    filter: brightness(0.9);
+    transform: scale(0.99);
   }
 
   /* Video col stagger on panel open */
@@ -2247,12 +2252,10 @@ document.querySelectorAll('.work-list .client-row').forEach(row => {
   });
   wrap.insertBefore(tab, row);
 
-  // Header click: only open, never close (close is tab-only)
+  // Header click: toggle open/close
   const header = row.querySelector('.client-header');
   header.onclick = null;
-  header.addEventListener('click', () => {
-    if (!row.classList.contains('open')) toggleClient(header);
-  });
+  header.addEventListener('click', () => toggleClient(header));
 
   wrap.addEventListener('mouseenter', () => {
     if (document.querySelector('.client-row.open')) return;
