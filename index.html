@@ -1372,19 +1372,46 @@ function initCard(card) {
   try { player = new Vimeo.Player(iframe); } catch(e) { return; }
   vPlayers.set(iframe, player);
 
-  let dur = 0, muted = false;
+  let dur = 0, muted = false, hoverMode = false;
   player.getDuration().then(d => { dur = d; }).catch(() => {});
 
   function doToggle() {
+    if (hoverMode) {
+      hoverMode = false;
+      player.setVolume(muted ? 0 : 1).catch(() => {});
+      return;
+    }
     player.getPaused().then(paused => {
       if (paused) {
         pauseAll(iframe);
+        player.setVolume(muted ? 0 : 1).catch(() => {});
         player.play().catch(() => {});
       } else {
         player.pause().catch(() => {});
       }
     });
   }
+
+  card.addEventListener('mouseenter', () => {
+    hoverMode = true;
+    pauseAll(iframe);
+    player.setVolume(0).catch(() => {});
+    player.play().catch(() => {});
+  });
+
+  card.addEventListener('mouseleave', () => {
+    if (hoverMode) {
+      player.pause().catch(() => {});
+      player.setCurrentTime(0).catch(() => {});
+      player.setVolume(muted ? 0 : 1).catch(() => {});
+      ctrl.classList.add('paused');
+      big.classList.remove('hidden');
+      setPlayIcon(btnPlay, false);
+      fill.style.width = '0%';
+      time.textContent = '0:00';
+    }
+    hoverMode = false;
+  });
 
   card.querySelector('.v-overlay').addEventListener('click', doToggle);
   btnPlay.addEventListener('click', e => { e.stopPropagation(); doToggle(); });
@@ -1437,7 +1464,7 @@ const CTRL = `<div class="v-controls paused"><div class="v-overlay"></div><div c
 
 document.querySelectorAll('.video-card[data-vid]').forEach(card => {
   const id = card.dataset.vid;
-  card.innerHTML = `<iframe src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&controls=0&autopause=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>${CTRL}`;
+  card.innerHTML = `<iframe src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&controls=0&autopause=0&muted=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>${CTRL}`;
   initCard(card);
 });
 
