@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morphe.</title>
+<title>Morphe. — Stefan Diomov</title>
+<meta name="description" content="Stefan Diomov — Video Editor, VFX & Motion Graphics. 85+ projects for 30+ clients including Coca-Cola, Maretti and more.">
+<meta property="og:title" content="Morphe. — Stefan Diomov">
+<meta property="og:description" content="Video Editor, VFX & Motion Graphics. 85+ projects for 30+ clients.">
+<meta property="og:image" content="https://morphestudio.space/logos/morphe-link-logo.png">
+<meta property="og:url" content="https://morphestudio.space">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://morphestudio.space/logos/morphe-link-logo.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2439 2347'><polygon points='1219,2112 1219,1174 2031,704 2031,1643' fill='%2331009B'/><polygon points='406,1643 406,704 1219,1174 1219,2112' fill='%235100FF'/><polygon points='1219,1174 406,704 1219,235 2031,704' fill='%237B5CF0'/><polyline points='1219,235 406,704 406,1643 1219,2112 2031,1643 2031,704 1219,235' fill='none' stroke='%23C8B2FF' stroke-width='80' stroke-linejoin='round' stroke-linecap='round'/><line x1='406' y1='704' x2='1219' y2='1174' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/><line x1='2031' y1='704' x2='1219' y2='1174' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/><line x1='1219' y1='1174' x2='1219' y2='2112' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -843,16 +851,99 @@
   .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.65s ease, transform 0.65s cubic-bezier(0.22,1,0.36,1); }
   .reveal.revealed { opacity:1; transform:translateY(0); }
 
-  /* Responsive */
+  /* Available badge */
+  .avail-badge {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+    color: #4ade80; background: rgba(74,222,128,0.08);
+    border: 0.5px solid rgba(74,222,128,0.3);
+    border-radius: 20px; padding: 5px 12px;
+    display: flex; align-items: center; gap: 6px; white-space: nowrap;
+  }
+  .avail-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #4ade80;
+    animation: availPulse 2s ease-in-out infinite; flex-shrink: 0;
+  }
+  @keyframes availPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.75); }
+  }
+
+  /* Video poster */
+  .v-poster {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    transition: opacity 0.5s ease; pointer-events: none;
+  }
+  .v-poster.hidden { opacity: 0; }
+
+  /* Section bridge */
+  .section-bridge {
+    max-width: 1100px; margin: 0 auto; padding: 0 48px 80px; text-align: center;
+  }
+  .section-bridge p {
+    font-size: clamp(16px, 2vw, 22px); font-weight: 600; letter-spacing: -0.3px;
+    color: rgba(255,255,255,0.12); font-style: italic; line-height: 1.5;
+  }
+
+  /* Footer socials */
+  .footer-socials { display: flex; gap: 10px; align-items: center; }
+  .footer-social {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.45); text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .footer-social:hover { background: rgba(123,92,240,0.15); border-color: rgba(123,92,240,0.4); color: #fff; }
+  .footer-social svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Responsive ── */
   @media (max-width: 768px) {
-    nav { padding: 16px 24px; }
-    section { padding: 80px 24px; }
-    .cube-scene { width: 320px; height: 320px; }
-    .cube-main { width: 320px; height: 320px; }
-    .about-grid,
-    .contact-inner { grid-template-columns: 1fr; gap: 48px; }
-    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+    nav { padding: 14px 20px; gap: 12px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 13px; }
+    .avail-badge { display: none; }
+
+    section { padding: 56px 20px; }
+    #work { padding-top: 40px !important; }
+
+    .cube-scene { width: 240px; height: 240px; }
+    .cube-main  { width: 240px; height: 240px; }
+    .hero-tag { font-size: 11px; letter-spacing: 2px; }
+    .hero-subtitle { font-size: 14px; padding: 0 8px; }
     .hero-cta { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-outline { width: 200px; text-align: center; justify-content: center; }
+    .scroll-indicator { margin-top: 24px; }
+
+    .stats-bar { margin-bottom: 36px; }
+    .stat-item { padding: 16px 0; }
+    .stat-num { font-size: 24px; letter-spacing: -1px; }
+    .stat-label { font-size: 9px; letter-spacing: 2px; }
+
+    .reel-wrap { margin-bottom: 32px; }
+
+    .video-col { flex: 0 0 100% !important; }
+    .client-header { padding: 14px 16px; }
+    .client-name { font-size: 16px; }
+    .client-thumb { width: 34px; height: 34px; border-radius: 5px; }
+    .client-meta { margin-right: 8px; gap: 5px; }
+    .client-count { font-size: 10px; padding: 2px 6px; }
+    .client-panel { padding: 0 16px 16px; }
+
+    .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+    .about-photo { width: 80px; height: 80px; margin-bottom: 20px; }
+
+    .section-bridge { padding: 0 20px 56px; }
+    .section-heading { margin-bottom: 32px; }
+
+    footer { padding: 20px; flex-direction: column; gap: 14px; text-align: center; }
+    .back-top { bottom: 16px; right: 16px; width: 38px; height: 38px; }
+  }
+
+  /* Disable custom cursor on touch devices */
+  @media (hover: none) {
+    .cur-dot, .cur-ring { display: none !important; }
+    *, *::before, *::after { cursor: auto !important; }
   }
 
   /* ===== ANIMATION OVERHAUL ===== */
@@ -1154,12 +1245,6 @@
   .back-top:hover { background: var(--purple-light); }
   .back-top svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  @media (max-width: 768px) {
-    .stat-num { font-size: 26px; }
-    .stat-label { font-size: 9px; }
-    .back-top { bottom: 20px; right: 20px; }
-    .client-meta { margin-right: 12px; gap: 6px; }
-  }
 </style>
 </head>
 <body>
@@ -1187,6 +1272,7 @@
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <span class="avail-badge"><span class="avail-dot"></span>Available</span>
 </nav>
 
 <!-- HERO -->
@@ -1416,6 +1502,10 @@
   </div>
 </section>
 
+<div class="section-bridge">
+  <p>"Every frame is a decision. Every cut, a statement."</p>
+</div>
+
 <!-- ABOUT -->
 <section id="about">
   <h2 class="section-heading">About</h2>
@@ -1502,7 +1592,15 @@
 <!-- FOOTER -->
 <footer>
   <span class="footer-logo">Morphe.</span>
-  <span class="footer-copy">&copy; 2025 Stefan Diomov / Morphe. All rights reserved.</span>
+  <div class="footer-socials">
+    <a href="mailto:stdiomov@gmail.com" class="footer-social" aria-label="Email">
+      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+    </a>
+    <a href="https://instagram.com/diomovv_" target="_blank" class="footer-social" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+    </a>
+  </div>
+  <span class="footer-copy">&copy; 2025 Stefan Diomov / Morphe.</span>
 </footer>
 
 <script src="https://player.vimeo.com/api/player.js"></script>
@@ -1526,6 +1624,7 @@ function initCard(card) {
   const iframe   = card.querySelector('iframe');
   const ctrl     = card.querySelector('.v-controls');
   const loading  = card.querySelector('.v-loading');
+  const poster   = card.querySelector('.v-poster');
   const fill     = card.querySelector('.v-progress-fill');
   const track    = card.querySelector('.v-progress');
   const time     = card.querySelector('.v-time');
@@ -1535,6 +1634,12 @@ function initCard(card) {
   let player;
   try { player = new Vimeo.Player(iframe); } catch(e) { return; }
   vPlayers.set(iframe, player);
+
+  // Set poster thumbnail
+  const vidId = card.dataset.vid;
+  if (vidId && poster) {
+    fetchThumb(vidId).then(url => { if (url) poster.style.backgroundImage = `url(${url})`; });
+  }
 
   let dur = 0, muted = false, hoverMode = false, hintTimer = null;
   player.getDuration().then(d => { dur = d; }).catch(() => {});
@@ -1577,6 +1682,7 @@ function initCard(card) {
       player.setVolume(muted ? 0 : 1).catch(() => {});
       fill.style.width = '0%';
       time.textContent = '0:00';
+      if (poster) poster.classList.remove('hidden');
     }
     hoverMode = false;
     loading.classList.remove('active');
@@ -1588,6 +1694,7 @@ function initCard(card) {
   player.on('play', () => {
     loading.classList.remove('active');
     ctrl.classList.remove('paused');
+    if (poster) poster.classList.add('hidden');
   });
 
   player.on('pause', () => {
@@ -1632,13 +1739,36 @@ function initCard(card) {
   });
 }
 
-const CTRL = `<div class="v-controls"><div class="v-overlay"></div><div class="v-loading"><div class="v-spinner"></div></div><div class="v-unmute-hint"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="#fff"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Click to unmute</span></div><div class="v-bar"><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>`;
+const CTRL = `<div class="v-controls"><div class="v-overlay"></div><div class="v-poster"></div><div class="v-loading"><div class="v-spinner"></div></div><div class="v-unmute-hint"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="#fff"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Click to unmute</span></div><div class="v-bar"><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>`;
 
+// Shared thumbnail cache — one fetch per video ID, reused for posters + client thumbs
+const thumbCache = new Map();
+function fetchThumb(vid) {
+  if (!thumbCache.has(vid)) {
+    thumbCache.set(vid, fetch(`https://vimeo.com/api/oembed.json?url=https%3A%2F%2Fvimeo.com%2F${vid}&width=640`)
+      .then(r => r.json()).then(d => d.thumbnail_url).catch(() => null));
+  }
+  return thumbCache.get(vid);
+}
+
+// Set thumbnail backgrounds on all cards immediately (no iframes yet)
 document.querySelectorAll('.video-card[data-vid]').forEach(card => {
+  fetchThumb(card.dataset.vid).then(url => {
+    if (url) { card.style.backgroundImage = `url(${url})`; card.style.backgroundSize = 'cover'; card.style.backgroundPosition = 'center'; }
+  });
+});
+
+// Inject iframe + init player for a single card (called lazily)
+function initVideoCard(card) {
+  if (card.dataset.loaded) return;
+  card.dataset.loaded = '1';
   const id = card.dataset.vid;
   card.innerHTML = `<iframe src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&controls=0&autopause=0&muted=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>${CTRL}`;
   initCard(card);
-});
+}
+
+// Initialize showreel immediately; all other cards load lazily on accordion open
+document.querySelectorAll('.reel-card .video-card[data-vid]').forEach(initVideoCard);
 
 function toggleClient(header) {
   const row = header.closest('.client-row');
@@ -1657,6 +1787,7 @@ function toggleClient(header) {
   if (!isOpen) {
     row.classList.add('open');
     panel.classList.add('open');
+    row.querySelectorAll('.video-card[data-vid]').forEach(initVideoCard);
   }
 }
 
@@ -1949,24 +2080,19 @@ document.querySelectorAll('.client-row').forEach(row => {
   thumb.className = 'client-thumb';
   leftWrap.insertBefore(thumb, leftWrap.firstChild);
 
-  // Fetch Vimeo thumbnail for first video
+  // Thumbnail from shared cache
   const firstCard = row.querySelector('[data-vid]');
   if (firstCard) {
-    fetch(`https://vimeo.com/api/oembed.json?url=https%3A%2F%2Fvimeo.com%2F${firstCard.dataset.vid}&width=80`)
-      .then(r => r.json())
-      .then(d => {
-        const img = document.createElement('img');
-        img.src = d.thumbnail_url;
-        img.alt = '';
-        thumb.appendChild(img);
-      })
-      .catch(() => {});
+    fetchThumb(firstCard.dataset.vid).then(url => {
+      if (url) { const img = document.createElement('img'); img.src = url; img.alt = ''; thumb.appendChild(img); }
+    });
   }
 
-  // Category + count pill
+  // Category + count pill (singular fix)
   const metaEl = document.createElement('div');
   metaEl.className = 'client-meta';
-  metaEl.innerHTML = `<span class="client-cat">${meta.cat}</span><span class="client-count">${meta.count} videos</span>`;
+  const isPlural = meta.count !== '1' && meta.count !== '2';
+  metaEl.innerHTML = `<span class="client-cat">${meta.cat}</span><span class="client-count">${meta.count} video${isPlural ? 's' : ''}</span>`;
   header.insertBefore(metaEl, arrow);
 });
 </script>
