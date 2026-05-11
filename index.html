@@ -384,17 +384,17 @@
   .client-row.open .arrow-line { width: 44px; background: var(--purple-light); }
   .client-row.open .arrow-line::after { border-color: var(--purple-light); }
 
-  /* Video panel — always open */
   .client-panel {
-    opacity: 1;
-    padding: 0 28px 28px;
-    position: relative;
-    z-index: 1;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.22,1,0.36,1);
   }
+  .client-row.open .client-panel { grid-template-rows: 1fr; }
 
   .client-panel-inner {
+    overflow: hidden;
     border-top: 0.5px solid rgba(255,255,255,0.08);
-    padding-top: 24px;
+    padding: 24px 28px 28px;
   }
 
   /* Client header with brand pills */
@@ -928,7 +928,7 @@
     .client-thumb { width: 34px; height: 34px; border-radius: 5px; }
     .client-meta { margin-right: 8px; gap: 5px; }
     .client-count { font-size: 10px; padding: 2px 6px; }
-    .client-panel { padding: 0 16px 16px; }
+    .client-panel-inner { padding: 20px 16px 16px; }
 
     .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 40px; }
     .about-photo { width: 80px; height: 80px; margin-bottom: 20px; }
@@ -1096,7 +1096,7 @@
   .btn-primary:hover::before { opacity: 1; }
 
   /* Client rows — stagger + slight left offset on reveal */
-  .work-list .client-row.reveal { transform: translateX(-10px) translateY(20px); }
+  .work-list .client-row.reveal { transform: translateY(20px); }
   .work-list .client-row.reveal.revealed { transform: none; }
 
   /* Skill pill reveal */
