@@ -893,10 +893,10 @@
     animation: cubeEntrance 0.75s cubic-bezier(0.16,1,0.3,1) forwards;
   }
   @keyframes cubeEntrance { to { transform: scale(1); } }
-  .cube-main { animation: cubeFloat 4.8s ease-in-out 0.9s infinite; }
+  .cube-main { animation: cubeFloat 5s ease-in-out 0.9s infinite; }
   @keyframes cubeFloat {
     0%, 100% { transform: translateY(0px); }
-    50%       { transform: translateY(-11px); }
+    50%       { transform: translateY(-20px); }
   }
   /* Wire neon glow */
   .cube-wire {
@@ -1002,14 +1002,26 @@
   .skill-pill.reveal { opacity: 0; transform: scale(0.88) translateY(6px); }
   .skill-pill.reveal.revealed { opacity: 1; transform: none; }
 
-  /* Cube face explode on hover */
+  /* Cube face explode — 10% separation, 3D depth shadows */
   .face-top, .face-left, .face-right {
-    transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    transition: transform 0.65s cubic-bezier(0.22,1,0.36,1), filter 0.65s cubic-bezier(0.22,1,0.36,1);
     will-change: transform;
   }
-  .cube-scene:hover .face-top   { transform: translate(0px,   -360px); }
-  .cube-scene:hover .face-right { transform: translate(312px,  180px); }
-  .cube-scene:hover .face-left  { transform: translate(-312px, 180px); }
+  .cube-scene.cube-exploded .face-top {
+    transform: translate(0px, -52px);
+    filter: drop-shadow(0px 22px 2px rgba(4,0,24,0.98))
+            drop-shadow(0px 20px 6px rgba(60,0,180,0.55));
+  }
+  .cube-scene.cube-exploded .face-right {
+    transform: translate(45px, 26px);
+    filter: drop-shadow(-19px -11px 2px rgba(4,0,24,0.98))
+            drop-shadow(-17px -10px 6px rgba(60,0,180,0.55));
+  }
+  .cube-scene.cube-exploded .face-left {
+    transform: translate(-45px, 26px);
+    filter: drop-shadow(19px -11px 2px rgba(4,0,24,0.98))
+            drop-shadow(17px -10px 6px rgba(60,0,180,0.55));
+  }
 
   /* Contact link slide reveal */
   .contact-link {
@@ -1641,6 +1653,19 @@ document.querySelectorAll('.contact-link').forEach((link, i) => {
   link.style.transitionDelay = (i * 0.1) + 's';
   revealObserver.observe(link);
 });
+
+// Cube proximity hover — only explodes when mouse is near the center
+(function() {
+  const cubeEl = document.querySelector('.cube-scene');
+  if (!cubeEl) return;
+  cubeEl.addEventListener('mousemove', e => {
+    const r = cubeEl.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width  / 2);
+    const dy = e.clientY - (r.top  + r.height / 2);
+    cubeEl.classList.toggle('cube-exploded', Math.sqrt(dx*dx + dy*dy) < 100);
+  });
+  cubeEl.addEventListener('mouseleave', () => cubeEl.classList.remove('cube-exploded'));
+})();
 
 // ===== END ANIMATION OVERHAUL =====
 
