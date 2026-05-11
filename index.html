@@ -1043,17 +1043,26 @@
   .scroll-indicator.hidden { opacity: 0 !important; transition: opacity 0.5s ease; }
   .scroll-indicator span {
     font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
-    color: rgba(255,255,255,0.28); font-weight: 500;
+    color: rgba(255,255,255,0.55); font-weight: 600;
   }
   .scroll-line {
-    width: 1px; height: 40px;
-    background: linear-gradient(to bottom, rgba(123,92,240,0.7), transparent);
-    animation: scrollPulse 1.8s ease-in-out infinite;
+    width: 2px; height: 44px; border-radius: 2px;
+    background: linear-gradient(to bottom, rgba(155,127,255,1), transparent);
+    animation: scrollPulse 1.6s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(155,127,255,0.6);
   }
   @keyframes scrollPulse {
     0%, 100% { transform: translateY(0); opacity: 1; }
-    50% { transform: translateY(8px); opacity: 0.25; }
+    50% { transform: translateY(10px); opacity: 0.2; }
   }
+
+  /* About photo */
+  .about-photo {
+    width: 110px; height: 110px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.45);
+    overflow: hidden; margin-bottom: 28px; flex-shrink: 0;
+  }
+  .about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* Stats bar */
   .stats-bar {
@@ -1215,7 +1224,7 @@
 
     <p class="hero-tag">Editing &nbsp;·&nbsp; VFX &nbsp;·&nbsp; Videography &nbsp;·&nbsp; Motion Graphics</p>
     <h1 class="hero-title">Crafting Worlds<br>Frame by Frame.</h1>
-    <p class="hero-subtitle">Stefan — visual storyteller behind Morphe. Transforming ideas into cinematic experiences.</p>
+    <p class="hero-subtitle">Stefan Diomov — visual storyteller behind Morphe. Transforming ideas into cinematic experiences.</p>
     <div class="hero-cta">
       <a href="#work" class="btn-primary">View Work</a>
       <a href="#contact" class="btn-outline">Get in Touch</a>
@@ -1232,8 +1241,8 @@
   <h2 class="section-heading reveal">Work</h2>
 
   <div class="stats-bar reveal">
-    <div class="stat-item"><span class="stat-num">11</span><span class="stat-label">Clients</span></div>
-    <div class="stat-item"><span class="stat-num">26+</span><span class="stat-label">Projects</span></div>
+    <div class="stat-item"><span class="stat-num">85+</span><span class="stat-label">Projects</span></div>
+    <div class="stat-item"><span class="stat-num">30+</span><span class="stat-label">Clients</span></div>
     <div class="stat-item"><span class="stat-num">3+</span><span class="stat-label">Years</span></div>
   </div>
 
@@ -1412,7 +1421,8 @@
   <h2 class="section-heading">About</h2>
   <div class="about-grid">
     <div class="about-text">
-      <p>I'm <strong>Stefan</strong> — the creative behind <strong>Morphe.</strong> I'm a video editor, videographer, motion graphics artist and VFX specialist.</p>
+      <div class="about-photo"><img src="logos/me-photo.jpg" alt="Stefan Diomov"></div>
+      <p>I'm <strong>Stefan Diomov</strong> — the creative behind <strong>Morphe.</strong> I'm a video editor, videographer, motion graphics artist and VFX specialist.</p>
       <p>I build cinematic worlds for brands, creators and studios. Whether it's a full commercial, a short film, or a motion identity — I approach every project with the same obsession: making it look <strong>undeniably good</strong>.</p>
       <p>I've worked with brands like Coca Cola, Maretti and more, delivering visuals that stop the scroll and tell stories that stick.</p>
       <a href="#contact" class="btn-primary" style="display:inline-block; margin-top: 8px;">Work with me</a>
@@ -1427,10 +1437,10 @@
         <div class="skill-pill">Color Grading</div>
         <div class="skill-pill">Sound Design</div>
         <div class="skills-group-label">Software</div>
-        <div class="skill-pill">After Effects</div>
         <div class="skill-pill">Premiere Pro</div>
-        <div class="skill-pill">Cinema 4D</div>
-        <div class="skill-pill">DaVinci Resolve</div>
+        <div class="skill-pill">After Effects</div>
+        <div class="skill-pill">Figma</div>
+        <div class="skill-pill">Photoshop</div>
       </div>
     </div>
   </div>
@@ -1492,7 +1502,7 @@
 <!-- FOOTER -->
 <footer>
   <span class="footer-logo">Morphe.</span>
-  <span class="footer-copy">&copy; 2025 Stefan / Morphe. All rights reserved.</span>
+  <span class="footer-copy">&copy; 2025 Stefan Diomov / Morphe. All rights reserved.</span>
 </footer>
 
 <script src="https://player.vimeo.com/api/player.js"></script>
@@ -1526,12 +1536,13 @@ function initCard(card) {
   try { player = new Vimeo.Player(iframe); } catch(e) { return; }
   vPlayers.set(iframe, player);
 
-  let dur = 0, muted = false, hoverMode = false;
+  let dur = 0, muted = false, hoverMode = false, hintTimer = null;
   player.getDuration().then(d => { dur = d; }).catch(() => {});
 
   function doToggle() {
     if (hoverMode) {
       hoverMode = false;
+      clearTimeout(hintTimer);
       ctrl.classList.remove('hover-muted');
       player.setVolume(muted ? 0 : 1).catch(() => {});
       return;
@@ -1551,12 +1562,15 @@ function initCard(card) {
     hoverMode = true;
     loading.classList.add('active');
     ctrl.classList.add('hover-muted');
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(() => ctrl.classList.remove('hover-muted'), 2000);
     pauseAll(iframe);
     player.setVolume(0).catch(() => {});
     player.play().catch(() => {});
   });
 
   card.addEventListener('mouseleave', () => {
+    clearTimeout(hintTimer);
     if (hoverMode) {
       player.pause().catch(() => {});
       player.setCurrentTime(0).catch(() => {});
@@ -1900,17 +1914,17 @@ if (firstRow) toggleClient(firstRow.querySelector('.client-header'));
 
 // Client row enhancements — thumbnails + category/count meta
 const clientMeta = {
-  'dani':        { cat: 'Brand · Commercial', count: 3 },
-  'vivek':       { cat: 'Creator',            count: 3 },
-  'minimart':    { cat: 'Brand Film',         count: 1 },
-  'antoana':     { cat: 'Creator',            count: 2 },
-  'creatorflow': { cat: 'Product · SaaS',     count: 3 },
-  'eva':         { cat: 'Creator',            count: 3 },
-  'aylyakria':   { cat: 'Lifestyle',          count: 3 },
-  'blinkops':    { cat: 'Tech · SaaS',        count: 1 },
-  'clai':        { cat: 'Brand',              count: 1 },
-  'gumofgods':   { cat: 'Product',            count: 3 },
-  'personal':    { cat: 'Personal',           count: 3 },
+  'dani':        { cat: 'Brand · Commercial', count: '17+' },
+  'vivek':       { cat: 'Creator',            count: '230+' },
+  'minimart':    { cat: 'Brand Film',         count: '1' },
+  'antoana':     { cat: 'Creator',            count: '4+' },
+  'creatorflow': { cat: 'Product · SaaS',     count: '20+' },
+  'eva':         { cat: 'Creator',            count: '30+' },
+  'aylyakria':   { cat: 'Lifestyle',          count: '16+' },
+  'blinkops':    { cat: 'Tech · SaaS',        count: '2' },
+  'clai':        { cat: 'Brand',              count: '1' },
+  'gumofgods':   { cat: 'Product',            count: '44+' },
+  'personal':    { cat: 'Personal',           count: '3' },
 };
 
 document.querySelectorAll('.client-row').forEach(row => {
@@ -1952,7 +1966,7 @@ document.querySelectorAll('.client-row').forEach(row => {
   // Category + count pill
   const metaEl = document.createElement('div');
   metaEl.className = 'client-meta';
-  metaEl.innerHTML = `<span class="client-cat">${meta.cat}</span><span class="client-count">${meta.count} video${meta.count !== 1 ? 's' : ''}</span>`;
+  metaEl.innerHTML = `<span class="client-cat">${meta.cat}</span><span class="client-count">${meta.count} videos</span>`;
   header.insertBefore(metaEl, arrow);
 });
 </script>
