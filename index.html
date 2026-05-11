@@ -862,8 +862,7 @@
   @keyframes introFade { to { opacity: 0; visibility: hidden; } }
 
   /* Custom cursor */
-  body { cursor: none; }
-  a, button, input, textarea, select { cursor: none; }
+  *, *::before, *::after { cursor: none !important; }
   .cur-dot {
     position: fixed; top: 0; left: 0;
     width: 6px; height: 6px;
@@ -1002,26 +1001,14 @@
   .skill-pill.reveal { opacity: 0; transform: scale(0.88) translateY(6px); }
   .skill-pill.reveal.revealed { opacity: 1; transform: none; }
 
-  /* Cube face explode — 10% separation, 3D depth shadows */
+  /* Cube face explode — 10% separation */
   .face-top, .face-left, .face-right {
-    transition: transform 0.65s cubic-bezier(0.22,1,0.36,1), filter 0.65s cubic-bezier(0.22,1,0.36,1);
+    transition: transform 0.65s cubic-bezier(0.22,1,0.36,1);
     will-change: transform;
   }
-  .cube-scene.cube-exploded .face-top {
-    transform: translate(0px, -52px);
-    filter: drop-shadow(0px 22px 2px rgba(4,0,24,0.98))
-            drop-shadow(0px 20px 6px rgba(60,0,180,0.55));
-  }
-  .cube-scene.cube-exploded .face-right {
-    transform: translate(45px, 26px);
-    filter: drop-shadow(-19px -11px 2px rgba(4,0,24,0.98))
-            drop-shadow(-17px -10px 6px rgba(60,0,180,0.55));
-  }
-  .cube-scene.cube-exploded .face-left {
-    transform: translate(-45px, 26px);
-    filter: drop-shadow(19px -11px 2px rgba(4,0,24,0.98))
-            drop-shadow(17px -10px 6px rgba(60,0,180,0.55));
-  }
+  .cube-scene.cube-exploded .face-top   { transform: translate(0px,  -52px); }
+  .cube-scene.cube-exploded .face-right { transform: translate(45px,  26px); }
+  .cube-scene.cube-exploded .face-left  { transform: translate(-45px, 26px); }
 
   /* Contact link slide reveal */
   .contact-link {
