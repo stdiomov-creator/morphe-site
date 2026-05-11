@@ -838,6 +838,160 @@
     footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
     .hero-cta { flex-direction: column; align-items: center; }
   }
+
+  /* ===== ANIMATION OVERHAUL ===== */
+
+  /* Scroll progress */
+  #scroll-bar {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: linear-gradient(90deg, #5100FF, #9B7FFF);
+    z-index: 201; width: 0%; pointer-events: none;
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 10px rgba(123,92,240,0.8);
+    transition: width 0.1s linear;
+  }
+
+  /* Page intro overlay */
+  #page-intro {
+    position: fixed; inset: 0; background: #111;
+    z-index: 1000; pointer-events: none;
+    animation: introFade 0.45s ease 0.05s forwards;
+  }
+  @keyframes introFade { to { opacity: 0; visibility: hidden; } }
+
+  /* Custom cursor */
+  body { cursor: none; }
+  a, button, input, textarea, select { cursor: none; }
+  .cur-dot {
+    position: fixed; top: 0; left: 0;
+    width: 6px; height: 6px;
+    background: #fff; border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: width 0.2s, height 0.2s;
+    will-change: left, top;
+    mix-blend-mode: difference;
+  }
+  .cur-ring {
+    position: fixed; top: 0; left: 0;
+    width: 34px; height: 34px;
+    border: 1px solid rgba(123,92,240,0.5);
+    border-radius: 50%; pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: width 0.4s cubic-bezier(0.22,1,0.36,1), height 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.3s;
+    will-change: left, top;
+  }
+  .cur-dot.is-hover { width: 12px; height: 12px; }
+  .cur-ring.is-hover { width: 52px; height: 52px; border-color: rgba(123,92,240,0.85); }
+  .cur-dot.is-click { transform: translate(-50%,-50%) scale(0.5); }
+
+  /* Cube — faster, scale-in entrance, idle float */
+  .cube-scene {
+    transform: scale(0.86);
+    animation: cubeEntrance 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  @keyframes cubeEntrance { to { transform: scale(1); } }
+  .cube-main { animation: cubeFloat 4.8s ease-in-out 1.3s infinite; }
+  @keyframes cubeFloat {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-11px); }
+  }
+  .c-e { animation-duration: 0.17s; stroke-width: 16; }
+  .e1 { animation-delay: 0s;    }
+  .e2 { animation-delay: 0.07s; }
+  .e3 { animation-delay: 0.14s; }
+  .e4 { animation-delay: 0.20s; }
+  .e5 { animation-delay: 0.27s; }
+  .e6 { animation-delay: 0.31s; }
+  .e7 { animation-delay: 0.37s; }
+  .e8 { animation-delay: 0.37s; }
+  .e9 { animation-delay: 0.44s; }
+  .cube-faces { opacity: 0; animation: cubeFill 0.28s ease 0.58s forwards; }
+  .cube-wire  { animation: wireOut 0.18s ease 0.70s forwards; }
+
+  /* Hero title — word-by-word reveal */
+  .hero-title {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  .word-wrap {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    line-height: 1.32;
+  }
+  .word-inner {
+    display: inline-block;
+    transform: translateY(108%);
+    opacity: 0;
+    animation: wordReveal 0.75s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  @keyframes wordReveal { to { transform: translateY(0); opacity: 1; } }
+
+  /* Section heading gradient text */
+  .section-heading {
+    background: linear-gradient(130deg, #fff 50%, rgba(123,92,240,0.75));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Video card shimmer sweep on hover */
+  .video-card::before {
+    content: '';
+    position: absolute; top: 0; left: -90%;
+    width: 55%; height: 100%;
+    background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.055) 50%, transparent 80%);
+    pointer-events: none; z-index: 5;
+  }
+  .video-card:hover::before {
+    left: 150%;
+    transition: left 0.7s ease;
+  }
+
+  /* Nav underline expands from center */
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 50%; right: 50%;
+    height: 1.5px;
+    background: var(--purple-light);
+    border-radius: 2px;
+    transition: left 0.35s cubic-bezier(0.22,1,0.36,1), right 0.35s cubic-bezier(0.22,1,0.36,1);
+  }
+  .nav-links a:hover::after,
+  .nav-links a.active::after { left: 0; right: 0; }
+
+  /* Button inner glow */
+  .btn-primary { position: relative; overflow: hidden; }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+    opacity: 0;
+    transition: opacity 0.35s;
+    pointer-events: none;
+  }
+  .btn-primary:hover::before { opacity: 1; }
+
+  /* Client rows — stagger + slight left offset on reveal */
+  .work-list .client-row.reveal { transform: translateX(-10px) translateY(20px); }
+  .work-list .client-row.reveal.revealed { transform: none; }
+
+  /* Skill pill reveal */
+  .skill-pill {
+    transition: background 0.2s, border-color 0.2s, opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  .skill-pill.reveal { opacity: 0; transform: scale(0.88) translateY(6px); }
+  .skill-pill.reveal.revealed { opacity: 1; transform: none; }
+
+  /* Contact link slide reveal */
+  .contact-link {
+    transition: color 0.2s, border-color 0.2s, background 0.2s, opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  .contact-link.reveal { opacity: 0; transform: translateX(-14px); }
+  .contact-link.reveal.revealed { opacity: 1; transform: none; }
 </style>
 </head>
 <body>
@@ -1391,6 +1545,78 @@ document.querySelectorAll('.nav-links a').forEach(link => {
   });
   link.addEventListener('mouseleave', () => { link.style.transform = ''; });
 });
+
+// ===== ANIMATION OVERHAUL =====
+
+// Page intro + scroll bar (inject)
+const introEl = document.createElement('div'); introEl.id = 'page-intro';
+const scrollBarEl = document.createElement('div'); scrollBarEl.id = 'scroll-bar';
+document.body.insertBefore(introEl, document.body.firstChild);
+document.body.insertBefore(scrollBarEl, document.body.firstChild);
+
+// Scroll progress
+window.addEventListener('scroll', () => {
+  const max = document.body.scrollHeight - window.innerHeight;
+  if (max > 0) scrollBarEl.style.width = Math.min(window.scrollY / max * 100, 100) + '%';
+}, { passive: true });
+
+// Custom cursor
+const curDot  = document.createElement('div'); curDot.className  = 'cur-dot';
+const curRing = document.createElement('div'); curRing.className = 'cur-ring';
+document.body.appendChild(curDot);
+document.body.appendChild(curRing);
+
+let curX = -100, curY = -100, rX = -100, rY = -100;
+document.addEventListener('mousemove', e => { curX = e.clientX; curY = e.clientY; });
+
+(function tickCursor() {
+  rX += (curX - rX) * 0.13;
+  rY += (curY - rY) * 0.13;
+  curDot.style.left  = curX + 'px'; curDot.style.top  = curY + 'px';
+  curRing.style.left = rX   + 'px'; curRing.style.top = rY   + 'px';
+  requestAnimationFrame(tickCursor);
+})();
+
+document.querySelectorAll('a, button, .video-card, .client-header, .skill-pill, .contact-link, .v-progress, input, textarea').forEach(el => {
+  el.addEventListener('mouseenter', () => { curDot.classList.add('is-hover'); curRing.classList.add('is-hover'); });
+  el.addEventListener('mouseleave', () => { curDot.classList.remove('is-hover'); curRing.classList.remove('is-hover'); });
+});
+document.addEventListener('mousedown', () => curDot.classList.add('is-click'));
+document.addEventListener('mouseup',   () => curDot.classList.remove('is-click'));
+
+// Hero title word-by-word reveal
+(function splitHero() {
+  const el = document.querySelector('.hero-title');
+  if (!el) return;
+  el.innerHTML =
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.82s">Crafting</span></span> ' +
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.93s">Worlds</span></span>' +
+    '<br>' +
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:1.04s">Frame</span></span> ' +
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:1.14s">by</span></span> ' +
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:1.24s">Frame.</span></span>';
+})();
+
+// Stagger client row reveals
+document.querySelectorAll('.work-list .client-row.reveal').forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.055) + 's';
+});
+
+// Skill pills — stagger scroll reveal
+document.querySelectorAll('.skill-pill').forEach((pill, i) => {
+  pill.classList.add('reveal');
+  pill.style.transitionDelay = (i * 0.048) + 's';
+  revealObserver.observe(pill);
+});
+
+// Contact links — stagger scroll reveal
+document.querySelectorAll('.contact-link').forEach((link, i) => {
+  link.classList.add('reveal');
+  link.style.transitionDelay = (i * 0.1) + 's';
+  revealObserver.observe(link);
+});
+
+// ===== END ANIMATION OVERHAUL =====
 
 // Smooth nav active state on scroll
 const sections = document.querySelectorAll('section[id]');
