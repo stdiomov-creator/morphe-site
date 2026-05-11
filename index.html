@@ -1563,7 +1563,7 @@ function initCard(card) {
     loading.classList.add('active');
     ctrl.classList.add('hover-muted');
     clearTimeout(hintTimer);
-    hintTimer = setTimeout(() => ctrl.classList.remove('hover-muted'), 2000);
+    hintTimer = setTimeout(() => ctrl.classList.remove('hover-muted'), 1000);
     pauseAll(iframe);
     player.setVolume(0).catch(() => {});
     player.play().catch(() => {});
