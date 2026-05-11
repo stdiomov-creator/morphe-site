@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morphe. — Stefan Diomov</title>
-<meta name="description" content="Stefan Diomov — Video Editor, VFX & Motion Graphics. 85+ projects for 30+ clients including Coca-Cola, Maretti and more.">
-<meta property="og:title" content="Morphe. — Stefan Diomov">
+<title>Morphe. · Stefan Diomov</title>
+<meta name="description" content="Stefan Diomov, Video Editor, VFX & Motion Graphics. 85+ projects for 30+ clients including Coca-Cola, Maretti and more.">
+<meta property="og:title" content="Morphe. · Stefan Diomov">
 <meta property="og:description" content="Video Editor, VFX & Motion Graphics. 85+ projects for 30+ clients.">
 <meta property="og:image" content="https://morphestudio.space/logos/morphe-link-logo.png">
 <meta property="og:url" content="https://morphestudio.space">
@@ -478,7 +478,13 @@
     flex: 0 1 auto;
   }
 
+  .folder-hints {
+    display: grid;
+    flex-shrink: 0;
+  }
+
   .folder-hint, .folder-hint-close {
+    grid-area: 1 / 1;
     font-size: 9px;
     letter-spacing: 1.8px;
     text-transform: uppercase;
@@ -487,7 +493,6 @@
     transform: translateX(-5px);
     transition: opacity 0.3s, transform 0.3s;
     white-space: nowrap;
-    flex-shrink: 0;
   }
 
   .folder-wrap:hover:not(:has(.client-row.open)) .folder-tab {
@@ -514,6 +519,27 @@
   .folder-wrap > .client-row {
     width: 100%;
     border-radius: 0 10px 10px 10px;
+  }
+
+  /* Dim all other folders when one is open */
+  .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)) {
+    opacity: 0.18;
+    filter: brightness(0.4);
+    transform: scale(0.97);
+  }
+
+  /* Video col stagger on panel open */
+  .client-row.open .video-col {
+    animation: colIn 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .client-row.open .video-col:nth-child(1) { animation-delay: 0.05s; }
+  .client-row.open .video-col:nth-child(2) { animation-delay: 0.14s; }
+  .client-row.open .video-col:nth-child(3) { animation-delay: 0.23s; }
+  .client-row.open .video-col:nth-child(4) { animation-delay: 0.32s; }
+
+  @keyframes colIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
   }
 
   @media (hover: none) {
@@ -1401,7 +1427,7 @@
 
     <p class="hero-tag">Editing &nbsp;·&nbsp; VFX &nbsp;·&nbsp; Videography &nbsp;·&nbsp; Motion Graphics</p>
     <h1 class="hero-title">Crafting Worlds<br>Frame by Frame.</h1>
-    <p class="hero-subtitle">Stefan Diomov — visual storyteller behind Morphe. Transforming ideas into cinematic experiences.</p>
+    <p class="hero-subtitle">Stefan Diomov, visual storyteller behind Morphe. Transforming ideas into cinematic experiences.</p>
     <div class="hero-cta">
       <a href="#work" class="btn-primary">View Work</a>
       <a href="#contact" class="btn-outline">Get in Touch</a>
@@ -1603,8 +1629,8 @@
   <div class="about-grid">
     <div class="about-text">
       <div class="about-photo"><img src="logos/me-photo.jpg" alt="Stefan Diomov"></div>
-      <p>I'm <strong>Stefan Diomov</strong> — the creative behind <strong>Morphe.</strong> I'm a video editor, videographer, motion graphics artist and VFX specialist.</p>
-      <p>I build cinematic worlds for brands, creators and studios. Whether it's a full commercial, a short film, or a motion identity — I approach every project with the same obsession: making it look <strong>undeniably good</strong>.</p>
+      <p>I'm <strong>Stefan Diomov</strong>, the creative behind <strong>Morphe.</strong> I'm a video editor, videographer, motion graphics artist and VFX specialist.</p>
+      <p>I build cinematic worlds for brands, creators and studios. Whether it's a full commercial, a short film, or a motion identity, I approach every project with the same obsession: making it look <strong>undeniably good</strong>.</p>
       <p>I've worked with brands like Coca Cola, Maretti and more, delivering visuals that stop the scroll and tell stories that stick.</p>
       <a href="#contact" class="btn-primary" style="display:inline-block; margin-top: 8px;">Work with me</a>
     </div>
@@ -2202,7 +2228,7 @@ document.querySelectorAll('.work-list .client-row').forEach(row => {
   tab.setAttribute('tabindex', '0');
   tab.setAttribute('role', 'button');
   tab.innerHTML = '<svg width="14" height="12" viewBox="0 0 16 14" fill="none"><path d="M0 4C0 2.9.9 2 2 2H6L7.5 4H14C15.1 4 16 4.9 16 6V12C16 13.1 15.1 14 14 14H2C.9 14 0 13.1 0 12V4Z" fill="currentColor"/></svg>'
-    + '<span class="folder-hint">open</span><span class="folder-hint-close">close</span>';
+    + '<span class="folder-hints"><span class="folder-hint">open</span><span class="folder-hint-close">close</span></span>';
   tab.addEventListener('click', () => toggleClient(row.querySelector('.client-header')));
   tab.addEventListener('mouseenter', () => { curDot.classList.add('is-hover'); curRing.classList.add('is-hover'); });
   tab.addEventListener('mouseleave', () => { curDot.classList.remove('is-hover'); curRing.classList.remove('is-hover'); });
@@ -2221,7 +2247,15 @@ document.querySelectorAll('.work-list .client-row').forEach(row => {
   });
   wrap.insertBefore(tab, row);
 
+  // Header click: only open, never close (close is tab-only)
+  const header = row.querySelector('.client-header');
+  header.onclick = null;
+  header.addEventListener('click', () => {
+    if (!row.classList.contains('open')) toggleClient(header);
+  });
+
   wrap.addEventListener('mouseenter', () => {
+    if (document.querySelector('.client-row.open')) return;
     wrap.classList.add('row-focused');
     document.querySelectorAll('.folder-wrap').forEach(w => { if (w !== wrap) w.classList.add('row-dimmed'); });
   });
