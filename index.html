@@ -885,29 +885,43 @@
   .cur-ring.is-hover { width: 52px; height: 52px; border-color: rgba(123,92,240,0.85); }
   .cur-dot.is-click { transform: translate(-50%,-50%) scale(0.5); }
 
-  /* Cube — faster, scale-in entrance, idle float */
+  /* Cube — 40% scale-in while drawing, electric wire, idle float */
   .cube-scene {
-    transform: scale(0.86);
-    animation: cubeEntrance 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
+    transform: scale(0.4);
+    animation: cubeEntrance 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
   }
   @keyframes cubeEntrance { to { transform: scale(1); } }
-  .cube-main { animation: cubeFloat 4.8s ease-in-out 1.3s infinite; }
+  .cube-main { animation: cubeFloat 4.8s ease-in-out 1.4s infinite; }
   @keyframes cubeFloat {
     0%, 100% { transform: translateY(0px); }
     50%       { transform: translateY(-11px); }
   }
-  .c-e { animation-duration: 0.17s; stroke-width: 16; }
-  .e1 { animation-delay: 0s;    }
-  .e2 { animation-delay: 0.07s; }
-  .e3 { animation-delay: 0.14s; }
-  .e4 { animation-delay: 0.20s; }
-  .e5 { animation-delay: 0.27s; }
-  .e6 { animation-delay: 0.31s; }
-  .e7 { animation-delay: 0.37s; }
-  .e8 { animation-delay: 0.37s; }
-  .e9 { animation-delay: 0.44s; }
-  .cube-faces { opacity: 0; animation: cubeFill 0.28s ease 0.58s forwards; }
-  .cube-wire  { animation: wireOut 0.18s ease 0.70s forwards; }
+  /* Wire neon glow */
+  .cube-wire {
+    filter: drop-shadow(0 0 14px rgba(155,127,255,1)) drop-shadow(0 0 40px rgba(81,0,255,0.6));
+    animation: wireOut 0.22s ease 1.28s forwards;
+  }
+  /* Each edge — varied speed/easing for electric organic feel */
+  .c-e {
+    stroke: #C8B2FF; stroke-width: 18; fill: none; stroke-linecap: round;
+    stroke-dasharray: 1; stroke-dashoffset: 1;
+    animation: drawEdge 0.25s cubic-bezier(0.8,0,0.2,1) forwards;
+  }
+  .e1 { animation-duration: 0.38s; animation-delay: 0s;    animation-timing-function: cubic-bezier(0.15,0,0.25,1); }
+  .e2 { animation-duration: 0.13s; animation-delay: 0.32s; animation-timing-function: cubic-bezier(0.95,0,0.05,1); }
+  .e3 { animation-duration: 0.26s; animation-delay: 0.42s; animation-timing-function: cubic-bezier(0.5,0,0.2,1);  }
+  .e4 { animation-duration: 0.11s; animation-delay: 0.60s; animation-timing-function: cubic-bezier(0.98,0,0.02,1); }
+  .e5 { animation-duration: 0.30s; animation-delay: 0.66s; animation-timing-function: cubic-bezier(0.2,0,0.15,1); }
+  .e6 { animation-duration: 0.10s; animation-delay: 0.86s; animation-timing-function: cubic-bezier(0.98,0,0.02,1); }
+  .e7 { animation-duration: 0.20s; animation-delay: 0.93s; animation-timing-function: cubic-bezier(0.6,0,0.3,1);  }
+  .e8 { animation-duration: 0.20s; animation-delay: 0.93s; animation-timing-function: cubic-bezier(0.6,0,0.3,1);  }
+  .e9 { animation-duration: 0.34s; animation-delay: 1.04s; animation-timing-function: cubic-bezier(0.1,0,0.2,1);  }
+  .cube-faces { opacity: 0; animation: cubeFill 0.32s ease 1.12s forwards; }
+
+  /* Hero text syncs with cube draw */
+  .hero-tag      { animation-delay: 0.5s;  }
+  .hero-subtitle { animation-delay: 0.9s;  }
+  .hero-cta      { animation-delay: 1.12s; }
 
   /* Hero title — word-by-word reveal */
   .hero-title {
@@ -1589,12 +1603,12 @@ document.addEventListener('mouseup',   () => curDot.classList.remove('is-click')
   const el = document.querySelector('.hero-title');
   if (!el) return;
   el.innerHTML =
-    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.82s">Crafting</span></span> ' +
-    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.93s">Worlds</span></span>' +
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.40s">Crafting</span></span> ' +
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.52s">Worlds</span></span>' +
     '<br>' +
-    '<span class="word-wrap"><span class="word-inner" style="animation-delay:1.04s">Frame</span></span> ' +
-    '<span class="word-wrap"><span class="word-inner" style="animation-delay:1.14s">by</span></span> ' +
-    '<span class="word-wrap"><span class="word-inner" style="animation-delay:1.24s">Frame.</span></span>';
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.64s">Frame</span></span> ' +
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.74s">by</span></span> ' +
+    '<span class="word-wrap"><span class="word-inner" style="animation-delay:0.84s">Frame.</span></span>';
 })();
 
 // Stagger client row reveals
