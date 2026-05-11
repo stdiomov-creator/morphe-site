@@ -1352,6 +1352,7 @@
 
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
+if (location.search || location.hash) history.replaceState(null, '', location.pathname);
 const vPlayers = new Map();
 
 function fmt(s) {
