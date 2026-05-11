@@ -435,6 +435,7 @@
     align-items: flex-start;
     margin-bottom: 10px;
     position: relative;
+    scroll-margin-top: 88px;
     transition: opacity 0.45s ease, filter 0.45s ease, transform 0.45s cubic-bezier(0.22,1,0.36,1);
   }
   .folder-wrap:last-child { margin-bottom: 0; }
@@ -1851,6 +1852,8 @@ function toggleClient(header) {
     row.classList.add('open');
     panel.classList.add('open');
     row.querySelectorAll('.video-card[data-vid]').forEach(initVideoCard);
+    const wrap = row.closest('.folder-wrap') || row;
+    setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30);
   }
 }
 
