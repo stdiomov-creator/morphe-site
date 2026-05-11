@@ -1006,9 +1006,9 @@
     transition: transform 0.65s cubic-bezier(0.22,1,0.36,1);
     will-change: transform;
   }
-  .cube-scene.cube-exploded .face-top   { transform: translate(0px,  -52px); }
-  .cube-scene.cube-exploded .face-right { transform: translate(45px,  26px); }
-  .cube-scene.cube-exploded .face-left  { transform: translate(-45px, 26px); }
+  .face-top:hover   { transform: translate(0px,  -52px); }
+  .face-right:hover { transform: translate(45px,  26px); }
+  .face-left:hover  { transform: translate(-45px, 26px); }
 
   /* Contact link slide reveal */
   .contact-link {
@@ -1595,8 +1595,8 @@ let curX = -100, curY = -100, rX = -100, rY = -100;
 document.addEventListener('mousemove', e => { curX = e.clientX; curY = e.clientY; });
 
 (function tickCursor() {
-  rX += (curX - rX) * 0.13;
-  rY += (curY - rY) * 0.13;
+  rX += (curX - rX) * 0.26;
+  rY += (curY - rY) * 0.26;
   curDot.style.left  = curX + 'px'; curDot.style.top  = curY + 'px';
   curRing.style.left = rX   + 'px'; curRing.style.top = rY   + 'px';
   requestAnimationFrame(tickCursor);
@@ -1641,18 +1641,6 @@ document.querySelectorAll('.contact-link').forEach((link, i) => {
   revealObserver.observe(link);
 });
 
-// Cube proximity hover — only explodes when mouse is near the center
-(function() {
-  const cubeEl = document.querySelector('.cube-scene');
-  if (!cubeEl) return;
-  cubeEl.addEventListener('mousemove', e => {
-    const r = cubeEl.getBoundingClientRect();
-    const dx = e.clientX - (r.left + r.width  / 2);
-    const dy = e.clientY - (r.top  + r.height / 2);
-    cubeEl.classList.toggle('cube-exploded', Math.sqrt(dx*dx + dy*dy) < 100);
-  });
-  cubeEl.addEventListener('mouseleave', () => cubeEl.classList.remove('cube-exploded'));
-})();
 
 // ===== END ANIMATION OVERHAUL =====
 
