@@ -1002,6 +1002,15 @@
   .skill-pill.reveal { opacity: 0; transform: scale(0.88) translateY(6px); }
   .skill-pill.reveal.revealed { opacity: 1; transform: none; }
 
+  /* Cube face explode on hover */
+  .face-top, .face-left, .face-right {
+    transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    will-change: transform;
+  }
+  .cube-scene:hover .face-top   { transform: translate(0px,   -360px); }
+  .cube-scene:hover .face-right { transform: translate(312px,  180px); }
+  .cube-scene:hover .face-left  { transform: translate(-312px, 180px); }
+
   /* Contact link slide reveal */
   .contact-link {
     transition: color 0.2s, border-color 0.2s, background 0.2s, opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
@@ -1052,9 +1061,9 @@
           </linearGradient>
         </defs>
         <g class="cube-faces">
-          <rect width="938.341" height="938.341" transform="matrix(0 -1 0.866025 -0.5 1219.31 2112.24)" fill="#31009B"/>
-          <path d="M1219.4 1173.83L406.379 703.981L1219.01 234.811L2030.96 704.372L1219.4 1173.83Z" fill="url(#paint0_hero)"/>
-          <rect width="938.341" height="938.341" transform="matrix(0 -1 0.866025 0.5 406.684 1643)" fill="url(#paint1_hero)"/>
+          <g class="face-right"><rect width="938.341" height="938.341" transform="matrix(0 -1 0.866025 -0.5 1219.31 2112.24)" fill="#31009B"/></g>
+          <g class="face-top"><path d="M1219.4 1173.83L406.379 703.981L1219.01 234.811L2030.96 704.372L1219.4 1173.83Z" fill="url(#paint0_hero)"/></g>
+          <g class="face-left"><rect width="938.341" height="938.341" transform="matrix(0 -1 0.866025 0.5 406.684 1643)" fill="url(#paint1_hero)"/></g>
         </g>
         <g class="cube-wire">
           <path class="c-e e1" d="M1219,235 L406,704" pathLength="1"/>
