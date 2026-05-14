@@ -407,7 +407,7 @@
 
   .client-name {
     font-size: 22px;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: -0.5px;
     color: #fff;
   }
@@ -506,11 +506,11 @@
     background: rgba(14,8,32,0.55);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 0.5px solid rgba(255,255,255,0.12);
+    border: 0.5px solid rgba(123,92,240,0.35);
     border-bottom: none;
     cursor: pointer;
     user-select: none;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.4);
     outline: none;
     transition: color 0.3s, border-color 0.3s, background 0.3s;
   }
@@ -549,8 +549,9 @@
   }
 
   .folder-wrap:hover:not(:has(.client-row.open)) .folder-tab {
-    border-color: rgba(123,92,240,0.4);
-    color: rgba(255,255,255,0.6);
+    border-color: rgba(123,92,240,0.65);
+    color: rgba(255,255,255,0.75);
+    background: rgba(91,63,212,0.12);
   }
   .folder-wrap:hover:not(:has(.client-row.open)) .folder-hint {
     opacity: 1;
@@ -572,6 +573,17 @@
   .folder-wrap > .client-row {
     width: 100%;
     border-radius: 0 10px 10px 10px;
+    border-color: rgba(123,92,240,0.35);
+    box-shadow: 0 0 0 0.5px rgba(123,92,240,0.15), 0 4px 32px rgba(91,63,212,0.1);
+    transition: border-color 0.3s, box-shadow 0.3s, opacity 0.45s ease, filter 0.45s ease, transform 0.45s cubic-bezier(0.22,1,0.36,1);
+  }
+  .folder-wrap:hover:not(:has(.client-row.open)) > .client-row {
+    border-color: rgba(123,92,240,0.65);
+    box-shadow: 0 0 0 0.5px rgba(123,92,240,0.3), 0 4px 40px rgba(91,63,212,0.22);
+  }
+  .folder-wrap:has(.client-row.open) > .client-row {
+    border-color: rgba(123,92,240,0.6);
+    box-shadow: 0 0 0 0.5px rgba(123,92,240,0.35), 0 8px 48px rgba(91,63,212,0.28);
   }
 
   /* Dim all other folders when one is open */
