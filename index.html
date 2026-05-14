@@ -15,7 +15,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2439 2347'><polygon points='1219,2112 1219,1174 2031,704 2031,1643' fill='%2331009B'/><polygon points='406,1643 406,704 1219,1174 1219,2112' fill='%235100FF'/><polygon points='1219,1174 406,704 1219,235 2031,704' fill='%237B5CF0'/><polyline points='1219,235 406,704 406,1643 1219,2112 2031,1643 2031,704 1219,235' fill='none' stroke='%23C8B2FF' stroke-width='80' stroke-linejoin='round' stroke-linecap='round'/><line x1='406' y1='704' x2='1219' y2='1174' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/><line x1='2031' y1='704' x2='1219' y2='1174' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/><line x1='1219' y1='1174' x2='1219' y2='2112' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 
   :root {
@@ -86,7 +86,7 @@
 
   .logo-text {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 900;
     color: #fff;
     letter-spacing: -0.5px;
   }
@@ -171,7 +171,7 @@
     color: rgba(255,255,255,0.6);
     text-decoration: none;
     font-size: 38px;
-    font-weight: 700;
+    font-weight: 900;
     letter-spacing: -1px;
     transition: color 0.2s;
   }
@@ -258,7 +258,7 @@
 
   .hero-title {
     font-size: clamp(42px, 6vw, 80px);
-    font-weight: 700;
+    font-weight: 900;
     line-height: 1.25;
     letter-spacing: -2px;
     text-align: center;
@@ -352,7 +352,7 @@
 
   .section-heading {
     font-size: clamp(48px, 6vw, 80px);
-    font-weight: 700;
+    font-weight: 900;
     letter-spacing: -2px;
     line-height: 1;
     margin-bottom: 48px;
@@ -407,7 +407,7 @@
 
   .client-name {
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 900;
     letter-spacing: -0.5px;
     color: #fff;
   }
@@ -576,13 +576,13 @@
 
   /* Dim all other folders when one is open */
   .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)) {
-    opacity: 0.25;
-    filter: brightness(0.4);
+    opacity: 0.85;
+    filter: brightness(0.75);
     transform: scale(0.97);
   }
   .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)):hover {
-    opacity: 0.85;
-    filter: brightness(0.9);
+    opacity: 1;
+    filter: brightness(1);
     transform: scale(0.99);
   }
 
@@ -1318,12 +1318,12 @@
   }
   .stat-item {
     flex: 1; display: flex; flex-direction: column;
-    align-items: center; gap: 4px; padding: 28px 0;
+    align-items: center; gap: 6px; padding: 36px 0;
     border-right: 0.5px solid var(--border);
   }
   .stat-item:last-child { border-right: none; }
   .stat-num {
-    font-size: 38px; font-weight: 800; letter-spacing: -2px;
+    font-size: 76px; font-weight: 900; letter-spacing: -3px;
     background: linear-gradient(135deg, #fff 40%, rgba(123,92,240,0.9));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
@@ -2142,6 +2142,32 @@ form.addEventListener('submit', async (e) => {
   }
 });
 // ===== UI/UX ENHANCEMENTS =====
+
+// Stats counter animation
+const statsBar = document.querySelector('.stats-bar');
+if (statsBar) {
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      counterObserver.unobserve(e.target);
+      e.target.querySelectorAll('.stat-num').forEach(el => {
+        const raw = el.textContent.trim();
+        const target = parseInt(raw, 10);
+        const suffix = raw.replace(/[0-9]/g, '');
+        const dur = 1600;
+        const start = performance.now();
+        function tick(now) {
+          const t = Math.min((now - start) / dur, 1);
+          const ease = 1 - Math.pow(1 - t, 4);
+          el.textContent = Math.round(ease * target) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    });
+  }, { threshold: 0.6 });
+  counterObserver.observe(statsBar);
+}
 
 // Scroll indicator — hide once user scrolls past hero
 const scrollIndicator = document.getElementById('scrollIndicator');
