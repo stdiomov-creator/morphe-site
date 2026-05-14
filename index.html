@@ -1103,13 +1103,19 @@
     .back-top { bottom: 16px; right: 16px; width: 38px; height: 38px; }
   }
 
-  /* Disable custom cursor + remove scale effects on touch devices */
+  /* Disable custom cursor + remove all scale/tilt effects on touch devices */
   @media (hover: none) {
     .cur-dot, .cur-ring { display: none !important; }
     *, *::before, *::after { cursor: auto !important; }
     .folder-wrap.row-focused { transform: none !important; }
     .folder-wrap.row-dimmed { transform: none !important; }
     .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)) { transform: none !important; }
+    .video-card {
+      transform: none !important;
+      transition: opacity 0.4s ease !important;
+    }
+    .video-card.dimmed { transform: none !important; opacity: 1 !important; filter: none !important; }
+    .client-row.open .video-col { animation: none !important; }
   }
 
   /* ===== ANIMATION OVERHAUL ===== */
@@ -1934,27 +1940,29 @@ function toggleClient(header, skipScroll) {
   }
 }
 
-// 3D tilt + dim siblings on video card hover (skip horizontal cards)
-document.querySelectorAll('.video-card').forEach(card => {
-  const isH = card.classList.contains('video-card--h');
-  card.addEventListener('mouseenter', () => {
-    if (isH) card.style.transform = 'scale(1.03)';
-    const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
-    if (siblings) siblings.forEach(s => { if (s !== card) s.classList.add('dimmed'); });
+// 3D tilt + dim siblings on video card hover — desktop only
+if (!isTouch) {
+  document.querySelectorAll('.video-card').forEach(card => {
+    const isH = card.classList.contains('video-card--h');
+    card.addEventListener('mouseenter', () => {
+      if (isH) card.style.transform = 'scale(1.03)';
+      const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
+      if (siblings) siblings.forEach(s => { if (s !== card) s.classList.add('dimmed'); });
+    });
+    card.addEventListener('mousemove', e => {
+      if (isH) return;
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(700px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) scale(1.03)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
+      if (siblings) siblings.forEach(s => s.classList.remove('dimmed'));
+    });
   });
-  card.addEventListener('mousemove', e => {
-    if (isH) return;
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    card.style.transform = `perspective(700px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) scale(1.03)`;
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-    const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
-    if (siblings) siblings.forEach(s => s.classList.remove('dimmed'));
-  });
-});
+}
 
 
 // Animated background — blobs, waves, organic shapes
