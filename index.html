@@ -33,7 +33,7 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { scroll-behavior: smooth; background: var(--bg); }
+  html { scroll-behavior: smooth; background: var(--bg); overflow-x: hidden; }
 
   body {
     background: transparent;
@@ -1124,8 +1124,41 @@
     .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 32px; }
     .about-photo { width: 72px; height: 72px; margin-bottom: 16px; }
 
+    /* Only 1 video per client on mobile */
+    .video-col:not(:first-child) { display: none; }
+    .video-col:first-child { flex: 0 0 100% !important; }
+
+    /* Remove heavy backdrop-filters on card rows (scroll perf) */
+    .client-row { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(14,8,32,0.85); }
+    .folder-tab { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+    /* Video play affordance — show ▶ on poster */
+    .v-poster:not(.hidden)::after {
+      content: '▶';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      color: rgba(255,255,255,0.75);
+      pointer-events: none;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+    }
+
+    /* Hide progress bar & time — too small for touch */
+    .v-progress, .v-time { display: none; }
+    /* Always show control bar (no hover needed on touch) */
+    .v-bar { opacity: 1 !important; transform: none !important; }
+    /* Bigger mute & fullscreen buttons */
+    .v-btn { padding: 8px; }
+    .v-btn svg { width: 18px; height: 18px; }
+
+    /* Hide section bridge — unnecessary on mobile */
+    .section-bridge { display: none; }
+
+    /* Hide brand pills in folder headers */
+    .brand-pills { display: none; }
+
     /* MISC */
-    .section-bridge { padding: 0 20px 44px; }
     footer { padding: 20px; flex-direction: column; gap: 12px; text-align: center; }
     .back-top { bottom: 16px; right: 16px; width: 38px; height: 38px; }
   }
@@ -1838,6 +1871,7 @@ function initCard(card) {
   }
 
   let dur = 0, muted = false, hoverMode = false, hintTimer = null;
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
   player.getDuration().then(d => { dur = d; }).catch(() => {});
 
   function doToggle() {
@@ -1859,33 +1893,48 @@ function initCard(card) {
     });
   }
 
-  card.addEventListener('mouseenter', () => {
-    hoverMode = true;
-    loading.classList.add('active');
-    ctrl.classList.add('hover-muted');
-    clearTimeout(hintTimer);
-    hintTimer = setTimeout(() => ctrl.classList.remove('hover-muted'), 1000);
-    pauseAll(iframe);
-    player.setVolume(0).catch(() => {});
-    player.play().catch(() => {});
-  });
+  if (!isTouch) {
+    card.addEventListener('mouseenter', () => {
+      hoverMode = true;
+      loading.classList.add('active');
+      ctrl.classList.add('hover-muted');
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => ctrl.classList.remove('hover-muted'), 1000);
+      pauseAll(iframe);
+      player.setVolume(0).catch(() => {});
+      player.play().catch(() => {});
+    });
 
-  card.addEventListener('mouseleave', () => {
-    clearTimeout(hintTimer);
-    if (hoverMode) {
-      player.pause().catch(() => {});
-      player.setCurrentTime(0).catch(() => {});
-      player.setVolume(muted ? 0 : 1).catch(() => {});
-      fill.style.width = '0%';
-      time.textContent = '0:00';
-      if (poster) poster.classList.remove('hidden');
+    card.addEventListener('mouseleave', () => {
+      clearTimeout(hintTimer);
+      if (hoverMode) {
+        player.pause().catch(() => {});
+        player.setCurrentTime(0).catch(() => {});
+        player.setVolume(muted ? 0 : 1).catch(() => {});
+        fill.style.width = '0%';
+        time.textContent = '0:00';
+        if (poster) poster.classList.remove('hidden');
+      }
+      hoverMode = false;
+      loading.classList.remove('active');
+      ctrl.classList.remove('hover-muted');
+    });
+  }
+
+  card.querySelector('.v-overlay').addEventListener('click', () => {
+    if (isTouch && !hoverMode) {
+      // First tap on mobile: play muted, show unmute hint
+      hoverMode = true;
+      pauseAll(iframe);
+      player.setVolume(0).catch(() => {});
+      player.play().catch(() => {});
+      ctrl.classList.add('hover-muted');
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => ctrl.classList.remove('hover-muted'), 2000);
+    } else {
+      doToggle();
     }
-    hoverMode = false;
-    loading.classList.remove('active');
-    ctrl.classList.remove('hover-muted');
   });
-
-  card.querySelector('.v-overlay').addEventListener('click', doToggle);
 
   player.on('play', () => {
     loading.classList.remove('active');
