@@ -397,9 +397,11 @@
 
   .client-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 22px 28px;
+    justify-content: center;
+    padding: 26px 28px;
+    gap: 8px;
     cursor: pointer;
     position: relative;
     z-index: 1;
@@ -799,8 +801,8 @@
 
   .about-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
     align-items: start;
   }
 
@@ -961,9 +963,7 @@
 
 
 
-  /* Client name slides right on hover */
-  .client-name { display: inline-block; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
-  .client-header:hover .client-name { transform: translateX(8px); }
+  .client-name { display: inline-block; }
 
   .video-col { opacity: 1; transform: none; }
 
@@ -1060,7 +1060,8 @@
 
     /* ABOUT */
     .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 32px; }
-    .about-photo { width: 72px; height: 72px; margin-bottom: 16px; }
+    .about-photo-wrap { position: static; order: -1; }
+    .about-photo { display: none; }
 
     /* Only 1 video per client on mobile */
     .video-col:not(:first-child) { display: none; }
@@ -1314,13 +1315,20 @@
     50% { transform: translateY(10px); opacity: 0.2; }
   }
 
-  /* About photo */
-  .about-photo {
-    width: 110px; height: 110px; border-radius: 50%;
-    border: 1.5px solid rgba(255,255,255,0.45);
-    overflow: hidden; margin-bottom: 28px; flex-shrink: 0;
+  /* About photo — now a big right column */
+  .about-photo { display: none; }
+  .about-photo-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 0.5px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 100px;
   }
-  .about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .about-photo-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 
   /* Stats bar */
   .stats-bar {
@@ -1362,28 +1370,16 @@
   .reel-card .video-card { border-radius: 0; border: none; box-shadow: none; }
 
   /* Client thumbnail + meta */
-  .client-thumb {
-    width: 42px; height: 42px; border-radius: 6px;
-    overflow: hidden; flex-shrink: 0;
-    background: rgba(255,255,255,0.04);
-    border: 0.5px solid rgba(255,255,255,0.08);
-  }
-  .client-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .client-meta {
-    display: flex; align-items: center; gap: 10px;
-    margin-left: auto; margin-right: 20px;
-  }
-  .client-cat {
-    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: rgba(255,255,255,0.28); font-weight: 500;
-  }
+  .client-thumb { display: none; }
+  .client-meta { display: flex; align-items: center; justify-content: center; }
+  .client-cat { display: none; }
   .client-count {
-    font-size: 11px; color: rgba(123,92,240,0.8);
-    background: rgba(123,92,240,0.08);
-    border: 0.5px solid rgba(123,92,240,0.22);
-    border-radius: 20px; padding: 2px 10px; font-weight: 600; white-space: nowrap;
+    font-size: 13px; color: rgba(155,127,255,0.9);
+    background: rgba(123,92,240,0.12);
+    border: 0.5px solid rgba(123,92,240,0.3);
+    border-radius: 20px; padding: 4px 14px; font-weight: 700; white-space: nowrap;
+    letter-spacing: 0.3px;
   }
-  @media (max-width: 600px) { .client-cat { display: none; } }
 
   /* Back to top */
   .back-top {
@@ -1570,8 +1566,8 @@
   </a>
   <ul class="nav-links">
     <li><a href="#work">Work</a></li>
-    <li><a href="#about">About</a></li>
     <li><a href="#studio">Studio</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <span class="avail-badge"><span class="avail-dot"></span>Available</span>
@@ -1579,8 +1575,8 @@
 </nav>
 <div class="nav-overlay" id="navOverlay">
   <a href="#work">Work</a>
-  <a href="#about">About</a>
   <a href="#studio">Studio</a>
+  <a href="#about">About</a>
   <a href="#contact">Contact</a>
 </div>
 
@@ -1837,20 +1833,6 @@
   <p>"Every frame is a decision. Every cut, a statement."</p>
 </div>
 
-<!-- ABOUT -->
-<section id="about">
-  <h2 class="section-heading">About</h2>
-  <div class="about-grid">
-    <div class="about-text">
-      <div class="about-photo"><img src="logos/me-photo.jpg" alt="Stefan Diomov"></div>
-      <p>Work with <strong>Stefan Diomov</strong> - the creative behind <strong>Morphe.</strong> A video editor, cinematographer, and VFX specialist obsessed with making your content impossible to ignore.</p>
-      <p>Whether you need a full brand commercial, short-form content, or a complete motion identity - every project gets the same obsession: visuals that <strong>undeniably perform</strong>.</p>
-      <p>Brands like Coca Cola, Maretti and more trust Morphe to stop the scroll and tell stories that convert.</p>
-      <a href="#contact" class="btn-primary" style="display:inline-block; margin-top: 8px;">Start a project</a>
-    </div>
-  </div>
-</section>
-
 <!-- STUDIO -->
 <section id="studio">
   <h2 class="section-heading reveal">Studio</h2>
@@ -1869,6 +1851,22 @@
       <div class="studio-spec">Professional audio suite</div>
       <div class="studio-spec">High-performance editing workstation</div>
       <div class="studio-spec">Full studio lighting setup</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <h2 class="section-heading">About</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Work with <strong>Stefan Diomov</strong> - the creative behind <strong>Morphe.</strong> A video editor, cinematographer, and VFX specialist obsessed with making your content impossible to ignore.</p>
+      <p>Whether you need a full brand commercial, short-form content, or a complete motion identity - every project gets the same obsession: visuals that <strong>undeniably perform</strong>.</p>
+      <p>Brands like Coca Cola, Maretti and more trust Morphe to stop the scroll and tell stories that convert.</p>
+      <a href="#contact" class="btn-primary" style="display:inline-block; margin-top: 24px;">Start a project</a>
+    </div>
+    <div class="about-photo-wrap">
+      <img src="logos/me-photo.jpg" alt="Stefan Diomov">
     </div>
   </div>
 </section>
