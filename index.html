@@ -397,11 +397,10 @@
 
   .client-header {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    padding: 26px 28px;
-    gap: 8px;
+    justify-content: space-between;
+    padding: 22px 28px;
     cursor: pointer;
     position: relative;
     z-index: 1;
@@ -1315,14 +1314,16 @@
     50% { transform: translateY(10px); opacity: 0.2; }
   }
 
-  /* About photo — now a big right column */
+  /* About photo — right column, constrained size */
   .about-photo { display: none; }
   .about-photo-wrap {
     border-radius: 12px;
     overflow: hidden;
-    border: 0.5px solid rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.28);
     position: sticky;
     top: 100px;
+    max-width: 320px;
+    margin-left: auto;
   }
   .about-photo-wrap img {
     width: 100%;
@@ -1371,14 +1372,14 @@
 
   /* Client thumbnail + meta */
   .client-thumb { display: none; }
-  .client-meta { display: flex; align-items: center; justify-content: center; }
+  .client-meta { display: flex; align-items: center; }
   .client-cat { display: none; }
   .client-count {
-    font-size: 13px; color: rgba(155,127,255,0.9);
+    font-size: 15px; color: rgba(155,127,255,0.95);
     background: rgba(123,92,240,0.12);
     border: 0.5px solid rgba(123,92,240,0.3);
-    border-radius: 20px; padding: 4px 14px; font-weight: 700; white-space: nowrap;
-    letter-spacing: 0.3px;
+    border-radius: 20px; padding: 6px 18px; font-weight: 700; white-space: nowrap;
+    letter-spacing: 0.2px;
   }
 
   /* Back to top */
