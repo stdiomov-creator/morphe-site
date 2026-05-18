@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://morphestudio.space/logos/morphe-link-logo.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2439 2347'><polygon points='1219,2112 1219,1174 2031,704 2031,1643' fill='%2331009B'/><polygon points='406,1643 406,704 1219,1174 1219,2112' fill='%235100FF'/><polygon points='1219,1174 406,704 1219,235 2031,704' fill='%237B5CF0'/><polyline points='1219,235 406,704 406,1643 1219,2112 2031,1643 2031,704 1219,235' fill='none' stroke='%23C8B2FF' stroke-width='80' stroke-linejoin='round' stroke-linecap='round'/><line x1='406' y1='704' x2='1219' y2='1174' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/><line x1='2031' y1='704' x2='1219' y2='1174' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/><line x1='1219' y1='1174' x2='1219' y2='2112' stroke='%23C8B2FF' stroke-width='80' stroke-linecap='round'/></svg>">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1494,32 +1495,6 @@
     color: #fff;
   }
 
-  .studio-gallery {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 12px;
-  }
-
-  .studio-gallery-item {
-    border-radius: 12px;
-    overflow: hidden;
-    border: 0.5px solid rgba(255,255,255,0.1);
-    background: #0a0514;
-  }
-
-  .studio-gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    aspect-ratio: 4/3;
-    transition: transform 0.8s cubic-bezier(0.22,1,0.36,1);
-    filter: brightness(0.85);
-  }
-
-  .studio-gallery-item:hover img { transform: scale(1.04); filter: brightness(0.95); }
-
   .studio-desc-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1569,6 +1544,216 @@
     .studio-desc-row { grid-template-columns: 1fr; gap: 24px; margin-top: 24px; }
   }
 
+  /* ===== THEME TOGGLE BUTTON ===== */
+  .theme-toggle {
+    background: none;
+    border: 0.5px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover {
+    color: #fff;
+    border-color: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.06);
+  }
+  .theme-toggle .icon-sun { display: none; }
+  .theme-toggle .icon-moon { display: block; }
+
+  /* ===== LIGHT MODE ===== */
+  [data-theme="light"] {
+    --bg: #f2f0fb;
+    --bg-card: #ffffff;
+    --text: #0d0a1a;
+    --text-muted: rgba(13,10,26,0.45);
+    --border: rgba(13,10,26,0.08);
+    --glow: rgba(91,63,212,0.12);
+  }
+
+  [data-theme="light"] html,
+  [data-theme="light"] body { background: #f2f0fb; }
+
+  /* Toggle icon flip */
+  [data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+  [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+  [data-theme="light"] .theme-toggle {
+    color: rgba(13,10,26,0.55);
+    border-color: rgba(13,10,26,0.15);
+  }
+  [data-theme="light"] .theme-toggle:hover {
+    color: #0d0a1a;
+    border-color: rgba(13,10,26,0.3);
+    background: rgba(13,10,26,0.04);
+  }
+
+  /* Nav */
+  [data-theme="light"] nav {
+    background: rgba(242,240,251,0.88);
+    border-color: rgba(13,10,26,0.06);
+  }
+  [data-theme="light"] .logo-text { color: #0d0a1a; }
+  [data-theme="light"] .nav-links a { color: rgba(13,10,26,0.6); }
+  [data-theme="light"] .nav-links a:hover,
+  [data-theme="light"] .nav-links a.active { color: #0d0a1a; }
+  [data-theme="light"] .nav-hamburger span { background: rgba(13,10,26,0.75); }
+  [data-theme="light"] .nav-overlay {
+    background: rgba(242,240,251,0.97);
+  }
+  [data-theme="light"] .nav-overlay a { color: rgba(13,10,26,0.55); }
+  [data-theme="light"] .nav-overlay a:hover,
+  [data-theme="light"] .nav-overlay a:active { color: #0d0a1a; }
+
+  /* Hero */
+  [data-theme="light"] .btn-outline {
+    color: rgba(13,10,26,0.65);
+    border-color: rgba(13,10,26,0.18);
+  }
+  [data-theme="light"] .btn-outline:hover {
+    color: #0d0a1a;
+    border-color: rgba(13,10,26,0.45);
+  }
+  [data-theme="light"] .scroll-indicator span { color: rgba(13,10,26,0.4); }
+
+  /* Section headings */
+  [data-theme="light"] .section-heading {
+    background: linear-gradient(130deg, #0d0a1a 50%, rgba(91,63,212,0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Stats */
+  [data-theme="light"] .stat-num {
+    background: linear-gradient(135deg, #0d0a1a 40%, rgba(91,63,212,0.85)) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+  }
+  [data-theme="light"] .stat-label { color: rgba(13,10,26,0.3); }
+
+  /* Client rows */
+  [data-theme="light"] .client-row {
+    background: rgba(255,255,255,0.75);
+    border-color: rgba(13,10,26,0.08);
+  }
+  [data-theme="light"] .client-row:hover { border-color: rgba(91,63,212,0.35); }
+  [data-theme="light"] .client-row.open  { border-color: rgba(91,63,212,0.5); }
+  [data-theme="light"] .client-name { color: #0d0a1a; }
+  [data-theme="light"] .arrow-line {
+    background: rgba(13,10,26,0.35);
+  }
+  [data-theme="light"] .arrow-line::after {
+    border-color: rgba(13,10,26,0.45);
+  }
+  [data-theme="light"] .client-row.open .arrow-line { background: var(--purple-light); }
+  [data-theme="light"] .client-row.open .arrow-line::after { border-color: var(--purple-light); }
+  [data-theme="light"] .client-panel-inner { border-color: rgba(13,10,26,0.05); }
+
+  /* Folder wrap */
+  [data-theme="light"] .folder-wrap > .client-row {
+    border-color: rgba(91,63,212,0.25);
+    box-shadow: 0 0 0 0.5px rgba(91,63,212,0.12), 0 4px 24px rgba(91,63,212,0.06);
+  }
+  [data-theme="light"] .folder-wrap:hover:not(:has(.client-row.open)) > .client-row {
+    border-color: rgba(91,63,212,0.5);
+    box-shadow: 0 0 0 0.5px rgba(91,63,212,0.25), 0 4px 32px rgba(91,63,212,0.12);
+  }
+  [data-theme="light"] .folder-wrap:has(.client-row.open) > .client-row {
+    border-color: rgba(91,63,212,0.55);
+    box-shadow: 0 0 0 0.5px rgba(91,63,212,0.3), 0 8px 40px rgba(91,63,212,0.15);
+  }
+
+  /* Folder tab */
+  [data-theme="light"] .folder-tab {
+    background: rgba(255,255,255,0.75);
+    border-color: rgba(91,63,212,0.2);
+    color: rgba(13,10,26,0.35);
+  }
+  [data-theme="light"] .folder-tab:hover {
+    border-color: rgba(91,63,212,0.5);
+    color: rgba(13,10,26,0.65);
+    background: rgba(255,255,255,0.9);
+  }
+  [data-theme="light"] .folder-wrap:has(.client-row.open) .folder-tab {
+    border-color: rgba(91,63,212,0.5);
+    color: var(--purple-light);
+    background: rgba(255,255,255,0.9);
+  }
+
+  /* Category headers */
+  [data-theme="light"] .cat-label { color: #0d0a1a; }
+  [data-theme="light"] .cat-dot {
+    background: var(--purple-light);
+    box-shadow: 0 0 8px rgba(91,63,212,0.4);
+  }
+  [data-theme="light"] .cat-line {
+    background: linear-gradient(to right, rgba(91,63,212,0.3), transparent);
+  }
+
+  /* Reel */
+  [data-theme="light"] .reel-label { color: rgba(13,10,26,0.25); }
+  [data-theme="light"] .reel-card {
+    border-color: rgba(91,63,212,0.25);
+    box-shadow: 0 0 60px rgba(91,63,212,0.1);
+  }
+
+  /* Client count pill */
+  [data-theme="light"] .client-count {
+    color: var(--purple-mid) !important;
+    background: rgba(91,63,212,0.08) !important;
+    border-color: rgba(91,63,212,0.2) !important;
+  }
+
+  /* Video card */
+  [data-theme="light"] .video-card {
+    border-color: rgba(13,10,26,0.08);
+  }
+  [data-theme="light"] .video-card:hover { border-color: rgba(91,63,212,0.35); }
+
+  /* Video controls */
+  [data-theme="light"] .v-progress { background: rgba(13,10,26,0.15); }
+  [data-theme="light"] .v-time { color: rgba(13,10,26,0.5); }
+
+  /* Studio */
+  [data-theme="light"] .studio-desc-row p { color: rgba(13,10,26,0.6); }
+  [data-theme="light"] .studio-spec { color: rgba(13,10,26,0.5); }
+  [data-theme="light"] .studio-spec::before { background: var(--purple-light); }
+
+  /* Section bridge */
+  [data-theme="light"] .section-bridge p { color: rgba(13,10,26,0.12); }
+
+  /* About */
+  [data-theme="light"] .about-text p { color: rgba(13,10,26,0.65); }
+  [data-theme="light"] .about-text strong { color: #0d0a1a; }
+  [data-theme="light"] .about-photo-wrap { border-color: rgba(13,10,26,0.12); }
+
+  /* Contact */
+  [data-theme="light"] .contact-desc { color: rgba(13,10,26,0.6); }
+  [data-theme="light"] .form-input,
+  [data-theme="light"] .form-textarea {
+    background: rgba(13,10,26,0.04);
+    border-color: rgba(13,10,26,0.12);
+    color: #0d0a1a;
+  }
+  [data-theme="light"] .form-input::placeholder,
+  [data-theme="light"] .form-textarea::placeholder { color: rgba(13,10,26,0.25); }
+  [data-theme="light"] .form-input:focus,
+  [data-theme="light"] .form-textarea:focus { border-color: rgba(91,63,212,0.5); }
+  [data-theme="light"] .form-success {
+    background: rgba(91,63,212,0.06);
+    color: rgba(13,10,26,0.8);
+  }
+
+  /* Footer */
+  [data-theme="light"] .footer-logo { color: rgba(13,10,26,0.4); }
+
 </style>
 </head>
 <body>
@@ -1598,6 +1783,10 @@
     <li><a href="#contact">Contact</a></li>
   </ul>
   <span class="avail-badge"><span class="avail-dot"></span>Available</span>
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
   <button class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="nav-overlay" id="navOverlay">
@@ -1872,14 +2061,6 @@
       <span class="studio-badge-title">The Morphe<br>Studio.</span>
     </div>
   </div>
-  <div class="studio-gallery reveal">
-    <div class="studio-gallery-item">
-      <img src="photos/studio_photo_2.jpg" alt="Morphe Studio - Equipment">
-    </div>
-    <div class="studio-gallery-item">
-      <img src="photos/studio_photo_3.jpg" alt="Morphe Studio - Room">
-    </div>
-  </div>
   <div class="studio-desc-row reveal">
     <p>A purpose-built creative space designed for high-end production. Every frame that leaves Morphe passes through a color-calibrated, acoustically treated environment built to deliver precision at every step.</p>
     <div class="studio-specs">
@@ -1951,6 +2132,24 @@
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
 if (location.search || location.hash) history.replaceState(null, '', location.pathname);
+
+/* Theme toggle */
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+})();
+
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const next = isLight ? 'dark' : 'light';
+  if (next === 'dark') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+  localStorage.setItem('theme', next);
+}
+
 const vPlayers = new Map();
 const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
