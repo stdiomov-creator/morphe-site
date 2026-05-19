@@ -455,8 +455,17 @@
   /* Client header with brand pills */
   .client-header-left {
     display: flex;
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  .client-desc {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.1px;
+    line-height: 1.3;
   }
 
   .brand-pills {
@@ -1005,6 +1014,7 @@
     color: rgba(255,255,255,0.12); font-style: italic; line-height: 1.5;
   }
 
+  .mobile-cta { display: none; }
 
   /* ── Responsive ── */
   @media (max-width: 768px) {
@@ -1044,15 +1054,21 @@
     .reel-wrap { margin-bottom: 24px; }
     .video-col { flex: 0 0 100% !important; }
     .video-card:not(.video-card--h) { max-height: 72vh; }
-    .folder-wrap { margin-bottom: 8px; }
+    .folder-wrap { margin-bottom: 0; }
     .folder-tab { display: none !important; }
-    .client-panel { grid-template-rows: 1fr !important; transition: none !important; }
-    .client-header { cursor: default; padding: 14px 16px; }
+    .client-panel { grid-template-rows: 0fr; }
+    .client-header { cursor: pointer; padding: 14px; min-height: 88px; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 6px; }
+    .client-row.open .client-header { flex-direction: row; align-items: center; justify-content: space-between; min-height: unset; padding: 14px 16px; }
+    .work-category { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .cat-header { grid-column: 1 / -1; }
+    .folder-wrap:has(.client-row.open) { grid-column: 1 / -1; }
+    .client-name { font-size: 14px; }
+    .client-row.open .client-name { font-size: 17px !important; }
+    .client-desc { font-size: 10px; }
     .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)),
     .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)):hover {
       opacity: 1 !important; filter: none !important; transform: none !important;
     }
-    .client-name { font-size: 17px; }
     .client-meta { gap: 0; flex-shrink: 0; }
     .client-count { font-size: 8px !important; padding: 2px 5px !important; }
     .client-panel-inner { padding: 14px 12px 12px; }
@@ -1113,6 +1129,9 @@
     /* MISC */
     footer { padding: 20px; flex-direction: column; gap: 12px; text-align: center; }
     .back-top { bottom: 16px; right: 16px; width: 38px; height: 38px; }
+
+    .mobile-cta { display: flex; justify-content: center; padding: 0 20px 40px; }
+    .mobile-cta a { display: block; width: 100%; text-align: center; }
   }
 
   /* Disable custom cursor + remove all scale/tilt effects on touch devices */
@@ -1543,6 +1562,91 @@
     .studio-desc-row { grid-template-columns: 1fr; gap: 24px; margin-top: 24px; }
   }
 
+  /* ===== PRIVACY MODAL ===== */
+  .privacy-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .privacy-overlay.open { display: flex; }
+  .privacy-modal {
+    background: #141020;
+    border: 0.5px solid rgba(123,92,240,0.25);
+    border-radius: 16px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 36px;
+    position: relative;
+  }
+  .privacy-modal h2 {
+    font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+    margin-bottom: 6px; color: #fff;
+  }
+  .privacy-modal .privacy-updated {
+    font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 28px;
+  }
+  .privacy-modal h3 {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--purple-light);
+    margin: 22px 0 8px;
+  }
+  .privacy-modal p, .privacy-modal li {
+    font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.6);
+  }
+  .privacy-modal ul { padding-left: 18px; }
+  .privacy-modal a { color: var(--purple-light); }
+  .privacy-close {
+    position: absolute; top: 20px; right: 20px;
+    background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 6px; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: rgba(255,255,255,0.5);
+    font-size: 16px; line-height: 1;
+    transition: background 0.2s, color 0.2s;
+  }
+  .privacy-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+  /* ===== COOKIE BANNER ===== */
+  .cookie-banner {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(14,8,32,0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 0.5px solid rgba(123,92,240,0.2);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; z-index: 300;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .cookie-banner.visible { transform: translateY(0); }
+  .cookie-banner p {
+    font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.5; margin: 0;
+  }
+  .cookie-banner a { color: var(--purple-light); cursor: pointer; }
+  .cookie-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .cookie-accept {
+    padding: 8px 18px; background: var(--purple-mid); color: #fff;
+    border: none; border-radius: 6px; font-family: inherit;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .cookie-accept:hover { background: var(--purple-light); }
+  @media (max-width: 768px) {
+    .cookie-banner { flex-direction: column; align-items: flex-start; padding: 16px 20px; }
+    .cookie-actions { width: 100%; }
+    .cookie-accept { flex: 1; text-align: center; }
+  }
 
 </style>
 </head>
@@ -1664,6 +1768,7 @@
         <div class="client-header" onclick="toggleClient(this)">
           <div class="client-header-left">
             <span class="client-name">Дани Петканов</span>
+            <span class="client-desc">Influencer</span>
           </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
@@ -1680,7 +1785,10 @@
 
       <div class="client-row" data-client="minimart">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">Minimart</span>
+          <div class="client-header-left">
+            <span class="client-name">Minimart</span>
+            <span class="client-desc">Urban Grocery Network</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1700,7 +1808,10 @@
 
       <div class="client-row" data-client="vivek">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">Vivek</span>
+          <div class="client-header-left">
+            <span class="client-name">Vivek</span>
+            <span class="client-desc">IP Lawyer</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1712,7 +1823,10 @@
 
       <div class="client-row" data-client="creatorflow">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">CreatorFlow</span>
+          <div class="client-header-left">
+            <span class="client-name">CreatorFlow</span>
+            <span class="client-desc">Digital Growth Expert</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1724,7 +1838,10 @@
 
       <div class="client-row" data-client="clai">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">Clai</span>
+          <div class="client-header-left">
+            <span class="client-name">Clai</span>
+            <span class="client-desc">AI Realtor Assistant</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1734,7 +1851,10 @@
 
       <div class="client-row" data-client="blinkops">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">BlinkOps</span>
+          <div class="client-header-left">
+            <span class="client-name">BlinkOps</span>
+            <span class="client-desc">Agentic Security Operations Platform</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1744,7 +1864,10 @@
 
       <div class="client-row" data-client="gumofgods">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">Gum Of Gods</span>
+          <div class="client-header-left">
+            <span class="client-name">Gum Of Gods</span>
+            <span class="client-desc">Brand for Mastic Resin Gums</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1765,7 +1888,10 @@
 
       <div class="client-row" data-client="eva">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">Ева Николова</span>
+          <div class="client-header-left">
+            <span class="client-name">Ева Николова</span>
+            <span class="client-desc">PR &amp; Events Specialist</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1777,7 +1903,10 @@
 
       <div class="client-row" data-client="antoana">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">Антоанета Джубрилова</span>
+          <div class="client-header-left">
+            <span class="client-name">Антоанета Джубрилова</span>
+            <span class="client-desc">Marketing Specialist</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1797,7 +1926,9 @@
 
       <div class="client-row" data-client="personal">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">Personal High-End</span>
+          <div class="client-header-left">
+            <span class="client-name">Personal High-End</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1818,7 +1949,10 @@
 
       <div class="client-row" data-client="aylyakria">
         <div class="client-header" onclick="toggleClient(this)">
-          <span class="client-name">Aylyakria</span>
+          <div class="client-header-left">
+            <span class="client-name">Aylyakria</span>
+            <span class="client-desc">Gastro Bar</span>
+          </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
         <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
@@ -1831,6 +1965,10 @@
 
   </div>
 </section>
+
+<div class="mobile-cta">
+  <a href="#contact" class="btn-primary">Get in Touch</a>
+</div>
 
 <div class="section-bridge">
   <p>"Every frame is a decision. Every cut, a statement."</p>
@@ -1857,6 +1995,10 @@
     </div>
   </div>
 </section>
+
+<div class="mobile-cta">
+  <a href="#contact" class="btn-primary">Get in Touch</a>
+</div>
 
 <!-- ABOUT -->
 <section id="about">
@@ -1909,10 +2051,54 @@
   </div>
 </section>
 
+<!-- PRIVACY MODAL -->
+<div class="privacy-overlay" id="privacyOverlay" onclick="if(event.target===this)closePrivacy()">
+  <div class="privacy-modal">
+    <button class="privacy-close" onclick="closePrivacy()" aria-label="Close">&times;</button>
+    <h2>Privacy Policy</h2>
+    <p class="privacy-updated">Last updated: May 2026</p>
+
+    <h3>1. Who We Are</h3>
+    <p>This website is operated by Stefan Diomov, trading as Morphe Studio. Contact: <a href="mailto:stdiomov@gmail.com">stdiomov@gmail.com</a></p>
+
+    <h3>2. Data We Collect</h3>
+    <p>When you submit the contact form we collect your name, email address, phone number (optional), and message. No other personal data is collected by this site.</p>
+
+    <h3>3. How We Use Your Data</h3>
+    <p>Contact form data is used solely to respond to your enquiry and for potential business correspondence. We do not sell, rent, or share your data with third parties for marketing purposes.</p>
+
+    <h3>4. Third-Party Services</h3>
+    <ul>
+      <li><strong>Formspree</strong> — processes and stores contact form submissions on our behalf. See their privacy policy at <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener">formspree.io</a>.</li>
+      <li><strong>Vimeo</strong> — embeds video content. Vimeo may set cookies or use local storage when you interact with a video. See their privacy policy at <a href="https://vimeo.com/privacy" target="_blank" rel="noopener">vimeo.com/privacy</a>.</li>
+    </ul>
+
+    <h3>5. Cookies &amp; Local Storage</h3>
+    <p>This site does not use tracking cookies or analytics scripts. Vimeo's embedded player may set functional cookies when you play a video. We use browser local storage only to remember your cookie consent preference.</p>
+
+    <h3>6. Data Retention</h3>
+    <p>Contact form submissions are retained by Formspree for as long as necessary to respond to your enquiry, after which they may be deleted upon request.</p>
+
+    <h3>7. Your Rights (GDPR)</h3>
+    <p>Under the General Data Protection Regulation you have the right to: access your personal data, request its correction or deletion, object to or restrict processing, and data portability. You also have the right to lodge a complaint with a supervisory authority — in Bulgaria, the Commission for Personal Data Protection (<a href="https://www.cpdp.bg" target="_blank" rel="noopener">cpdp.bg</a>).</p>
+
+    <h3>8. Contact</h3>
+    <p>To exercise any of the above rights or for any data-related questions, email <a href="mailto:stdiomov@gmail.com">stdiomov@gmail.com</a>.</p>
+  </div>
+</div>
+
+<!-- COOKIE BANNER -->
+<div class="cookie-banner" id="cookieBanner">
+  <p>This site embeds Vimeo videos which may use cookies. By continuing to browse you agree to their use. <a onclick="openPrivacy()">Privacy Policy</a></p>
+  <div class="cookie-actions">
+    <button class="cookie-accept" onclick="acceptCookies()">Accept</button>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <span class="footer-logo">Morphe.</span>
-  <span class="footer-copy">&copy; 2025 Stefan Diomov / Morphe.</span>
+  <span class="footer-copy">&copy; 2025 Stefan Diomov / Morphe. &nbsp;·&nbsp; <a onclick="openPrivacy()" style="color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;">Privacy Policy</a></span>
 </footer>
 
 <script src="https://player.vimeo.com/api/player.js"></script>
@@ -1921,6 +2107,18 @@ if (location.search || location.hash) history.replaceState(null, '', location.pa
 
 const vPlayers = new Map();
 const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+function openPrivacy() { document.getElementById('privacyOverlay').classList.add('open'); }
+function closePrivacy() { document.getElementById('privacyOverlay').classList.remove('open'); }
+function acceptCookies() {
+  localStorage.setItem('cookiesAccepted','1');
+  document.getElementById('cookieBanner').classList.remove('visible');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  if (!localStorage.getItem('cookiesAccepted')) {
+    setTimeout(() => document.getElementById('cookieBanner').classList.add('visible'), 1200);
+  }
+});
 
 function fmt(s) {
   s = Math.floor(s);
@@ -2115,7 +2313,6 @@ if (isTouch) {
 }
 
 function toggleClient(header, skipScroll) {
-  if (isTouch) return;
   const row = header.closest('.client-row');
   const panel = row.querySelector('.client-panel');
   const isOpen = row.classList.contains('open');
@@ -2392,7 +2589,7 @@ window.addEventListener('scroll', () => {
 
 // Auto-open first client row
 const firstRow = document.querySelector('.client-row');
-if (firstRow) toggleClient(firstRow.querySelector('.client-header'), true);
+if (firstRow && !isTouch) toggleClient(firstRow.querySelector('.client-header'), true);
 
 // Client row enhancements — thumbnails + category/count meta
 const clientMeta = {
