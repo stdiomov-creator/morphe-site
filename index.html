@@ -1043,7 +1043,7 @@
     .btn-primary, .btn-outline { width: 100%; max-width: 240px; text-align: center; justify-content: center; }
     .scroll-indicator { margin-top: 16px; }
 
-    body { overscroll-behavior-y: contain; }
+    body { overscroll-behavior: none; }
 
     /* STATS */
     .stats-bar { margin-bottom: 28px; }
@@ -1072,32 +1072,14 @@
     .folder-wrap { margin-bottom: 0; }
     .folder-tab { display: none !important; }
     .client-panel { grid-template-rows: 0fr; }
-    .client-header { cursor: pointer; padding: 14px; min-height: 92px; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 5px; isolation: isolate; }
-    .client-row.open .client-header { flex-direction: row; align-items: center; justify-content: space-between; min-height: unset; padding: 14px 16px; isolation: auto; }
-    .work-category { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .client-header { cursor: pointer; padding: 14px; min-height: 92px; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 5px; background: linear-gradient(145deg, rgba(28,16,58,0.95), rgba(12,6,28,0.98)); }
+    .client-row.open .client-header { flex-direction: row; align-items: center; justify-content: space-between; min-height: unset; padding: 14px 16px; background: none; }
+    .work-category { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px; }
     .cat-header { grid-column: 1 / -1; }
     .folder-wrap:has(.client-row.open) { grid-column: 1 / -1; }
     .client-name { font-size: 14px; }
     .client-row.open .client-name { font-size: 17px !important; }
     .client-desc { font-size: 10px; }
-
-    /* Thumbnail in collapsed mobile tile */
-    .client-thumb {
-      display: block;
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      overflow: hidden;
-      border-radius: inherit;
-      pointer-events: none;
-    }
-    .client-thumb img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      opacity: 0.22;
-      filter: saturate(0.5);
-    }
-    .client-row.open .client-thumb { display: none; }
 
     /* Tap-to-expand hint */
     .client-header::after {
@@ -1113,9 +1095,10 @@
     }
     .client-row.open .client-header::after { display: none; }
 
-    /* Instagram scroll fix — prevent video-cols from shrinking on viewport resize */
-    .video-grid { width: 100%; contain: inline-size; }
-    .client-panel-inner { width: 100%; }
+    /* Instagram scroll fix — prevent reflow when viewport resizes */
+    .client-panel-inner { width: 100%; transform: translateZ(0); -webkit-transform: translateZ(0); }
+    .video-grid { width: 100%; }
+    .video-col { min-width: 0; }
     .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)),
     .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)):hover {
       opacity: 1 !important; filter: none !important; transform: none !important;
@@ -1468,43 +1451,28 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
-    min-height: 180px;
-    padding: 18px 20px;
-    isolation: isolate;
-    background: linear-gradient(to top, rgba(10,5,20,0.95) 42%, rgba(10,5,20,0.35) 100%);
+    min-height: 210px;
+    padding: 22px 24px;
+    background: linear-gradient(145deg, rgba(28,16,58,0.95), rgba(12,6,28,0.98));
     cursor: pointer;
-    gap: 4px;
+    gap: 6px;
+    transition: background 0.3s;
   }
-  .folder-wrap:not(:has(.client-row.open)) .client-thumb {
-    display: block;
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    overflow: hidden;
-    border-radius: inherit;
-    pointer-events: none;
+  .folder-wrap:hover:not(:has(.client-row.open)) .client-header {
+    background: linear-gradient(145deg, rgba(50,28,100,0.95), rgba(20,10,45,0.98));
   }
-  .folder-wrap:not(:has(.client-row.open)) .client-thumb img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    opacity: 0.28;
-    transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
-    filter: saturate(0.7);
+  .folder-wrap:not(:has(.client-row.open)) .client-name {
+    font-size: 26px;
+    letter-spacing: -0.5px;
   }
-  .folder-wrap:hover:not(:has(.client-row.open)) .client-thumb img {
-    opacity: 0.55;
-    transform: scale(1.06);
-    filter: saturate(1);
-  }
-  .folder-wrap:not(:has(.client-row.open)) .client-name { font-size: 22px; }
   .folder-wrap:not(:has(.client-row.open)) .client-desc {
-    font-size: 13px;
+    font-size: 14px;
     color: rgba(255,255,255,0.5);
   }
   .folder-wrap:not(:has(.client-row.open)) .client-meta {
     position: absolute;
-    top: 12px;
-    right: 14px;
+    top: 14px;
+    right: 16px;
   }
 
   /* Back to top */
