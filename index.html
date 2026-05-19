@@ -408,7 +408,7 @@
   }
 
   .client-name {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 700;
     letter-spacing: -0.5px;
     color: #fff;
@@ -442,12 +442,14 @@
   .client-panel {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 0.45s cubic-bezier(0.22,1,0.36,1);
+    overflow: hidden;
+    transition: grid-template-rows 0.5s cubic-bezier(0.22,1,0.36,1);
   }
   .client-row.open .client-panel { grid-template-rows: 1fr; }
 
   .client-panel-inner {
     overflow: hidden;
+    min-height: 0;
     border-top: 0.5px solid rgba(255,255,255,0.08);
     padding: 24px 28px 28px;
   }
@@ -461,9 +463,9 @@
   }
 
   .client-desc {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 400;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.45);
     letter-spacing: 0.1px;
     line-height: 1.3;
   }
@@ -1046,25 +1048,74 @@
     /* STATS */
     .stats-bar { margin-bottom: 28px; }
     .stat-item { padding: 12px 0; }
-    .stat-num { font-size: 11px !important; letter-spacing: 0 !important; }
+    .stat-num { font-size: clamp(18px, 5vw, 26px) !important; letter-spacing: -1px !important; }
     .stat-label { font-size: 8px; letter-spacing: 1.5px; }
+
+    /* MOBILE BACKGROUND */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 55% at 10% 5%, rgba(91,63,212,0.28) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 88% 55%, rgba(61,43,160,0.2) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 45% at 40% 95%, rgba(123,92,240,0.18) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
     /* WORK */
     .section-heading { font-size: clamp(30px, 8vw, 48px); letter-spacing: -1px; margin-bottom: 24px; }
     .reel-wrap { margin-bottom: 24px; }
-    .video-col { flex: 0 0 100% !important; }
+    .video-col { flex: 0 0 100% !important; flex-shrink: 0 !important; width: 100%; }
     .video-card:not(.video-card--h) { max-height: 72vh; }
     .folder-wrap { margin-bottom: 0; }
     .folder-tab { display: none !important; }
     .client-panel { grid-template-rows: 0fr; }
-    .client-header { cursor: pointer; padding: 14px; min-height: 88px; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 6px; }
-    .client-row.open .client-header { flex-direction: row; align-items: center; justify-content: space-between; min-height: unset; padding: 14px 16px; }
+    .client-header { cursor: pointer; padding: 14px; min-height: 92px; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 5px; isolation: isolate; }
+    .client-row.open .client-header { flex-direction: row; align-items: center; justify-content: space-between; min-height: unset; padding: 14px 16px; isolation: auto; }
     .work-category { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .cat-header { grid-column: 1 / -1; }
     .folder-wrap:has(.client-row.open) { grid-column: 1 / -1; }
     .client-name { font-size: 14px; }
     .client-row.open .client-name { font-size: 17px !important; }
     .client-desc { font-size: 10px; }
+
+    /* Thumbnail in collapsed mobile tile */
+    .client-thumb {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      border-radius: inherit;
+      pointer-events: none;
+    }
+    .client-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.22;
+      filter: saturate(0.5);
+    }
+    .client-row.open .client-thumb { display: none; }
+
+    /* Tap-to-expand hint */
+    .client-header::after {
+      content: '↓';
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.28);
+      letter-spacing: 0;
+      pointer-events: none;
+    }
+    .client-row.open .client-header::after { display: none; }
+
+    /* Instagram scroll fix — prevent video-cols from shrinking on viewport resize */
+    .video-grid { width: 100%; contain: inline-size; }
+    .client-panel-inner { width: 100%; }
     .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)),
     .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)):hover {
       opacity: 1 !important; filter: none !important; transform: none !important;
@@ -1399,6 +1450,61 @@
     border: 0.5px solid rgba(123,92,240,0.3);
     border-radius: 20px; padding: 6px 18px; font-weight: 700; white-space: nowrap;
     letter-spacing: 0.2px;
+  }
+
+  /* ===== DESKTOP FOLDER CARD GRID ===== */
+  .work-category {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 14px;
+    row-gap: 14px;
+    align-items: start;
+  }
+  .cat-header { grid-column: 1 / -1; }
+  .folder-wrap:has(.client-row.open) { grid-column: 1 / -1; }
+
+  /* Collapsed folder card */
+  .folder-wrap:not(:has(.client-row.open)) .client-header {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    min-height: 180px;
+    padding: 18px 20px;
+    isolation: isolate;
+    background: linear-gradient(to top, rgba(10,5,20,0.95) 42%, rgba(10,5,20,0.35) 100%);
+    cursor: pointer;
+    gap: 4px;
+  }
+  .folder-wrap:not(:has(.client-row.open)) .client-thumb {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .folder-wrap:not(:has(.client-row.open)) .client-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.28;
+    transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    filter: saturate(0.7);
+  }
+  .folder-wrap:hover:not(:has(.client-row.open)) .client-thumb img {
+    opacity: 0.55;
+    transform: scale(1.06);
+    filter: saturate(1);
+  }
+  .folder-wrap:not(:has(.client-row.open)) .client-name { font-size: 22px; }
+  .folder-wrap:not(:has(.client-row.open)) .client-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+  .folder-wrap:not(:has(.client-row.open)) .client-meta {
+    position: absolute;
+    top: 12px;
+    right: 14px;
   }
 
   /* Back to top */
