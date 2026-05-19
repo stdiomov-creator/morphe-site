@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-visual">
 <title>Morphe. · Stefan Diomov</title>
 <meta name="description" content="Stefan Diomov - Video Editor, VFX & Motion Graphics. 85+ projects for 30+ clients including Coca-Cola, Maretti and more.">
 <meta property="og:title" content="Morphe. · Stefan Diomov">
@@ -1072,28 +1072,58 @@
     .folder-wrap { margin-bottom: 0; }
     .folder-tab { display: none !important; }
     .client-panel { grid-template-rows: 0fr; }
-    .client-header { cursor: pointer; padding: 14px; min-height: 92px; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 5px; background: linear-gradient(145deg, rgba(28,16,58,0.95), rgba(12,6,28,0.98)); }
-    .client-row.open .client-header { flex-direction: row; align-items: center; justify-content: space-between; min-height: unset; padding: 14px 16px; background: none; }
-    .work-category { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px; }
+    .work-category { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .cat-header { grid-column: 1 / -1; }
     .folder-wrap:has(.client-row.open) { grid-column: 1 / -1; }
-    .client-name { font-size: 14px; }
-    .client-row.open .client-name { font-size: 17px !important; }
-    .client-desc { font-size: 10px; }
 
-    /* Tap-to-expand hint */
+    /* Collapsed tile — fixed uniform height */
+    .client-header {
+      cursor: pointer;
+      padding: 12px 14px;
+      height: 90px;
+      min-height: unset;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      gap: 4px;
+      background: linear-gradient(145deg, rgba(28,16,58,0.95), rgba(12,6,28,0.98));
+      position: relative;
+    }
+    /* Hide desc in collapsed tiles — keeps heights uniform */
+    .client-desc { display: none; }
+    .client-name { font-size: 13px; font-weight: 700; }
+
+    /* Hide pill + arrow in collapsed tiles — clean look, no overlap */
+    .folder-wrap:not(:has(.client-row.open)) .client-meta { display: none; }
+    .folder-wrap:not(:has(.client-row.open)) .client-arrow { display: none; }
+
+    /* Tap-to-expand hint — top-right corner */
     .client-header::after {
       content: '↓';
       position: absolute;
       top: 10px;
-      right: 12px;
-      font-size: 11px;
+      right: 10px;
+      font-size: 10px;
       font-weight: 600;
       color: rgba(255,255,255,0.28);
       letter-spacing: 0;
       pointer-events: none;
     }
     .client-row.open .client-header::after { display: none; }
+
+    /* Open state header */
+    .client-row.open .client-header {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      height: auto;
+      min-height: unset;
+      padding: 14px 16px;
+      background: none;
+    }
+    .client-row.open .client-name { font-size: 17px !important; }
+    .client-row.open .client-desc { display: block; font-size: 10px; }
+    .client-row.open .client-meta { display: flex; }
 
     /* Instagram scroll fix — prevent reflow when viewport resizes */
     .client-panel-inner { width: 100%; transform: translateZ(0); -webkit-transform: translateZ(0); }
@@ -1436,43 +1466,45 @@
   }
 
   /* ===== DESKTOP FOLDER CARD GRID ===== */
-  .work-category {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 14px;
-    row-gap: 14px;
-    align-items: start;
-  }
-  .cat-header { grid-column: 1 / -1; }
-  .folder-wrap:has(.client-row.open) { grid-column: 1 / -1; }
+  @media (min-width: 769px) {
+    .work-category {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 16px;
+      row-gap: 16px;
+      align-items: start;
+    }
+    .cat-header { grid-column: 1 / -1; }
+    .folder-wrap:has(.client-row.open) { grid-column: 1 / -1; }
 
-  /* Collapsed folder card */
-  .folder-wrap:not(:has(.client-row.open)) .client-header {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    min-height: 210px;
-    padding: 22px 24px;
-    background: linear-gradient(145deg, rgba(28,16,58,0.95), rgba(12,6,28,0.98));
-    cursor: pointer;
-    gap: 6px;
-    transition: background 0.3s;
-  }
-  .folder-wrap:hover:not(:has(.client-row.open)) .client-header {
-    background: linear-gradient(145deg, rgba(50,28,100,0.95), rgba(20,10,45,0.98));
-  }
-  .folder-wrap:not(:has(.client-row.open)) .client-name {
-    font-size: 26px;
-    letter-spacing: -0.5px;
-  }
-  .folder-wrap:not(:has(.client-row.open)) .client-desc {
-    font-size: 14px;
-    color: rgba(255,255,255,0.5);
-  }
-  .folder-wrap:not(:has(.client-row.open)) .client-meta {
-    position: absolute;
-    top: 14px;
-    right: 16px;
+    /* Collapsed folder card */
+    .folder-wrap:not(:has(.client-row.open)) .client-header {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      min-height: 155px;
+      padding: 22px 24px;
+      background: linear-gradient(145deg, rgba(28,16,58,0.95), rgba(12,6,28,0.98));
+      cursor: pointer;
+      gap: 6px;
+      transition: background 0.3s;
+    }
+    .folder-wrap:hover:not(:has(.client-row.open)) .client-header {
+      background: linear-gradient(145deg, rgba(50,28,100,0.95), rgba(20,10,45,0.98));
+    }
+    .folder-wrap:not(:has(.client-row.open)) .client-name {
+      font-size: 28px;
+      letter-spacing: -0.5px;
+    }
+    .folder-wrap:not(:has(.client-row.open)) .client-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+    }
+    .folder-wrap:not(:has(.client-row.open)) .client-meta {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+    }
   }
 
   /* Back to top */
