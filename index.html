@@ -1064,78 +1064,69 @@
       z-index: 0;
     }
 
-    /* WORK */
-    .section-heading { font-size: clamp(30px, 8vw, 48px); letter-spacing: -1px; margin-bottom: 24px; }
-    .reel-wrap { margin-bottom: 24px; }
-    .video-col { flex: 0 0 100% !important; flex-shrink: 0 !important; width: 100%; }
-    .video-card:not(.video-card--h) { max-height: 72vh; }
-    .folder-wrap { margin-bottom: 0; }
+    /* WORK — flat single-column list */
+    .section-heading { font-size: clamp(30px, 8vw, 48px); letter-spacing: -1px; margin-bottom: 20px; }
+    .reel-wrap { margin-bottom: 20px; }
     .folder-tab { display: none !important; }
-    .client-panel { grid-template-rows: 0fr; }
-    .work-category { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .cat-header { grid-column: 1 / -1; }
-    .folder-wrap:has(.client-row.open) { grid-column: 1 / -1; }
+    .client-panel { grid-template-rows: 0fr !important; }
 
-    /* Collapsed tile — fixed uniform height */
+    /* Remove category grid — flat list */
+    .work-category { display: block; padding: 0; margin-bottom: 0; }
+    .work-category + .work-category { margin-top: 0; }
+    .cat-header { display: none; }
+    .folder-wrap { margin-bottom: 6px; border-radius: 12px; overflow: hidden; }
+
+    /* Horizontal card row */
     .client-header {
       cursor: pointer;
-      padding: 12px 14px;
-      height: 90px;
+      height: 72px;
       min-height: unset;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-end;
-      gap: 4px;
-      background: linear-gradient(145deg, rgba(28,16,58,0.95), rgba(12,6,28,0.98));
-      position: relative;
-    }
-    /* Hide desc in collapsed tiles — keeps heights uniform */
-    .client-desc { display: none; }
-    .client-name { font-size: 13px; font-weight: 700; }
-
-    /* Hide pill + arrow in collapsed tiles — clean look, no overlap */
-    .folder-wrap:not(:has(.client-row.open)) .client-meta { display: none; }
-    .folder-wrap:not(:has(.client-row.open)) .client-arrow { display: none; }
-
-    /* Tap-to-expand hint — top-right corner */
-    .client-header::after {
-      content: '↓';
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 10px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.28);
-      letter-spacing: 0;
-      pointer-events: none;
-    }
-    .client-row.open .client-header::after { display: none; }
-
-    /* Open state header */
-    .client-row.open .client-header {
+      padding: 0 16px;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      height: auto;
-      min-height: unset;
-      padding: 14px 16px;
-      background: none;
+      background: linear-gradient(135deg, rgba(24,13,50,0.97), rgba(10,5,24,0.99));
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
     }
-    .client-row.open .client-name { font-size: 17px !important; }
-    .client-row.open .client-desc { display: block; font-size: 10px; }
-    .client-row.open .client-meta { display: flex; }
 
-    /* Instagram scroll fix — prevent reflow when viewport resizes */
-    .client-panel-inner { width: 100%; transform: translateZ(0); -webkit-transform: translateZ(0); }
-    .video-grid { width: 100%; }
-    .video-col { min-width: 0; }
-    .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)),
-    .work-list:has(.client-row.open) .folder-wrap:not(:has(.client-row.open)):hover {
-      opacity: 1 !important; filter: none !important; transform: none !important;
+    /* Thumbnail tint via --thumb CSS var set by JS */
+    .client-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--thumb, transparent) center/cover no-repeat;
+      opacity: 0.18;
+      pointer-events: none;
     }
-    .client-meta { gap: 0; flex-shrink: 0; }
-    .client-count { font-size: 8px !important; padding: 2px 5px !important; }
-    .client-panel-inner { padding: 14px 12px 12px; }
+
+    /* Category color left accent bar */
+    .work-category[data-cat="ads"]     .folder-wrap .client-header { border-left: 3px solid #7B5CF0; }
+    .work-category[data-cat="motion"]  .folder-wrap .client-header { border-left: 3px solid #4EA8FF; }
+    .work-category[data-cat="studio"]  .folder-wrap .client-header { border-left: 3px solid #FFB347; }
+    .work-category[data-cat="vfx"]     .folder-wrap .client-header { border-left: 3px solid #5AFFA0; }
+    .work-category[data-cat="organic"] .folder-wrap .client-header { border-left: 3px solid #FF6B9D; }
+
+    .client-header-left { position: relative; z-index: 1; flex: 1; min-width: 0; }
+    .client-name { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .client-desc { display: none; }
+    .client-meta { display: none; }
+    .client-arrow { display: none; }
+
+    /* Right chevron tap hint */
+    .client-header::after {
+      content: '›';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 22px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.22);
+      pointer-events: none;
+      z-index: 1;
+    }
 
     /* ABOUT */
     .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 32px; }
@@ -1191,11 +1182,51 @@
     .brand-pills { display: none; }
 
     /* MISC */
-    footer { padding: 20px; flex-direction: column; gap: 12px; text-align: center; }
-    .back-top { bottom: 16px; right: 16px; width: 38px; height: 38px; }
+    footer { padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px)); flex-direction: column; gap: 12px; text-align: center; }
+    .back-top { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); right: 16px; width: 38px; height: 38px; }
 
-    .mobile-cta { display: flex; justify-content: center; padding: 0 20px 40px; }
-    .mobile-cta a { display: block; width: 100%; text-align: center; }
+    /* Hide the 3rd stat (Years) — only show Projects + Clients */
+    .stat-item:last-child { display: none; }
+    .stats-bar { justify-content: center; gap: 0; }
+    .stat-item { border-right: none; padding: 12px 28px; }
+    .stat-item:first-child { border-right: 0.5px solid rgba(255,255,255,0.1); }
+
+    /* Bottom nav space */
+    body { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+
+    /* Mob-nav */
+    .mob-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: calc(56px + env(safe-area-inset-bottom, 0px));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: rgba(10,5,22,0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 0.5px solid rgba(255,255,255,0.07);
+      z-index: 250;
+      align-items: stretch;
+    }
+    .mob-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 0;
+      color: rgba(255,255,255,0.38);
+      text-decoration: none;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .mob-nav-item svg { width: 19px; height: 19px; flex-shrink: 0; }
+    .mob-nav-item.active { color: var(--purple-light); }
+    .mob-nav-item:active { color: rgba(255,255,255,0.7); }
   }
 
   /* Disable custom cursor + remove all scale/tilt effects on touch devices */
@@ -1754,6 +1785,73 @@
     .cookie-accept { flex: 1; text-align: center; }
   }
 
+  /* ===== MOBILE VIDEO MODAL ===== */
+  #vid-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 400;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.28s;
+  }
+  #vid-modal.open { opacity: 1; pointer-events: auto; }
+  body.modal-open { overflow: hidden; }
+
+  .vid-sheet {
+    width: 100%;
+    background: linear-gradient(180deg, #1c1040 0%, #0d0820 100%);
+    border: 0.5px solid rgba(123,92,240,0.2);
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.38s cubic-bezier(0.22,1,0.36,1);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #vid-modal.open .vid-sheet { transform: translateY(0); }
+
+  .vid-sheet-handle {
+    width: 36px; height: 4px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 2px;
+    margin: 12px auto 0;
+    flex-shrink: 0;
+  }
+  .vid-sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 10px;
+    flex-shrink: 0;
+  }
+  .vid-sheet-name {
+    font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: #fff;
+  }
+  .vid-sheet-desc {
+    font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; letter-spacing: 0.2px;
+  }
+  .vid-sheet-close {
+    background: rgba(255,255,255,0.07);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 50%; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.55); font-size: 14px;
+    cursor: pointer; flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
+  }
+  .vid-sheet-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+  .vid-sheet-body {
+    flex: 1; overflow-y: auto;
+    padding: 4px 0 20px;
+  }
+  .vid-sheet-body .video-card { border-radius: 0; border: none; width: 100%; }
+
+  /* Bottom nav — hidden on desktop, shown on mobile via media query */
+  .mob-nav { display: none; }
+
 </style>
 </head>
 <body>
@@ -1915,7 +2013,7 @@
       <div class="client-row" data-client="vivek">
         <div class="client-header" onclick="toggleClient(this)">
           <div class="client-header-left">
-            <span class="client-name">Vivek</span>
+            <span class="client-name">Vivek Jayaram</span>
             <span class="client-desc">IP Lawyer</span>
           </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
@@ -2033,7 +2131,7 @@
       <div class="client-row" data-client="personal">
         <div class="client-header" onclick="toggleClient(this)">
           <div class="client-header-left">
-            <span class="client-name">Personal High-End</span>
+            <span class="client-name">Morphe. Originals</span>
           </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
@@ -2072,10 +2170,6 @@
   </div>
 </section>
 
-<div class="mobile-cta">
-  <a href="#contact" class="btn-primary">Get in Touch</a>
-</div>
-
 <div class="section-bridge">
   <p>"Every frame is a decision. Every cut, a statement."</p>
 </div>
@@ -2101,10 +2195,6 @@
     </div>
   </div>
 </section>
-
-<div class="mobile-cta">
-  <a href="#contact" class="btn-primary">Get in Touch</a>
-</div>
 
 <!-- ABOUT -->
 <section id="about">
@@ -2200,6 +2290,37 @@
     <button class="cookie-accept" onclick="acceptCookies()">Accept</button>
   </div>
 </div>
+
+<!-- MOBILE VIDEO MODAL -->
+<div id="vid-modal" onclick="if(event.target===this)closeVidModal()">
+  <div class="vid-sheet">
+    <div class="vid-sheet-handle"></div>
+    <div class="vid-sheet-head">
+      <div class="vid-sheet-info">
+        <div class="vid-sheet-name"></div>
+        <div class="vid-sheet-desc"></div>
+      </div>
+      <button class="vid-sheet-close" onclick="closeVidModal()">✕</button>
+    </div>
+    <div class="vid-sheet-body"></div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mob-nav" id="mobNav">
+  <a href="#work" class="mob-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    <span>Work</span>
+  </a>
+  <a href="#studio" class="mob-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    <span>Studio</span>
+  </a>
+  <a href="#contact" class="mob-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>Contact</span>
+  </a>
+</nav>
 
 <!-- FOOTER -->
 <footer>
@@ -2403,22 +2524,48 @@ function initVideoCard(card) {
 // Initialize showreel immediately; all other cards load lazily on accordion open
 document.querySelectorAll('.reel-card .video-card[data-vid]').forEach(initVideoCard);
 
-// On mobile: panels are always open, lazy-init each card as it scrolls into view
-if (isTouch) {
-  const mobileVidObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        initVideoCard(e.target);
-        mobileVidObserver.unobserve(e.target);
-      }
-    });
-  }, { rootMargin: '400px 0px', threshold: 0 });
-  document.querySelectorAll('.work-list .video-card[data-vid]').forEach(card => {
-    mobileVidObserver.observe(card);
+// Mobile: open video in bottom-sheet modal instead of inline expand
+function openMobileModal(header) {
+  const row    = header.closest('.client-row');
+  const name   = row.querySelector('.client-name')?.textContent?.trim() || '';
+  const desc   = row.querySelector('.client-desc')?.textContent?.trim() || '';
+  const first  = row.querySelector('.video-card[data-vid]');
+  if (!first) return;
+
+  vPlayers.forEach(p => p.pause().catch(() => {}));
+
+  document.querySelector('.vid-sheet-name').textContent = name;
+  document.querySelector('.vid-sheet-desc').textContent = desc;
+
+  const body = document.querySelector('.vid-sheet-body');
+  body.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'video-card';
+  card.dataset.vid = first.dataset.vid;
+  body.appendChild(card);
+  initVideoCard(card);
+
+  const modal = document.getElementById('vid-modal');
+  modal.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
+  document.body.classList.add('modal-open');
+}
+
+function closeVidModal() {
+  const modal = document.getElementById('vid-modal');
+  modal.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  document.querySelector('.vid-sheet-body').querySelectorAll('iframe').forEach(f => {
+    const p = vPlayers.get(f); if (p) p.pause().catch(() => {});
   });
+  setTimeout(() => {
+    document.querySelector('.vid-sheet-body').innerHTML = '';
+    modal.style.display = 'none';
+  }, 420);
 }
 
 function toggleClient(header, skipScroll) {
+  if (isTouch) { openMobileModal(header); return; }
   const row = header.closest('.client-row');
   const panel = row.querySelector('.client-panel');
   const isOpen = row.classList.contains('open');
@@ -2614,7 +2761,12 @@ window.addEventListener('scroll', () => {
   navLinks.forEach(link => {
     link.classList.toggle('active', link.getAttribute('href') === '#' + current);
   });
-});
+  // Mobile bottom nav active state
+  document.querySelectorAll('.mob-nav-item').forEach(link => {
+    const target = link.getAttribute('href').slice(1);
+    link.classList.toggle('active', target === current || (target === 'work' && (current === 'hero' || current === '')));
+  });
+}, { passive: true });
 
 // Contact form submission via Formspree
 const form = document.getElementById('contactForm');
@@ -2709,7 +2861,7 @@ const clientMeta = {
   'blinkops':    { cat: 'Tech · SaaS',        count: '2' },
   'clai':        { cat: 'Brand',              count: '1' },
   'gumofgods':   { cat: 'Product',            count: '44+' },
-  'personal':    { cat: 'Personal',           count: '3' },
+  'personal':    { cat: 'VFX · Originals',     count: '3' },
 };
 
 document.querySelectorAll('.client-row').forEach(row => {
@@ -2738,7 +2890,10 @@ document.querySelectorAll('.client-row').forEach(row => {
   const firstCard = row.querySelector('[data-vid]');
   if (firstCard) {
     fetchThumb(firstCard.dataset.vid).then(url => {
-      if (url) { const img = document.createElement('img'); img.src = url; img.alt = ''; thumb.appendChild(img); }
+      if (url) {
+        const img = document.createElement('img'); img.src = url; img.alt = ''; thumb.appendChild(img);
+        if (isTouch) header.style.setProperty('--thumb', `url(${url})`);
+      }
     });
   }
 
