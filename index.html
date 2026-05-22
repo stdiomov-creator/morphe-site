@@ -1108,7 +1108,7 @@
     .client-header-left { position: relative; z-index: 1; flex: 1; min-width: 0; padding-right: 8px; }
     .client-name { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .client-desc { display: block; font-size: 10px; color: rgba(255,255,255,0.42); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .client-meta { display: none; }
+    .client-meta { display: none !important; }
     .client-arrow { display: none; }
 
     /* "OPEN" tap hint — right side */
@@ -1134,10 +1134,9 @@
     .contact-inner { grid-template-columns: 1fr; gap: 32px; }
     .about-photo-wrap {
       position: static; order: -1;
-      width: 88px; height: 88px; max-width: none;
+      width: 176px; height: 176px; max-width: none;
       border-radius: 50%; overflow: hidden;
-      border: 1.5px solid rgba(255,255,255,0.55);
-      box-shadow: 0 0 0 5px rgba(123,92,240,0.18);
+      border: 1.5px solid rgba(255,255,255,0.45);
       margin: 0 auto;
       flex-shrink: 0;
     }
@@ -1190,21 +1189,24 @@
     .v-btn { padding: 8px; }
     .v-btn svg { width: 18px; height: 18px; }
 
-    /* Modal video — height-driven so it never crops */
-    .vid-sheet { max-height: 95svh; max-height: 95vh; }
-    .vid-sheet-head { padding: 10px 16px 8px; }
+    /* Modal — taller, rounded video, centered */
+    .vid-sheet { max-height: 98svh; max-height: 98vh; }
+    .vid-sheet-head { padding: 8px 16px 4px; }
     .vid-sheet-body {
       flex: 1; min-height: 0;
       overflow: hidden;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
+      padding: 10px 10px 18px;
     }
     .vid-sheet-body .video-card {
       height: 100%; width: auto !important;
       aspect-ratio: 9/16;
       max-width: 100%;
-      border-radius: 0 !important; border: none !important;
+      border-radius: 16px !important;
+      border: none !important;
+      overflow: hidden;
     }
 
     /* Hide section bridge — unnecessary on mobile */
@@ -1827,9 +1829,11 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.28s;
+    touch-action: none;
+    overscroll-behavior: none;
   }
   #vid-modal.open { opacity: 1; pointer-events: auto; }
-  body.modal-open { overflow: hidden; }
+  body.modal-open { overflow: hidden; touch-action: none; }
 
   .vid-sheet {
     width: 100%;
@@ -2566,25 +2570,14 @@ function openMobileModal(header) {
 
   const modal = document.getElementById('vid-modal');
   modal.style.display = 'flex';
-
-  // iOS scroll lock: freeze body at current scroll position
-  const sy = window.scrollY;
-  document.body.style.cssText += `;position:fixed;top:-${sy}px;width:100%;`;
-  modal._scrollY = sy;
-
+  document.body.classList.add('modal-open');
   requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
 }
 
 function closeVidModal() {
   const modal = document.getElementById('vid-modal');
   modal.classList.remove('open');
-
-  // Restore iOS scroll
-  const sy = modal._scrollY || 0;
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.width = '';
-  window.scrollTo(0, sy);
+  document.body.classList.remove('modal-open');
 
   document.querySelector('.vid-sheet-body').querySelectorAll('iframe').forEach(f => {
     const p = vPlayers.get(f); if (p) p.pause().catch(() => {});
