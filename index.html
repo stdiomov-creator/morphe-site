@@ -1057,16 +1057,18 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 90% 55% at 10% 5%, rgba(91,63,212,0.28) 0%, transparent 60%),
-        radial-gradient(ellipse 70% 50% at 88% 55%, rgba(61,43,160,0.2) 0%, transparent 55%),
-        radial-gradient(ellipse 80% 45% at 40% 95%, rgba(123,92,240,0.18) 0%, transparent 60%);
+        radial-gradient(ellipse 110% 65% at 5% 2%,  rgba(91,63,212,0.55) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 60% at 95% 45%,  rgba(61,43,160,0.40) 0%, transparent 55%),
+        radial-gradient(ellipse 90% 50% at 50% 100%, rgba(123,92,240,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 8%,  rgba(160,80,255,0.22) 0%, transparent 50%),
+        radial-gradient(ellipse 70% 45% at 15% 68%, rgba(70,35,170,0.30) 0%, transparent 55%);
       pointer-events: none;
       z-index: 0;
     }
 
     /* WORK — flat single-column list */
     .section-heading { font-size: clamp(30px, 8vw, 48px); letter-spacing: -1px; margin-bottom: 20px; }
-    .reel-wrap { margin-bottom: 20px; }
+    .reel-wrap { display: none; }
     .folder-tab { display: none !important; }
     .client-panel { grid-template-rows: 0fr !important; }
 
@@ -1079,58 +1081,69 @@
     /* Horizontal card row */
     .client-header {
       cursor: pointer;
-      height: 72px;
+      height: 80px;
       min-height: unset;
       padding: 0 16px;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(135deg, rgba(24,13,50,0.97), rgba(10,5,24,0.99));
+      background: linear-gradient(135deg, rgba(30,15,65,0.98) 0%, rgba(50,25,100,0.92) 50%, rgba(20,10,48,0.98) 100%);
       position: relative;
       overflow: hidden;
       border-radius: 12px;
     }
 
-    /* Thumbnail tint via --thumb CSS var set by JS */
+    /* Subtle inner glow gradient */
     .client-header::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: var(--thumb, transparent) center/cover no-repeat;
-      opacity: 0.18;
+      background: linear-gradient(135deg, rgba(123,92,240,0.12) 0%, rgba(91,63,212,0.18) 50%, transparent 100%);
       pointer-events: none;
     }
 
-    /* Category color left accent bar */
-    .work-category[data-cat="ads"]     .folder-wrap .client-header { border-left: 3px solid #7B5CF0; }
-    .work-category[data-cat="motion"]  .folder-wrap .client-header { border-left: 3px solid #4EA8FF; }
-    .work-category[data-cat="studio"]  .folder-wrap .client-header { border-left: 3px solid #FFB347; }
-    .work-category[data-cat="vfx"]     .folder-wrap .client-header { border-left: 3px solid #5AFFA0; }
-    .work-category[data-cat="organic"] .folder-wrap .client-header { border-left: 3px solid #FF6B9D; }
+    /* All category bars — unified purple */
+    .folder-wrap .client-header { border-left: 3px solid rgba(123,92,240,0.85); }
 
-    .client-header-left { position: relative; z-index: 1; flex: 1; min-width: 0; }
+    .client-header-left { position: relative; z-index: 1; flex: 1; min-width: 0; padding-right: 8px; }
     .client-name { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .client-desc { display: none; }
+    .client-desc { display: block; font-size: 10px; color: rgba(255,255,255,0.42); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .client-meta { display: none; }
     .client-arrow { display: none; }
 
-    /* Right chevron tap hint */
+    /* "OPEN" tap hint — right side */
     .client-header::after {
-      content: '›';
+      content: 'OPEN';
       position: absolute;
-      right: 16px;
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 22px;
-      font-weight: 300;
-      color: rgba(255,255,255,0.22);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: rgba(123,92,240,0.65);
       pointer-events: none;
       z-index: 1;
+      border: 1px solid rgba(123,92,240,0.35);
+      padding: 3px 6px;
+      border-radius: 4px;
     }
 
     /* ABOUT */
-    .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 32px; }
-    .about-photo-wrap { position: static; order: -1; max-width: 260px; margin: 0 auto; }
+    .about-grid { grid-template-columns: 1fr; gap: 24px; justify-items: center; }
+    .contact-inner { grid-template-columns: 1fr; gap: 32px; }
+    .about-photo-wrap {
+      position: static; order: -1;
+      width: 88px; height: 88px; max-width: none;
+      border-radius: 50%; overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.55);
+      box-shadow: 0 0 0 5px rgba(123,92,240,0.18);
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+    .about-photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-text { text-align: center; }
+    .about-text .btn-primary { margin-left: auto; margin-right: auto; display: block; max-width: 200px; text-align: center; }
     .about-photo { display: none; }
 
     /* Only 1 video per client on mobile */
@@ -1169,11 +1182,30 @@
 
     /* Hide progress bar & time — too small for touch */
     .v-progress, .v-time { display: none; }
+    /* Hide unmute hint — videos play with sound on first tap */
+    .v-unmute-hint { display: none !important; }
     /* Always show control bar (no hover needed on touch) */
     .v-bar { opacity: 1 !important; transform: none !important; }
     /* Bigger mute & fullscreen buttons */
     .v-btn { padding: 8px; }
     .v-btn svg { width: 18px; height: 18px; }
+
+    /* Modal video — height-driven so it never crops */
+    .vid-sheet { max-height: 95svh; max-height: 95vh; }
+    .vid-sheet-head { padding: 10px 16px 8px; }
+    .vid-sheet-body {
+      flex: 1; min-height: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .vid-sheet-body .video-card {
+      height: 100%; width: auto !important;
+      aspect-ratio: 9/16;
+      max-width: 100%;
+      border-radius: 0 !important; border: none !important;
+    }
 
     /* Hide section bridge — unnecessary on mobile */
     .section-bridge { display: none; }
@@ -2131,7 +2163,7 @@
       <div class="client-row" data-client="personal">
         <div class="client-header" onclick="toggleClient(this)">
           <div class="client-header-left">
-            <span class="client-name">Morphe. Originals</span>
+            <span class="client-name">Personal Projects</span>
           </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
@@ -2430,20 +2462,7 @@ function initCard(card) {
     });
   }
 
-  card.querySelector('.v-overlay').addEventListener('click', () => {
-    if (isTouch && !hoverMode) {
-      // First tap on mobile: play muted, show unmute hint
-      hoverMode = true;
-      pauseAll(iframe);
-      player.setVolume(0).catch(() => {});
-      player.play().catch(() => {});
-      ctrl.classList.add('hover-muted');
-      clearTimeout(hintTimer);
-      hintTimer = setTimeout(() => ctrl.classList.remove('hover-muted'), 2000);
-    } else {
-      doToggle();
-    }
-  });
+  card.querySelector('.v-overlay').addEventListener('click', doToggle);
 
   player.on('play', () => {
     loading.classList.remove('active');
@@ -2547,14 +2566,26 @@ function openMobileModal(header) {
 
   const modal = document.getElementById('vid-modal');
   modal.style.display = 'flex';
+
+  // iOS scroll lock: freeze body at current scroll position
+  const sy = window.scrollY;
+  document.body.style.cssText += `;position:fixed;top:-${sy}px;width:100%;`;
+  modal._scrollY = sy;
+
   requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
-  document.body.classList.add('modal-open');
 }
 
 function closeVidModal() {
   const modal = document.getElementById('vid-modal');
   modal.classList.remove('open');
-  document.body.classList.remove('modal-open');
+
+  // Restore iOS scroll
+  const sy = modal._scrollY || 0;
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, sy);
+
   document.querySelector('.vid-sheet-body').querySelectorAll('iframe').forEach(f => {
     const p = vPlayers.get(f); if (p) p.pause().catch(() => {});
   });
@@ -2563,6 +2594,40 @@ function closeVidModal() {
     modal.style.display = 'none';
   }, 420);
 }
+
+// Drag-to-close gesture on modal handle + header
+;(function initModalDrag() {
+  const sheet  = document.querySelector('.vid-sheet');
+  const handle = document.querySelector('.vid-sheet-handle');
+  const head   = document.querySelector('.vid-sheet-head');
+  let startY = 0, dy = 0, dragging = false;
+
+  function onStart(e) {
+    if (!document.getElementById('vid-modal').classList.contains('open')) return;
+    startY = (e.touches ? e.touches[0] : e).clientY;
+    dy = 0; dragging = true;
+    sheet.style.transition = 'none';
+  }
+  function onMove(e) {
+    if (!dragging) return;
+    dy = (e.touches ? e.touches[0] : e).clientY - startY;
+    if (dy > 0) sheet.style.transform = `translateY(${dy}px)`;
+  }
+  function onEnd() {
+    if (!dragging) return;
+    dragging = false;
+    sheet.style.transition = '';
+    if (dy > 110) { sheet.style.transform = ''; closeVidModal(); }
+    else sheet.style.transform = '';
+    startY = 0; dy = 0;
+  }
+
+  [handle, head].forEach(el => {
+    el.addEventListener('touchstart', onStart, { passive: true });
+  });
+  document.addEventListener('touchmove', onMove, { passive: true });
+  document.addEventListener('touchend', onEnd, { passive: true });
+})();
 
 function toggleClient(header, skipScroll) {
   if (isTouch) { openMobileModal(header); return; }
