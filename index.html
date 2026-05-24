@@ -70,6 +70,12 @@
     background: rgba(17,17,17,0.85);
     backdrop-filter: blur(12px);
     border-bottom: 0.5px solid var(--border);
+    transition: padding 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  }
+  nav.scrolled {
+    padding: 13px 48px;
+    background: rgba(17,17,17,0.96);
+    border-bottom-color: rgba(123,92,240,0.2);
   }
 
   .nav-logo {
@@ -104,24 +110,18 @@
     font-size: 15px;
     font-weight: 500;
     letter-spacing: 0.2px;
-    transition: color 0.2s, transform 0.25s cubic-bezier(0.22,1,0.36,1);
+    transition: color 0.2s, transform 0.25s cubic-bezier(0.22,1,0.36,1), background 0.25s, box-shadow 0.25s;
     position: relative;
+    padding: 5px 12px;
+    border-radius: 20px;
   }
 
   .nav-links a:hover { color: #fff; }
 
   .nav-links a.active {
     color: #fff;
-  }
-
-  .nav-links a.active::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0; right: 0;
-    height: 2px;
-    background: var(--purple-light);
-    border-radius: 2px;
+    background: rgba(123,92,240,0.18);
+    box-shadow: 0 0 14px rgba(123,92,240,0.22), inset 0 0 0 0.5px rgba(123,92,240,0.35);
   }
 
   /* Hamburger */
@@ -452,7 +452,10 @@
     min-height: 0;
     border-top: 0.5px solid rgba(255,255,255,0.08);
     padding: 24px 28px 28px;
+    opacity: 1;
+    transition: opacity 0.2s ease;
   }
+  .client-row:not(.open) .client-panel-inner { opacity: 0; transition: opacity 0.12s ease; }
 
   /* Client header with brand pills */
   .client-header-left {
@@ -1410,7 +1413,7 @@
     transition: left 0.7s ease;
   }
 
-  /* Nav underline expands from center */
+  /* Nav underline expands from center on hover; pill used for active */
   .nav-links a::after {
     content: '';
     position: absolute;
@@ -1418,10 +1421,10 @@
     height: 1.5px;
     background: var(--purple-light);
     border-radius: 2px;
-    transition: left 0.35s cubic-bezier(0.22,1,0.36,1), right 0.35s cubic-bezier(0.22,1,0.36,1);
+    transition: left 0.35s cubic-bezier(0.22,1,0.36,1), right 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.2s;
   }
-  .nav-links a:hover::after,
-  .nav-links a.active::after { left: 0; right: 0; }
+  .nav-links a:hover:not(.active)::after { left: 0; right: 0; }
+  .nav-links a.active::after { opacity: 0; }
 
   /* Button inner glow */
   .btn-primary { position: relative; overflow: hidden; }
@@ -2256,8 +2259,8 @@
   <h2 class="section-heading">About</h2>
   <div class="about-grid">
     <div class="about-text">
-      <p>Work with <strong>Stefan Diomov</strong> - the creative behind <strong>Morphe.</strong> A video editor, cinematographer, and VFX specialist obsessed with making your content impossible to ignore.</p>
-      <p>Whether you need a full brand commercial, short-form content, or a complete motion identity - every project gets the same obsession: visuals that <strong>undeniably perform</strong>.</p>
+      <p>I'm Stefan Diomov — video editor and VFX artist. I built <strong>Morphe</strong> to do one thing well: make content that's genuinely hard to scroll past.</p>
+      <p>Brand film, short-form campaign, motion identity — the format changes, the obsession doesn't. Every frame is intentional until the whole thing just works.</p>
       <p>Brands like Coca Cola, Maretti and more trust Morphe to stop the scroll and tell stories that convert.</p>
       <a href="#contact" class="btn-primary" style="display:inline-block; margin-top: 24px;">Start a project</a>
     </div>
@@ -2722,7 +2725,10 @@ function toggleClient(header, skipScroll) {
   const panel = row.querySelector('.client-panel');
   const isOpen = row.classList.contains('open');
 
-  document.querySelectorAll('.client-row.open').forEach(r => {
+  const openRows = [...document.querySelectorAll('.client-row.open')].filter(r => r !== row);
+  const hadOpen = openRows.length > 0;
+
+  openRows.forEach(r => {
     r.classList.remove('open');
     r.querySelector('.client-panel').classList.remove('open');
     r.querySelectorAll('iframe').forEach(f => {
@@ -2732,17 +2738,20 @@ function toggleClient(header, skipScroll) {
   });
 
   if (!isOpen) {
-    row.classList.add('open');
-    panel.classList.add('open');
-    row.querySelectorAll('.video-card[data-vid]').forEach(initVideoCard);
-    if (!skipScroll) {
-      setTimeout(() => {
-        const wrap = row.closest('.folder-wrap') || row;
-        const r = wrap.getBoundingClientRect();
-        const targetY = window.scrollY + r.top + r.height / 2 - window.innerHeight / 2;
-        window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
-      }, 80);
-    }
+    const delay = hadOpen ? 130 : 0;
+    setTimeout(() => {
+      row.classList.add('open');
+      panel.classList.add('open');
+      row.querySelectorAll('.video-card[data-vid]').forEach(initVideoCard);
+      if (!skipScroll) {
+        setTimeout(() => {
+          const wrap = row.closest('.folder-wrap') || row;
+          const r = wrap.getBoundingClientRect();
+          const targetY = window.scrollY + r.top + r.height / 2 - window.innerHeight / 2;
+          window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+        }, 80);
+      }
+    }, delay);
   }
 }
 
@@ -2904,6 +2913,7 @@ document.addEventListener('mouseup',   () => curDot.classList.remove('is-click')
 // Smooth nav active state on scroll
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-links a');
+const mainNav = document.querySelector('nav');
 
 window.addEventListener('scroll', () => {
   let current = '';
@@ -2913,6 +2923,7 @@ window.addEventListener('scroll', () => {
   navLinks.forEach(link => {
     link.classList.toggle('active', link.getAttribute('href') === '#' + current);
   });
+  mainNav.classList.toggle('scrolled', window.scrollY > 80);
   // Mobile bottom nav active state
   document.querySelectorAll('.mob-nav-item').forEach(link => {
     const target = link.getAttribute('href').slice(1);
