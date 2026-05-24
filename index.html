@@ -2737,6 +2737,15 @@ function toggleClient(header, skipScroll) {
     });
   });
 
+  if (isOpen) {
+    row.classList.remove('open');
+    panel.classList.remove('open');
+    row.querySelectorAll('iframe').forEach(f => {
+      const p = vPlayers.get(f); if (p) p.pause().catch(() => {});
+    });
+    return;
+  }
+
   if (!isOpen) {
     const delay = hadOpen ? 130 : 0;
     setTimeout(() => {
