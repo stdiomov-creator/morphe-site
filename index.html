@@ -1133,14 +1133,17 @@
     .about-grid { grid-template-columns: 1fr; gap: 24px; justify-items: center; }
     .contact-inner { grid-template-columns: 1fr; gap: 32px; }
     .about-photo-wrap {
-      position: static; order: -1;
-      width: 176px; height: 176px; max-width: none;
-      border-radius: 50%; overflow: hidden;
-      border: 1.5px solid rgba(255,255,255,0.45);
-      margin: 0 auto;
+      position: static !important;
+      order: -1;
+      width: 176px !important; height: 176px !important;
+      max-width: none !important;
+      border-radius: 50% !important;
+      overflow: hidden !important;
+      border: 1.5px solid rgba(255,255,255,0.45) !important;
+      margin: 0 auto !important;
       flex-shrink: 0;
     }
-    .about-photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-photo-wrap img { width: 100% !important; height: 100% !important; object-fit: cover; display: block; }
     .about-text { text-align: center; }
     .about-text .btn-primary { margin-left: auto; margin-right: auto; display: block; max-width: 200px; text-align: center; }
     .about-photo { display: none; }
@@ -2570,14 +2573,16 @@ function openMobileModal(header) {
 
   const modal = document.getElementById('vid-modal');
   modal.style.display = 'flex';
-  document.body.classList.add('modal-open');
+  document.addEventListener('touchmove', _noScroll, { passive: false });
   requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
 }
+
+function _noScroll(e) { e.preventDefault(); }
 
 function closeVidModal() {
   const modal = document.getElementById('vid-modal');
   modal.classList.remove('open');
-  document.body.classList.remove('modal-open');
+  document.removeEventListener('touchmove', _noScroll);
 
   document.querySelector('.vid-sheet-body').querySelectorAll('iframe').forEach(f => {
     const p = vPlayers.get(f); if (p) p.pause().catch(() => {});
