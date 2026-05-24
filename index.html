@@ -1129,6 +1129,11 @@
       border-radius: 4px;
     }
 
+    /* Card tap feedback */
+    .client-header:active {
+      background: linear-gradient(135deg, rgba(60,30,120,0.98) 0%, rgba(90,50,180,0.95) 50%, rgba(45,22,90,0.98) 100%);
+    }
+
     /* ABOUT */
     .about-grid { grid-template-columns: 1fr; gap: 24px; justify-items: center; }
     .contact-inner { grid-template-columns: 1fr; gap: 32px; }
@@ -1882,6 +1887,17 @@
     transition: background 0.2s, color 0.2s;
   }
   .vid-sheet-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+  .vid-nav-btn {
+    background: rgba(255,255,255,0.07);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 50%; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.65); font-size: 20px; line-height: 1;
+    cursor: pointer; flex-shrink: 0;
+    transition: background 0.2s, opacity 0.2s;
+  }
+  .vid-nav-btn:disabled { opacity: 0.2; pointer-events: none; }
+  .vid-head-right { display: flex; align-items: center; gap: 8px; }
   .vid-sheet-body {
     flex: 1; overflow-y: auto;
     padding: 4px 0 20px;
@@ -2335,11 +2351,15 @@
   <div class="vid-sheet">
     <div class="vid-sheet-handle"></div>
     <div class="vid-sheet-head">
+      <button class="vid-nav-btn" id="vidPrev" onclick="navigateModal(-1)">‹</button>
       <div class="vid-sheet-info">
         <div class="vid-sheet-name"></div>
         <div class="vid-sheet-desc"></div>
       </div>
-      <button class="vid-sheet-close" onclick="closeVidModal()">✕</button>
+      <div class="vid-head-right">
+        <button class="vid-nav-btn" id="vidNext" onclick="navigateModal(1)">›</button>
+        <button class="vid-sheet-close" onclick="closeVidModal()">✕</button>
+      </div>
     </div>
     <div class="vid-sheet-body"></div>
   </div>
@@ -2551,30 +2571,82 @@ function initVideoCard(card) {
 document.querySelectorAll('.reel-card .video-card[data-vid]').forEach(initVideoCard);
 
 // Mobile: open video in bottom-sheet modal instead of inline expand
+let currentClientRow = null;
+
 function openMobileModal(header) {
-  const row    = header.closest('.client-row');
-  const name   = row.querySelector('.client-name')?.textContent?.trim() || '';
-  const desc   = row.querySelector('.client-desc')?.textContent?.trim() || '';
-  const first  = row.querySelector('.video-card[data-vid]');
-  if (!first) return;
-
+  if (navigator.vibrate) navigator.vibrate(8);
   vPlayers.forEach(p => p.pause().catch(() => {}));
-
-  document.querySelector('.vid-sheet-name').textContent = name;
-  document.querySelector('.vid-sheet-desc').textContent = desc;
-
-  const body = document.querySelector('.vid-sheet-body');
-  body.innerHTML = '';
-  const card = document.createElement('div');
-  card.className = 'video-card';
-  card.dataset.vid = first.dataset.vid;
-  body.appendChild(card);
-  initVideoCard(card);
 
   const modal = document.getElementById('vid-modal');
   modal.style.display = 'flex';
   document.addEventListener('touchmove', _noScroll, { passive: false });
   requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
+  loadModalClient(header, false);
+}
+
+function loadModalClient(header, animate) {
+  const row = header.closest('.client-row');
+  currentClientRow = row;
+  const name = row.querySelector('.client-name')?.textContent?.trim() || '';
+  const desc = row.querySelector('.client-desc')?.textContent?.trim() || '';
+  const firstCard = row.querySelector('.video-card[data-vid]');
+
+  const rows = [...document.querySelectorAll('.work-list .client-row')];
+  const idx = rows.indexOf(row);
+  const prevBtn = document.getElementById('vidPrev');
+  const nextBtn = document.getElementById('vidNext');
+  if (prevBtn) prevBtn.disabled = idx === 0;
+  if (nextBtn) nextBtn.disabled = idx === rows.length - 1;
+
+  function setContent() {
+    document.querySelector('.vid-sheet-name').textContent = name;
+    document.querySelector('.vid-sheet-desc').textContent = desc;
+    const body = document.querySelector('.vid-sheet-body');
+    body.querySelectorAll('iframe').forEach(f => {
+      const p = vPlayers.get(f); if (p) p.pause().catch(() => {});
+    });
+    body.innerHTML = '';
+    if (!firstCard) return;
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.dataset.vid = firstCard.dataset.vid;
+    body.appendChild(card);
+    initVideoCard(card);
+    const iframe = card.querySelector('iframe');
+    const tryPlay = (p) => {
+      p.ready().then(() => {
+        p.setVolume(1).catch(() => {});
+        p.play().catch(() => {});
+      }).catch(() => {});
+    };
+    if (iframe && vPlayers.has(iframe)) {
+      tryPlay(vPlayers.get(iframe));
+    } else {
+      setTimeout(() => {
+        const f = card.querySelector('iframe');
+        if (f && vPlayers.has(f)) tryPlay(vPlayers.get(f));
+      }, 600);
+    }
+  }
+
+  if (animate) {
+    const body = document.querySelector('.vid-sheet-body');
+    body.style.transition = 'opacity 0.18s';
+    body.style.opacity = '0';
+    setTimeout(() => { setContent(); body.style.opacity = '1'; }, 180);
+  } else {
+    setContent();
+  }
+}
+
+function navigateModal(dir) {
+  if (!currentClientRow) return;
+  const rows = [...document.querySelectorAll('.work-list .client-row')];
+  const idx = rows.indexOf(currentClientRow);
+  const next = rows[idx + dir];
+  if (!next) return;
+  if (navigator.vibrate) navigator.vibrate(6);
+  loadModalClient(next.querySelector('.client-header'), true);
 }
 
 function _noScroll(e) { e.preventDefault(); }
@@ -2625,6 +2697,23 @@ function closeVidModal() {
   });
   document.addEventListener('touchmove', onMove, { passive: true });
   document.addEventListener('touchend', onEnd, { passive: true });
+})();
+
+// Swipe left/right on modal sheet to navigate between clients
+;(function initSwipeNav() {
+  const sheet = document.querySelector('.vid-sheet');
+  let sx = 0, sy = 0;
+  sheet.addEventListener('touchstart', e => {
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, { passive: true });
+  sheet.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 50) {
+      navigateModal(dx < 0 ? 1 : -1);
+    }
+  }, { passive: true });
 })();
 
 function toggleClient(header, skipScroll) {
