@@ -1668,7 +1668,10 @@
 
   .client-row[data-client="vivek"],
   .client-row[data-client="clai"],
-  .client-row[data-client="blinkops"] { display: none; }
+  .client-row[data-client="blinkops"],
+  .folder-wrap:has([data-client="vivek"]),
+  .folder-wrap:has([data-client="clai"]),
+  .folder-wrap:has([data-client="blinkops"]) { display: none; }
 
   /* ===== STUDIO SECTION ===== */
   #studio { border-top: 0.5px solid var(--border); }
