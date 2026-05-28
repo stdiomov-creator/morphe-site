@@ -1081,7 +1081,7 @@
     .section-heading { font-size: clamp(30px, 8vw, 48px); letter-spacing: -1px; margin-bottom: 20px; }
     .reel-wrap { display: none; }
     .folder-tab { display: none !important; }
-    .client-panel { grid-template-rows: 0fr !important; }
+    .client-panel { display: none !important; }
 
     /* Remove category grid — flat list */
     .work-category { display: block; padding: 0; margin-bottom: 0; }
@@ -1881,6 +1881,13 @@
     justify-content: space-between;
     padding: 14px 20px 10px;
     flex-shrink: 0;
+    position: relative;
+  }
+  .vid-sheet-info {
+    position: absolute;
+    left: 0; right: 0;
+    text-align: center;
+    pointer-events: none;
   }
   .vid-sheet-name {
     font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: #fff;
