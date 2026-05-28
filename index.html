@@ -2769,7 +2769,7 @@ if (!isTouch) {
   document.querySelectorAll('.video-card').forEach(card => {
     const isH = card.classList.contains('video-card--h');
     card.addEventListener('mouseenter', () => {
-      if (isH) card.style.transform = 'scale(1.03)';
+      if (isH && !card.closest('.reel-card')) card.style.transform = 'scale(1.03)';
       const siblings = card.closest('.video-grid')?.querySelectorAll('.video-card');
       if (siblings) siblings.forEach(s => { if (s !== card) s.classList.add('dimmed'); });
     });
