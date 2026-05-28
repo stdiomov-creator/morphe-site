@@ -2450,12 +2450,13 @@ function initCard(card) {
     fetchThumb(vidId).then(url => { if (url) poster.style.backgroundImage = `url(${url})`; });
   }
 
-  let dur = 0, muted = false, hoverMode = false, hintTimer = null;
+  let dur = 0, muted = false, hoverMode = false, hintTimer = null, userActive = false;
   player.getDuration().then(d => { dur = d; }).catch(() => {});
 
   function doToggle() {
     if (hoverMode) {
       hoverMode = false;
+      userActive = true;
       clearTimeout(hintTimer);
       ctrl.classList.remove('hover-muted');
       player.setVolume(muted ? 0 : 1).catch(() => {});
@@ -2466,14 +2467,17 @@ function initCard(card) {
         pauseAll(iframe);
         player.setVolume(muted ? 0 : 1).catch(() => {});
         player.play().catch(() => {});
+        userActive = true;
       } else {
         player.pause().catch(() => {});
+        userActive = false;
       }
     });
   }
 
   if (!isTouch) {
     card.addEventListener('mouseenter', () => {
+      if (userActive) return;
       hoverMode = true;
       loading.classList.add('active');
       ctrl.classList.add('hover-muted');
@@ -2493,6 +2497,7 @@ function initCard(card) {
         fill.style.width = '0%';
         time.textContent = '0:00';
         if (poster) poster.classList.remove('hidden');
+        userActive = false;
       }
       hoverMode = false;
       loading.classList.remove('active');
@@ -2517,6 +2522,7 @@ function initCard(card) {
     fill.style.width = '0%';
     time.textContent = '0:00';
     player.setCurrentTime(0).catch(() => {});
+    userActive = false;
   });
 
   player.on('bufferstart', () => {
