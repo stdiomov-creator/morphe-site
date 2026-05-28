@@ -1087,6 +1087,15 @@
     .work-category { display: block; padding: 0; margin-bottom: 0; }
     .work-category + .work-category { margin-top: 0; }
     .cat-header { display: none; }
+    [data-cat="studio"] .cat-header {
+      display: flex;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+    [data-cat="studio"] .cat-label { font-size: 13px; letter-spacing: 0; }
+    [data-cat="studio"] .cat-dot { display: none; }
+    [data-cat="studio"] .cat-line { display: none; }
+    [data-cat="studio"] .cat-sub { font-size: 10px; letter-spacing: 1px; }
     .folder-wrap { margin-bottom: 12px; border-radius: 12px; overflow: hidden; }
 
     /* Horizontal card row */
@@ -1631,6 +1640,7 @@
     box-shadow: 0 0 8px rgba(255,255,255,0.6);
   }
 
+  .cat-label-wrap { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
   .cat-label {
     font-size: clamp(26px, 3.2vw, 42px);
     font-weight: 900;
@@ -1640,6 +1650,14 @@
     flex-shrink: 0;
     line-height: 1;
     color: #fff;
+  }
+  .cat-sub {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(123,92,240,0.7);
+    white-space: nowrap;
   }
 
   .cat-line {
@@ -2159,7 +2177,10 @@
     <div class="work-category reveal" data-cat="studio">
       <div class="cat-header">
         <div class="cat-dot"></div>
-        <span class="cat-label">Studio</span>
+        <div class="cat-label-wrap">
+          <span class="cat-label">Studio</span>
+          <span class="cat-sub">Filmed at Morphe Studio</span>
+        </div>
         <div class="cat-line"></div>
       </div>
 
