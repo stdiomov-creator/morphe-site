@@ -2644,7 +2644,7 @@ function loadModalClient(header, animate) {
   const desc = row.querySelector('.client-desc')?.textContent?.trim() || '';
   const firstCard = row.querySelector('.video-card[data-vid]');
 
-  const rows = [...document.querySelectorAll('.work-list .client-row')];
+  const rows = [...document.querySelectorAll('.work-list .client-row')].filter(r => r.offsetParent !== null);
   const idx = rows.indexOf(row);
   const prevBtn = document.getElementById('vidPrev');
   const nextBtn = document.getElementById('vidNext');
@@ -2656,7 +2656,9 @@ function loadModalClient(header, animate) {
     document.querySelector('.vid-sheet-desc').textContent = desc;
     const body = document.querySelector('.vid-sheet-body');
     body.querySelectorAll('iframe').forEach(f => {
-      const p = vPlayers.get(f); if (p) p.pause().catch(() => {});
+      const p = vPlayers.get(f);
+      if (p) { p.pause().catch(() => {}); p.unload().catch(() => {}); }
+      vPlayers.delete(f);
     });
     body.innerHTML = '';
     if (!firstCard) return;
@@ -2694,7 +2696,7 @@ function loadModalClient(header, animate) {
 
 function navigateModal(dir) {
   if (!currentClientRow) return;
-  const rows = [...document.querySelectorAll('.work-list .client-row')];
+  const rows = [...document.querySelectorAll('.work-list .client-row')].filter(r => r.offsetParent !== null);
   const idx = rows.indexOf(currentClientRow);
   const next = rows[idx + dir];
   if (!next) return;
@@ -2711,9 +2713,12 @@ function closeVidModal() {
   document.removeEventListener('touchmove', _noScroll);
 
   document.querySelector('.vid-sheet-body').querySelectorAll('iframe').forEach(f => {
-    const p = vPlayers.get(f); if (p) p.pause().catch(() => {});
+    const p = vPlayers.get(f);
+    if (p) { p.pause().catch(() => {}); p.unload().catch(() => {}); }
+    vPlayers.delete(f);
   });
   setTimeout(() => {
+    if (modal.classList.contains('open')) return;
     document.querySelector('.vid-sheet-body').innerHTML = '';
     modal.style.display = 'none';
   }, 420);
