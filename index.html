@@ -2775,8 +2775,11 @@ function closeVidModal() {
   }, { passive: true });
 })();
 
+let _toggleTimer = null;
+
 function toggleClient(header, skipScroll) {
   if (isTouch) { openMobileModal(header); return; }
+  clearTimeout(_toggleTimer);
   const row = header.closest('.client-row');
   const panel = row.querySelector('.client-panel');
   const isOpen = row.classList.contains('open');
@@ -2804,7 +2807,7 @@ function toggleClient(header, skipScroll) {
 
   if (!isOpen) {
     const delay = hadOpen ? 130 : 0;
-    setTimeout(() => {
+    _toggleTimer = setTimeout(() => {
       row.classList.add('open');
       panel.classList.add('open');
       row.querySelectorAll('.video-card[data-vid]').forEach(initVideoCard);
@@ -3184,7 +3187,7 @@ document.querySelectorAll('.work-list .client-row').forEach(row => {
   wrap.addEventListener('mouseenter', () => {
     if (document.querySelector('.client-row.open')) return;
     wrap.classList.add('row-focused');
-    document.querySelectorAll('.folder-wrap').forEach(w => { if (w !== wrap) w.classList.add('row-dimmed'); });
+    document.querySelectorAll('.folder-wrap').forEach(w => { if (w !== wrap && w.offsetParent !== null) w.classList.add('row-dimmed'); });
   });
   wrap.addEventListener('mouseleave', () => {
     wrap.classList.remove('row-focused');
