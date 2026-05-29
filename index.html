@@ -2631,6 +2631,7 @@ function openMobileModal(header) {
 
   const modal = document.getElementById('vid-modal');
   modal.style.display = 'flex';
+  document.body.classList.add('modal-open');
   document.addEventListener('touchmove', _noScroll, { passive: false });
   requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
   loadModalClient(header, false);
@@ -2706,6 +2707,7 @@ function _noScroll(e) { e.preventDefault(); }
 function closeVidModal() {
   const modal = document.getElementById('vid-modal');
   modal.classList.remove('open');
+  document.body.classList.remove('modal-open');
   document.removeEventListener('touchmove', _noScroll);
 
   document.querySelector('.vid-sheet-body').querySelectorAll('iframe').forEach(f => {
