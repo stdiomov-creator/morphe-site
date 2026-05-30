@@ -1185,6 +1185,9 @@
     .folder-tab { backdrop-filter: none; -webkit-backdrop-filter: none; }
 
     /* Video play affordance — circle + triangle on poster */
+    .reel-card .v-poster::before,
+    .reel-card .v-poster::after { display: none; }
+
     .v-poster:not(.hidden)::before {
       content: '';
       position: absolute;
