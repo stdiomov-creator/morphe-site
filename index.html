@@ -1079,7 +1079,10 @@
 
     /* WORK — flat single-column list */
     .section-heading { font-size: clamp(30px, 8vw, 48px); letter-spacing: -1px; margin-bottom: 20px; }
-    .reel-wrap { display: none; }
+    .reel-wrap { margin-bottom: 24px; }
+    .reel-header { margin-bottom: 10px; }
+    .reel-card { border-radius: 14px; }
+    .reel-card .video-card { border-radius: 0; border: none; box-shadow: none; }
     .folder-tab { display: none !important; }
     .client-panel { display: none !important; }
 
@@ -2621,6 +2624,30 @@ function initVideoCard(card) {
 
 // Initialize showreel immediately; all other cards load lazily on accordion open
 document.querySelectorAll('.reel-card .video-card[data-vid]').forEach(initVideoCard);
+
+// Mobile showreel: auto-play muted when scrolled into view, pause when out, restart each time
+if (isTouch) {
+  const reelCard = document.querySelector('.reel-card .video-card');
+  if (reelCard) {
+    const getReelPlayer = () => {
+      const f = reelCard.querySelector('iframe');
+      return f ? vPlayers.get(f) : null;
+    };
+    new IntersectionObserver(entries => {
+      const p = getReelPlayer();
+      if (!p) return;
+      if (entries[0].isIntersecting) {
+        p.ready().then(() => {
+          p.setCurrentTime(0).catch(() => {});
+          p.setVolume(0).catch(() => {});
+          p.play().catch(() => {});
+        }).catch(() => {});
+      } else {
+        p.pause().catch(() => {});
+      }
+    }, { threshold: 0.45 }).observe(reelCard);
+  }
+}
 
 // Mobile: open video in bottom-sheet modal instead of inline expand
 let currentClientRow = null;
