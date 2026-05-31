@@ -1212,6 +1212,12 @@
       pointer-events: none;
       z-index: 2;
     }
+    @keyframes playTap {
+      0%   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(1.7); }
+    }
+    .v-poster.tapped::before,
+    .v-poster.tapped::after { animation: playTap 0.35s ease-out forwards; }
 
     /* Hide progress bar & time — too small for touch */
     .v-progress, .v-time { display: none; }
@@ -2505,6 +2511,9 @@ function initCard(card) {
     }
     player.getPaused().then(paused => {
       if (paused) {
+        if (isTouch && poster && !poster.classList.contains('hidden')) {
+          poster.classList.add('tapped');
+        }
         pauseAll(iframe);
         player.setVolume(muted ? 0 : 1).catch(() => {});
         player.play().catch(() => {});
@@ -2551,7 +2560,7 @@ function initCard(card) {
   player.on('play', () => {
     loading.classList.remove('active');
     ctrl.classList.remove('paused');
-    if (poster) poster.classList.add('hidden');
+    if (poster) { poster.classList.remove('tapped'); poster.classList.add('hidden'); }
   });
 
   player.on('pause', () => {
@@ -3247,6 +3256,21 @@ if (hamburger && navOverlay) {
       document.body.style.overflow = '';
     });
   });
+}
+
+// Background preload all video cards on desktop after page settles
+if (!isTouch) {
+  const skipClients = ['vivek', 'clai', 'blinkops'];
+  const toPreload = [...document.querySelectorAll('.video-card[data-vid]')].filter(c =>
+    !c.dataset.loaded &&
+    !c.closest('.reel-card') &&
+    !skipClients.includes(c.closest('.client-row')?.dataset.client)
+  );
+  const run = () => toPreload.forEach((c, i) =>
+    setTimeout(() => { if (!c.dataset.loaded) initVideoCard(c); }, i * 220)
+  );
+  if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout: 4000 });
+  else setTimeout(run, 1800);
 }
 </script>
 
