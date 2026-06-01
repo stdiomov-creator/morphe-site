@@ -2542,11 +2542,13 @@ function initCard(card) {
       clearTimeout(hintTimer);
       if (hoverMode) {
         player.pause().catch(() => {});
-        player.setCurrentTime(0).catch(() => {});
         player.setVolume(muted ? 0 : 1).catch(() => {});
-        fill.style.width = '0%';
-        time.textContent = '0:00';
-        if (poster) poster.classList.remove('hidden');
+        if (!card.closest('.reel-card')) {
+          player.setCurrentTime(0).catch(() => {});
+          fill.style.width = '0%';
+          time.textContent = '0:00';
+          if (poster) poster.classList.remove('hidden');
+        }
         userActive = false;
       }
       hoverMode = false;
