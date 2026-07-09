@@ -451,7 +451,7 @@
     display: grid;
     grid-template-rows: 0fr;
     overflow: hidden;
-    transition: grid-template-rows 0.5s cubic-bezier(0.22,1,0.36,1);
+    transition: grid-template-rows 0.32s cubic-bezier(0.22,1,0.36,1);
   }
   .client-row.open .client-panel { grid-template-rows: 1fr; }
 
@@ -1962,6 +1962,122 @@
   /* Bottom nav — hidden on desktop, shown on mobile via media query */
   .mob-nav { display: none; }
 
+  /* ── CUSTOM SCROLLBAR (desktop) ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(123,92,240,0.35); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(123,92,240,0.6); }
+  * { scrollbar-width: thin; scrollbar-color: rgba(123,92,240,0.35) transparent; }
+
+  /* ── MODAL POSITION COUNTER ── */
+  .vid-pos-counter {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+
+  /* ── SKELETON LOADER ── */
+  .vid-skeleton {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.4s ease-in-out infinite;
+    border-radius: inherit;
+    z-index: 2;
+    pointer-events: none;
+  }
+  @keyframes skeletonShimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .vid-sheet-body .video-card { position: relative; }
+
+  /* ── RIPPLE ON CLIENT CARD TAP ── */
+  .folder-wrap { position: relative; overflow: hidden; }
+  .folder-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(123,92,240,0.22);
+    transform: scale(0);
+    animation: rippleOut 0.55s ease-out forwards;
+    pointer-events: none;
+    z-index: 10;
+  }
+  @keyframes rippleOut {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* ── DRAG HANDLE PULSE ── */
+  .vid-sheet-handle.at-threshold {
+    background: rgba(123,92,240,0.9) !important;
+    animation: handlePulse 0.4s ease-in-out infinite alternate;
+  }
+  @keyframes handlePulse {
+    from { transform: scaleX(1); opacity: 0.8; }
+    to   { transform: scaleX(1.4); opacity: 1; }
+  }
+
+  /* ── SWIPE DIRECTION HINT ── */
+  .swipe-hint-overlay {
+    position: fixed; inset: 0; z-index: 10001;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .swipe-hint-overlay.show { opacity: 1; }
+  .swipe-hint-pill {
+    background: rgba(0,0,0,0.72);
+    border: 0.5px solid rgba(123,92,240,0.45);
+    border-radius: 24px;
+    padding: 10px 22px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    display: flex; align-items: center; gap: 10px;
+    backdrop-filter: blur(8px);
+  }
+
+  /* ── COPY EMAIL ── */
+  .copy-email-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 14px; color: rgba(255,255,255,0.55);
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 8px 14px;
+    cursor: pointer; transition: color 0.2s, background 0.2s, border-color 0.2s;
+    user-select: none; margin-top: 16px;
+  }
+  .copy-email-btn:hover { color: #fff; background: rgba(123,92,240,0.15); border-color: rgba(123,92,240,0.4); }
+  .copy-email-btn svg { flex-shrink: 0; }
+  .copy-email-btn.copied { color: #7B5CF0; border-color: rgba(123,92,240,0.6); }
+
+  /* ── KEYBOARD NAV FOCUS ON VIDEO CARDS ── */
+  .video-card:focus-visible {
+    outline: 2px solid rgba(123,92,240,0.8);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  /* ── LANDSCAPE MOBILE MODAL ── */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .vid-sheet { max-height: 100svh !important; max-height: 100vh !important; border-radius: 0 !important; }
+    .vid-sheet-head { padding: 6px 14px 4px !important; }
+    .vid-sheet-body { padding: 2px 0 8px !important; }
+    .vid-sheet-body .video-card { height: 56vw !important; min-height: unset !important; }
+    .vid-sheet-handle { display: none !important; }
+  }
+
+  /* ── REDUCED MOTION ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+    .vid-skeleton { animation: none !important; background: rgba(255,255,255,0.07) !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -2037,7 +2153,7 @@
     <h1 class="hero-title">Crafting Worlds<br>Frame by Frame.</h1>
     <p class="hero-subtitle">Cinematic editing, VFX and motion design that makes your brand impossible to scroll past.</p>
     <div class="hero-cta">
-      <a href="#work" class="btn-primary">View Work</a>
+      <a href="#work" class="btn-primary" onclick="(function(){const fw=document.querySelector('.folder-wrap');if(fw&&!document.querySelector('.client-row.open')&&!window.isTouch){const h=fw.querySelector('.client-header');if(h)toggleClient(h);}})()">View Work</a>
       <a href="#contact" class="btn-outline">Get in Touch</a>
     </div>
     <div class="scroll-indicator" id="scrollIndicator">
@@ -2254,6 +2370,18 @@
           <div class="video-col"><div class="video-card" data-vid="1190765830"></div></div>
         </div></div></div>
       </div>
+
+      <div class="client-row" data-client="orange">
+        <div class="client-header" onclick="toggleClient(this)">
+          <div class="client-header-left">
+            <span class="client-name">Orange</span>
+          </div>
+          <div class="client-arrow"><div class="arrow-line"></div></div>
+        </div>
+        <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
+          <div class="video-col"><div class="video-card" data-vid="1208589573"></div></div>
+        </div></div></div>
+      </div>
     </div>
 
     <!-- ── ORGANIC CONTENT ── -->
@@ -2276,6 +2404,18 @@
           <div class="video-col"><div class="video-card" data-vid="1190765148"></div></div>
           <div class="video-col"><div class="video-card" data-vid="1190765147"></div></div>
           <div class="video-col"><div class="video-card" data-vid="1190765119"></div></div>
+        </div></div></div>
+      </div>
+
+      <div class="client-row" data-client="runners">
+        <div class="client-header" onclick="toggleClient(this)">
+          <div class="client-header-left">
+            <span class="client-name">Runners</span>
+          </div>
+          <div class="client-arrow"><div class="arrow-line"></div></div>
+        </div>
+        <div class="client-panel"><div class="client-panel-inner"><div class="video-grid">
+          <div class="video-col"><div class="video-card" data-vid="1208589575"></div></div>
         </div></div></div>
       </div>
     </div>
@@ -2331,6 +2471,10 @@
   <div class="contact-inner">
     <div>
       <p class="contact-desc">Ready to make content that performs? Tell me about your project and let's build something worth watching.</p>
+      <button class="copy-email-btn" id="copyEmailBtn" onclick="copyEmail(this)" title="Click to copy email">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        stdiomov@gmail.com
+      </button>
     </div>
     <div>
       <!-- Replace YOUR_FORM_ID with your Formspree form ID after signing up at formspree.io -->
@@ -2405,6 +2549,7 @@
 </div>
 
 <!-- MOBILE VIDEO MODAL -->
+<div id="swipeHintOverlay" class="swipe-hint-overlay"><div class="swipe-hint-pill">← swipe to browse →</div></div>
 <div id="vid-modal" onclick="if(event.target===this)closeVidModal()">
   <div class="vid-sheet">
     <div class="vid-sheet-handle"></div>
@@ -2413,6 +2558,7 @@
       <div class="vid-sheet-info">
         <div class="vid-sheet-name"></div>
         <div class="vid-sheet-desc"></div>
+        <div class="vid-pos-counter" id="vidPosCounter"></div>
       </div>
       <div class="vid-head-right">
         <button class="vid-nav-btn" id="vidNext" onclick="navigateModal(1)">›</button>
@@ -2454,6 +2600,15 @@ const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
 function openPrivacy() { document.getElementById('privacyOverlay').classList.add('open'); }
 function closePrivacy() { document.getElementById('privacyOverlay').classList.remove('open'); }
+
+function copyEmail(btn) {
+  navigator.clipboard.writeText('stdiomov@gmail.com').then(() => {
+    btn.classList.add('copied');
+    const prev = btn.innerHTML;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = prev; }, 2000);
+  }).catch(() => { window.location.href = 'mailto:stdiomov@gmail.com'; });
+}
 function acceptCookies() {
   localStorage.setItem('cookiesAccepted','1');
   document.getElementById('cookieBanner').classList.remove('visible');
@@ -2606,6 +2761,28 @@ function initCard(card) {
     e.stopPropagation();
     player.requestFullscreen().catch(() => {});
   });
+
+  // Keyboard nav: Tab focuses cards, Enter plays/pauses, arrows move between cards
+  if (!isTouch) {
+    card.setAttribute('tabindex', '0');
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); doToggle(); }
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const grid = card.closest('.video-grid');
+        if (!grid) return;
+        const cards = [...grid.querySelectorAll('.video-card')];
+        const idx = cards.indexOf(card);
+        const next = cards[idx + (e.key === 'ArrowRight' ? 1 : -1)];
+        if (next) next.focus();
+      } else if (e.key === 'm' || e.key === 'M') {
+        e.preventDefault();
+        muted = !muted;
+        player.setVolume(muted ? 0 : 1).catch(() => {});
+        btnMute.style.opacity = muted ? '0.4' : '';
+      }
+    });
+  }
 }
 
 const CTRL = `<div class="v-controls"><div class="v-overlay"></div><div class="v-poster"></div><div class="v-loading"><div class="v-spinner"></div></div><div class="v-unmute-hint"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="#fff"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><span>Click to unmute</span></div><div class="v-bar"><div class="v-progress"><div class="v-progress-fill"></div></div><span class="v-time">0:00</span><button class="v-btn v-btn-mute"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button><button class="v-btn v-btn-fs"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button></div></div>`;
@@ -2665,6 +2842,8 @@ if (isTouch) {
 // Mobile: open video in bottom-sheet modal instead of inline expand
 let currentClientRow = null;
 
+let _swipeHintShown = false;
+
 function openMobileModal(header) {
   if (navigator.vibrate) navigator.vibrate(8);
   vPlayers.forEach(p => p.pause().catch(() => {}));
@@ -2675,6 +2854,18 @@ function openMobileModal(header) {
   document.addEventListener('touchmove', _noScroll, { passive: false });
   requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add('open')));
   loadModalClient(header, false);
+
+  // Swipe direction hint on first open
+  if (!_swipeHintShown) {
+    _swipeHintShown = true;
+    const hint = document.getElementById('swipeHintOverlay');
+    if (hint) {
+      setTimeout(() => {
+        hint.classList.add('show');
+        setTimeout(() => hint.classList.remove('show'), 1800);
+      }, 400);
+    }
+  }
 }
 
 function loadModalClient(header, animate) {
@@ -2690,6 +2881,8 @@ function loadModalClient(header, animate) {
   const nextBtn = document.getElementById('vidNext');
   if (prevBtn) prevBtn.disabled = idx === 0;
   if (nextBtn) nextBtn.disabled = idx === rows.length - 1;
+  const counter = document.getElementById('vidPosCounter');
+  if (counter) counter.textContent = rows.length > 1 ? `${idx + 1} / ${rows.length}` : '';
 
   function setContent() {
     document.querySelector('.vid-sheet-name').textContent = name;
@@ -2705,9 +2898,29 @@ function loadModalClient(header, animate) {
     const card = document.createElement('div');
     card.className = 'video-card';
     card.dataset.vid = firstCard.dataset.vid;
+    // Skeleton loader while iframe loads — show thumbnail if already cached
+    const skel = document.createElement('div');
+    skel.className = 'vid-skeleton';
+    const cachedThumb = thumbCache.get(card.dataset.vid);
+    if (cachedThumb && typeof cachedThumb === 'object') {
+      cachedThumb.then(url => {
+        if (url && skel.parentNode) {
+          skel.style.backgroundImage = `url(${url})`;
+          skel.style.backgroundSize = 'cover';
+          skel.style.backgroundPosition = 'center';
+          skel.style.animation = 'none';
+          skel.style.background = `url(${url}) center/cover`;
+        }
+      });
+    }
+    card.appendChild(skel);
     body.appendChild(card);
     initVideoCard(card);
+    // Remove skeleton once iframe is ready
+    const removeSkel = () => skel.remove();
+    const skelTimer = setTimeout(removeSkel, 3000);
     const iframe = card.querySelector('iframe');
+    if (iframe) iframe.addEventListener('load', () => { clearTimeout(skelTimer); removeSkel(); }, { once: true });
     const tryPlay = (p) => {
       p.ready().then(() => {
         p.setVolume(1).catch(() => {});
@@ -2780,11 +2993,16 @@ function closeVidModal() {
   function onMove(e) {
     if (!dragging) return;
     dy = (e.touches ? e.touches[0] : e).clientY - startY;
-    if (dy > 0) sheet.style.transform = `translateY(${dy}px)`;
+    if (dy > 0) {
+      sheet.style.transform = `translateY(${dy}px)`;
+      if (dy > 80) handle.classList.add('at-threshold');
+      else handle.classList.remove('at-threshold');
+    }
   }
   function onEnd() {
     if (!dragging) return;
     dragging = false;
+    handle.classList.remove('at-threshold');
     sheet.style.transition = '';
     if (dy > 110) { sheet.style.transform = ''; closeVidModal(); }
     else sheet.style.transform = '';
@@ -2818,7 +3036,21 @@ function closeVidModal() {
 let _toggleTimer = null;
 
 function toggleClient(header, skipScroll) {
-  if (isTouch) { openMobileModal(header); return; }
+  if (isTouch) {
+    // Ripple effect on tap
+    const wrap = header.closest('.folder-wrap');
+    if (wrap) {
+      const ripple = document.createElement('div');
+      ripple.className = 'folder-ripple';
+      const r = wrap.getBoundingClientRect();
+      const size = Math.max(r.width, r.height) * 0.6;
+      ripple.style.cssText = `width:${size}px;height:${size}px;left:${r.width/2 - size/2}px;top:${r.height/2 - size/2}px`;
+      wrap.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+    openMobileModal(header);
+    return;
+  }
   clearTimeout(_toggleTimer);
   const row = header.closest('.client-row');
   const panel = row.querySelector('.client-panel');
@@ -3133,6 +3365,8 @@ const clientMeta = {
   'clai':        { cat: 'Brand',              count: '1' },
   'gumofgods':   { cat: 'Product',            count: '44+' },
   'personal':    { cat: 'VFX · Originals',     count: '3' },
+  'orange':      { cat: 'VFX',                count: '1' },
+  'runners':     { cat: 'Organic Content',    count: '1' },
 };
 
 document.querySelectorAll('.client-row').forEach(row => {
@@ -3199,7 +3433,7 @@ document.querySelectorAll('.work-list .client-row').forEach(row => {
   tab.className = 'folder-tab';
   tab.setAttribute('tabindex', '0');
   tab.setAttribute('role', 'button');
-  tab.innerHTML = '<svg width="14" height="12" viewBox="0 0 16 14" fill="none"><path d="M0 4C0 2.9.9 2 2 2H6L7.5 4H14C15.1 4 16 4.9 16 6V12C16 13.1 15.1 14 14 14H2C.9 14 0 13.1 0 12V4Z" fill="currentColor"/></svg>'
+  tab.innerHTML = '<svg width="16" height="13" viewBox="0 0 32 26" fill="none"><rect x="0" y="5" width="32" height="21" rx="3" fill="currentColor" opacity="0.9"/><path d="M0 8C0 6.9.9 6 2 6H13L15.5 9H30C31.1 9 32 9.9 32 11V23C32 24.1 31.1 25 30 25H2C.9 25 0 24.1 0 23V8Z" fill="currentColor"/><rect x="1" y="4" width="13" height="4" rx="2" fill="currentColor" opacity="0.65"/></svg>'
     + '<span class="folder-hints"><span class="folder-hint">open</span><span class="folder-hint-close">close</span></span>';
   tab.addEventListener('click', () => toggleClient(row.querySelector('.client-header')));
   tab.addEventListener('mouseenter', () => { curDot.classList.add('is-hover'); curRing.classList.add('is-hover'); });
