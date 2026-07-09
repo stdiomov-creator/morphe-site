@@ -1184,6 +1184,13 @@
     .client-row { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(14,8,32,0.85); }
     .folder-tab { backdrop-filter: none; -webkit-backdrop-filter: none; }
 
+    /* 20% dimmer thumbnails on mobile */
+    .v-poster { filter: brightness(0.8); }
+    .video-card { filter: brightness(0.8); }
+    .reel-card .v-poster,
+    .reel-card .video-card { filter: none; }
+    .vid-sheet-body .video-card { filter: none; }
+
     /* Video play affordance — circle + triangle on poster */
     .reel-card .v-poster::before,
     .reel-card .v-poster::after { display: none; }
@@ -2375,6 +2382,7 @@
         <div class="client-header" onclick="toggleClient(this)">
           <div class="client-header-left">
             <span class="client-name">Orange</span>
+            <span class="client-desc">Online Bookstore</span>
           </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
@@ -2411,6 +2419,7 @@
         <div class="client-header" onclick="toggleClient(this)">
           <div class="client-header-left">
             <span class="client-name">Runners</span>
+            <span class="client-desc">Sport Equipment</span>
           </div>
           <div class="client-arrow"><div class="arrow-line"></div></div>
         </div>
