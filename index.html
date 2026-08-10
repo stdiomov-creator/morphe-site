@@ -1232,26 +1232,45 @@
     /* Hide unmute hint — videos play with sound on first tap */
     .v-unmute-hint { display: none !important; }
     /* Always show control bar (no hover needed on touch) */
-    .v-bar { opacity: 1 !important; transform: none !important; }
-    /* Bigger mute & fullscreen buttons */
-    .v-btn { padding: 8px; }
-    .v-btn svg { width: 18px; height: 18px; }
+    .v-bar { opacity: 1 !important; transform: none !important; padding-bottom: 14px; justify-content: flex-end; }
+    /* Bigger mute & fullscreen buttons with generous tap targets */
+    .v-btn { padding: 10px; background: rgba(0,0,0,0.35); border-radius: 50%; }
+    .v-btn svg { width: 20px; height: 20px; }
 
     /* Modal — taller, rounded video, centered */
     .vid-sheet { max-height: 98svh; max-height: 98vh; }
-    .vid-sheet-head { padding: 8px 16px 4px; }
+
+    /* Header: let text flow naturally so it expands the header height */
+    .vid-sheet-head {
+      padding: 14px 14px 16px;
+      gap: 8px;
+      align-items: center;
+    }
+    .vid-sheet-info {
+      position: static !important;
+      flex: 1;
+      left: auto; right: auto;
+      text-align: center;
+      pointer-events: none;
+    }
+    .vid-sheet-name { font-size: 16px; }
+
+    /* Body: video must fit within available height — never clip bottom */
     .vid-sheet-body {
       flex: 1; min-height: 0;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 10px 18px;
+      padding: 6px 12px calc(24px + env(safe-area-inset-bottom, 0px));
     }
+    /* Video card: constrain by BOTH width and height, maintain aspect ratio */
     .vid-sheet-body .video-card {
-      height: auto; width: 100% !important;
-      aspect-ratio: 9/16;
+      width: auto !important;
+      height: auto !important;
       max-width: 100%;
+      max-height: 100%;
+      aspect-ratio: 9/16;
       border-radius: 16px !important;
       border: none !important;
       overflow: hidden;
