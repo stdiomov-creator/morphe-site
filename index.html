@@ -1240,16 +1240,17 @@
     /* Modal — taller, rounded video, centered */
     .vid-sheet { max-height: 98svh; max-height: 98vh; }
 
-    /* Header: let text flow naturally so it expands the header height */
+    /* Header: tall enough for 3 lines, buttons top-aligned, text absolutely centered */
     .vid-sheet-head {
-      padding: 14px 14px 16px;
-      gap: 8px;
-      align-items: center;
+      padding: 12px 14px 12px;
+      align-items: flex-start;
+      min-height: 80px;
     }
     .vid-sheet-info {
-      position: static !important;
-      flex: 1;
-      left: auto; right: auto;
+      position: absolute !important;
+      left: 0 !important; right: 0 !important;
+      top: 50%;
+      transform: translateY(-50%);
       text-align: center;
       pointer-events: none;
     }
